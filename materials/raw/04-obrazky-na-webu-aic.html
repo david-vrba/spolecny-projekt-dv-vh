@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obrázky na moderním webu — Výukový materiál</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & BASE ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #1a1714;
+    --ink-soft:  #4a4540;
+    --ink-faint: #9a948e;
+    --paper:     #faf8f5;
+    --paper-2:   #f2ede6;
+    --paper-3:   #e8e1d8;
+    --accent:    #c8410a;
+    --accent-2:  #1a6b4a;
+    --accent-3:  #1a4a7a;
+    --warn:      #8b5a00;
+    --warn-bg:   #fff8e8;
+    --good:      #1a6b4a;
+    --good-bg:   #e8f5ee;
+    --bad:       #c8410a;
+    --bad-bg:    #fdf0ec;
+    --rule:      rgba(26,23,20,0.12);
+    --code-bg:   #252220;
+    --code-fg:   #f0ebe4;
+    --code-comment: #8a7f75;
+    --code-tag:  #e88a50;
+    --code-attr: #70b0e0;
+    --code-val:  #98d090;
+    --code-kw:   #c080e0;
+    --radius:    6px;
+    --shadow:    0 2px 12px rgba(26,23,20,0.08);
+    --shadow-lg: 0 8px 40px rgba(26,23,20,0.14);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── LAYOUT ───────────────────────────────────────────────── */
+  .page-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── COVER ────────────────────────────────────────────────── */
+  .cover {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 72px 0 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 90% 20%, rgba(200,65,10,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(26,74,122,0.3) 0%, transparent 60%);
+  }
+  .cover-inner { position: relative; }
+  .cover-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid rgba(250,248,245,0.3);
+    padding: 4px 12px; border-radius: 2px;
+    color: rgba(250,248,245,0.7);
+    margin-bottom: 28px;
+  }
+  .cover h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .cover h1 em { font-style: italic; color: var(--accent); }
+  .cover-sub {
+    font-size: 1.1rem;
+    color: rgba(250,248,245,0.7);
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+  .cover-meta {
+    display: flex; flex-wrap: wrap; gap: 28px;
+    font-size: 0.85rem;
+    color: rgba(250,248,245,0.55);
+  }
+  .cover-meta span { display: flex; align-items: center; gap: 6px; }
+  .cover-meta svg { opacity: 0.7; }
+
+  /* ─── NAV ──────────────────────────────────────────────────── */
+  .main-nav {
+    background: white;
+    border-bottom: 1px solid var(--rule);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(26,23,20,0.06);
+  }
+  .nav-inner {
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none; border: none;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    color: var(--ink-faint);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+  .nav-btn:hover { color: var(--ink); }
+  .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .nav-sep { width: 1px; height: 20px; background: var(--rule); flex-shrink: 0; margin: 0 4px; }
+
+  /* ─── SECTION HEADER ───────────────────────────────────────── */
+  .section-header {
+    padding: 52px 0 36px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 40px;
+  }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-tag .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 600px;
+  }
+
+  /* ─── VIEW TOGGLE ──────────────────────────────────────────── */
+  .view-toggle {
+    display: inline-flex;
+    background: var(--paper-2);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
+    margin-bottom: 32px;
+  }
+  .view-btn {
+    padding: 8px 20px;
+    border: none; background: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--ink-faint);
+  }
+  .view-btn.active {
+    background: white;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+
+  /* ─── BLOCKS ───────────────────────────────────────────────── */
+  .block {
+    margin-bottom: 64px;
+    scroll-margin-top: 60px;
+  }
+
+  .block-head {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 24px;
+  }
+  .block-num {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 700;
+    margin-top: 2px;
+  }
+  .block-num.green { background: var(--accent-2); }
+  .block-num.blue  { background: var(--accent-3); }
+  .block-num.red   { background: var(--accent); }
+  .block-num.gold  { background: var(--warn); }
+
+  .block-title h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem; font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .block-title .time {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ─── THEORY ───────────────────────────────────────────────── */
+  .theory {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .theory h4 {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .theory h4::before {
+    content: '';
+    display: block; width: 16px; height: 2px;
+    background: var(--ink-faint);
+  }
+  .theory p { margin-bottom: 12px; color: var(--ink-soft); }
+  .theory p:last-child { margin-bottom: 0; }
+  .theory strong { color: var(--ink); }
+  .theory ul, .theory ol {
+    padding-left: 20px;
+    margin-bottom: 12px;
+    color: var(--ink-soft);
+  }
+  .theory li { margin-bottom: 6px; }
+
+  /* ─── TEACHER BOX ──────────────────────────────────────────── */
+  .teacher-box {
+    background: #fff8e8;
+    border: 1px solid rgba(139,90,0,0.2);
+    border-left: 4px solid var(--warn);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .teacher-box .label {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warn);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .teacher-box p { font-size: 0.92rem; color: #5a4000; margin-bottom: 8px; }
+  .teacher-box p:last-child { margin-bottom: 0; }
+  .teacher-box ul { font-size: 0.92rem; color: #5a4000; padding-left: 18px; }
+  .teacher-box li { margin-bottom: 5px; }
+  .teacher-box strong { color: #3a2800; }
+
+  /* ─── TIP BOX ──────────────────────────────────────────────── */
+  .tip-box {
+    background: var(--good-bg);
+    border: 1px solid rgba(26,107,74,0.2);
+    border-left: 4px solid var(--good);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: #0d4028;
+  }
+  .tip-box .label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--good);
+    margin-bottom: 6px;
+  }
+
+  /* ─── WARN BOX ─────────────────────────────────────────────── */
+  .warn-box {
+    background: var(--bad-bg);
+    border: 1px solid rgba(200,65,10,0.2);
+    border-left: 4px solid var(--bad);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: #6a2000;
+  }
+  .warn-box .label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--bad);
+    margin-bottom: 6px;
+  }
+
+  /* ─── CODE BLOCK ───────────────────────────────────────────── */
+  .code-wrap {
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .code-header {
+    background: #1a1714;
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .code-header .lang {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(240,235,228,0.4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .code-header .dots { display: flex; gap: 5px; }
+  .code-header .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .copy-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(240,235,228,0.5);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 3px 10px; border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); color: var(--code-fg); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 20px 20px;
+    overflow-x: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--code-fg);
+    margin: 0;
+  }
+  pre .c  { color: var(--code-comment); font-style: italic; }
+  pre .t  { color: var(--code-tag); }
+  pre .a  { color: var(--code-attr); }
+  pre .v  { color: var(--code-val); }
+  pre .k  { color: var(--code-kw); }
+  pre .hl { background: rgba(200,65,10,0.15); display: block; margin: 0 -20px; padding: 0 20px; }
+  pre .hl-good { background: rgba(26,107,74,0.15); display: block; margin: 0 -20px; padding: 0 20px; }
+
+  /* ─── COMPARISON ───────────────────────────────────────────── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .compare-card .c-head {
+    padding: 8px 14px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .compare-card.bad .c-head  { background: #fceae4; color: var(--bad); }
+  .compare-card.good .c-head { background: #dff0e8; color: var(--good); }
+  .compare-card pre { font-size: 0.78rem; border-radius: 0; }
+
+  /* ─── TABLE ────────────────────────────────────────────────── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .data-table th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: var(--paper-2); }
+  .data-table code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82em;
+    background: var(--paper-3);
+    padding: 2px 6px; border-radius: 3px;
+    color: var(--ink);
+  }
+  .tag-yes { color: var(--good); font-weight: 700; }
+  .tag-no  { color: var(--bad);  font-weight: 700; }
+
+  /* ─── EXERCISE ─────────────────────────────────────────────── */
+  .exercise {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    background: white;
+  }
+  .exercise-badge {
+    position: absolute; top: -13px; left: 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 12px; border-radius: 2px;
+  }
+  .exercise h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .exercise p { color: var(--ink-soft); margin-bottom: 12px; font-size: 0.92rem; }
+  .exercise ol, .exercise ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .exercise li { margin-bottom: 6px; }
+  .exercise .checklist { list-style: none; padding-left: 0; }
+  .exercise .checklist li {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 4px 0;
+  }
+  .exercise .checklist li::before {
+    content: '□';
+    font-size: 1.1em; flex-shrink: 0;
+    color: var(--ink-faint);
+  }
+
+  /* ─── SOLUTION TOGGLE ──────────────────────────────────────── */
+  details.solution {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  details.solution summary {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--accent-3);
+    background: var(--paper-2);
+    list-style: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.2s;
+  }
+  details.solution summary:hover { background: var(--paper-3); }
+  details.solution summary::before { content: '▶'; font-size: 0.65em; transition: transform 0.2s; }
+  details.solution[open] summary::before { transform: rotate(90deg); }
+  details.solution .solution-body {
+    padding: 4px 0 0;
+    background: var(--paper);
+  }
+
+  /* ─── DIAGRAM ──────────────────────────────────────────────── */
+  .diagram {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* ─── CHEATSHEET ───────────────────────────────────────────── */
+  .cheatsheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .cheat-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .cheat-card h4 {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid;
+  }
+  .cheat-card.red h4  { color: var(--bad);   border-color: var(--bad); }
+  .cheat-card.green h4 { color: var(--good);  border-color: var(--good); }
+  .cheat-card.blue h4  { color: var(--accent-3); border-color: var(--accent-3); }
+  .cheat-card.gold h4  { color: var(--warn);  border-color: var(--warn); }
+  .cheat-card ul { list-style: none; }
+  .cheat-card li {
+    font-size: 0.85rem; color: var(--ink-soft);
+    padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 6px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cheat-card li:last-child { border-bottom: none; }
+  .cheat-card li::before { flex-shrink: 0; margin-top: 2px; }
+  .cheat-card.red li::before  { content: '✕'; color: var(--bad); font-weight: 700; font-size: 0.8em; }
+  .cheat-card.green li::before { content: '✓'; color: var(--good); font-weight: 700; font-size: 0.8em; }
+  .cheat-card.blue li::before  { content: '→'; color: var(--accent-3); font-weight: 700; }
+  .cheat-card.gold li::before  { content: '⚠'; color: var(--warn); font-size: 0.8em; }
+  .cheat-card code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8em;
+    background: var(--paper-2);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* ─── INLINE CODE ──────────────────────────────────────────── */
+  p code, li code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85em;
+    background: var(--paper-3);
+    padding: 2px 6px; border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* ─── DIVIDER ──────────────────────────────────────────────── */
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 48px 0;
+  }
+
+  /* ─── FOOTER ───────────────────────────────────────────────── */
+  footer {
+    background: var(--ink);
+    color: rgba(250,248,245,0.4);
+    padding: 32px 0;
+    margin-top: 80px;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  /* ─── UTILITIES ────────────────────────────────────────────── */
+  .mt-0  { margin-top: 0 !important; }
+  .mb-8  { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .mb-32 { margin-bottom: 32px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 580px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ─── PRINT ────────────────────────────────────────────────── */
+  @media print {
+    .main-nav { display: none; }
+    .view-toggle { display: none; }
+    details.solution[open] .solution-body { display: block; }
+  }
+
+  /* ─── SECTION VISIBILITY ───────────────────────────────────── */
+  .section { display: none; }
+  .section.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ COVER -->
+<header class="cover">
+  <div class="page-wrap cover-inner">
+    <div class="cover-tag">Seminář z informatiky · Gymnázium · RVP G 2025</div>
+    <h1>Obrázky na<br><em>moderním webu</em></h1>
+    <p class="cover-sub">Kompletní výukový materiál — od formátů a přístupnosti po výkon a responzivní design.</p>
+    <div class="cover-meta">
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        120 minut (6 bloků)
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Úroveň: začátečník–mírně pokročilý
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        HTML · CSS · Web Performance
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ NAV -->
+<nav class="main-nav">
+  <div class="page-wrap nav-inner">
+    <button class="nav-btn active" onclick="showSection('uvod')">Přehled</button>
+    <div class="nav-sep"></div>
+    <button class="nav-btn" onclick="showSection('b1')">1 · Formáty</button>
+    <button class="nav-btn" onclick="showSection('b2')">2 · Sémantika & Alt</button>
+    <button class="nav-btn" onclick="showSection('b3')">3 · Srcset & Sizes</button>
+    <button class="nav-btn" onclick="showSection('b4')">4 · Picture & Art Direction</button>
+    <button class="nav-btn" onclick="showSection('b5')">5 · Výkon (CWV)</button>
+    <button class="nav-btn" onclick="showSection('b6')">6 · CSS & Layout</button>
+    <div class="nav-sep"></div>
+    <button class="nav-btn" onclick="showSection('cviceni')">Cvičení</button>
+    <button class="nav-btn" onclick="showSection('tahak')">Tahák</button>
+  </div>
+</nav>
+
+<main class="page-wrap">
+
+<!-- ═══════════════════════════════════════════════════════ PŘEHLED -->
+<section class="section active" id="uvod">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Přehled lekce</div>
+    <h2>Co se naučíme a jak budeme postupovat</h2>
+    <p>Lekce je rozdělena do šesti tematických bloků. Každý blok obsahuje teorii, ukázky kódu a navazuje na praktická cvičení na konci.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-uvod" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická příručka — Přehled lekce</div>
+      <p><strong>Cíl lekce:</strong> Studenti pochopí, jak správně vkládat obrázky na moderní web — tak, aby byly rychlé, přístupné a responzivní. Lekce je záměrně postavena na typických částech stránky (hero, galerie, článek), nikoli na izolovaných příkladech.</p>
+      <p><strong>Prerekvizity:</strong> Studenti by měli znát základní strukturu HTML dokumentu (tagy, atributy, vnořování) a základy CSS (selektory, vlastnosti jako <code>width</code>, <code>margin</code>). Žádné pokročilé znalosti nejsou potřeba.</p>
+      <p><strong>Doporučená příprava:</strong></p>
+      <ul>
+        <li>Připravte si 2–3 ukázkové fotografie v různých formátech (JPEG, WebP) — ideálně stejnou fotku v obou formátech pro přímé porovnání velikosti souboru.</li>
+        <li>Mějte otevřený prohlížeč s DevTools záložkou Network, abyste mohli živě ukázat rozdíly v načítání.</li>
+        <li>Blok 5 (Core Web Vitals) je nejvíce abstraktní — připravte si vizuální ukázku „poskakující stránky" nebo najděte video CLS.</li>
+        <li>Povolte studentům pracovat ve dvojicích pro cvičení.</li>
+      </ul>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Blok</th>
+        <th>Čas</th>
+        <th>Klíčový koncept</th>
+        <th>Scénář použití</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>Formáty obrázků</td>
+        <td>20 min</td>
+        <td>SVG, WebP, AVIF, JPEG, PNG</td>
+        <td>Volba správného formátu</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>Sémantika a přístupnost</td>
+        <td>20 min</td>
+        <td><code>&lt;img&gt;</code>, <code>alt</code>, <code>&lt;figure&gt;</code></td>
+        <td>Článek s obrázkem a popiskem</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Responzivní obrázky</td>
+        <td>25 min</td>
+        <td><code>srcset</code>, <code>sizes</code></td>
+        <td>Mobilní galerie šetřící data</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Art Direction</td>
+        <td>20 min</td>
+        <td><code>&lt;picture&gt;</code>, <code>&lt;source&gt;</code></td>
+        <td>Hero sekce s různým ořezem</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Výkon webu (CWV)</td>
+        <td>15 min</td>
+        <td><code>loading</code>, <code>fetchpriority</code>, CLS</td>
+        <td>Stránka bez poskakování</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td>CSS a layout</td>
+        <td>20 min</td>
+        <td><code>object-fit</code>, <code>aspect-ratio</code></td>
+        <td>Hero sekce, fotogalerie</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box">
+    <div class="label">💡 Tip pro navigaci</div>
+    Každý blok si otevřete kliknutím na záložku v horní navigaci. Přepínačem <strong>Student / Učitel</strong> zobrazíte nebo skryjete metodické poznámky pro vyučujícího.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 1 -->
+<section class="section" id="b1">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 1 · 20 minut</div>
+    <h2>Formáty obrázků</h2>
+    <p>Než začneme psát kód, musíme vědět, <em>jaký soubor</em> vlastně vkládáme a proč na tom záleží.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b1" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 1</div>
+      <p><strong>Nejčastější chyba studentů:</strong> Myslí si, že PNG je „nejlepší formát, protože je průhledný". Zdůrazněte, že PNG pro fotografie je obrovský luxus a WebP/AVIF zvládají průhlednost také.</p>
+      <p><strong>Dobrá metafora pro formáty:</strong> SVG je jako „návod na kreslení" — vždy kreslí perfektně, ať je velké nebo malé. JPEG/WebP/AVIF jsou jako „fotografie" — jednou vyfoceno, detaily nejdou zvětšit bez ztráty kvality.</p>
+      <p><strong>Živá ukázka (doporučeno):</strong> Otevřete stejnou fotku jako JPEG (500 kB) a WebP (180 kB) v záložce DevTools > Network. Studenti okamžitě pochopí úsporu dat.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num">1a</div>
+      <div class="block-title">
+        <h3>Vektorová vs. rastrová grafika</h3>
+        <span class="time">Teorie — 8 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Vysvětlení</h4>
+      <p><strong>Vektorová grafika (SVG)</strong> je popsána matematickými vzorci — čarami, křivkami, plochami. Výsledkem je, že obrázek lze zmenšit nebo zvětšit na jakoukoliv velikost bez ztráty ostrosti. Proto jsou SVG ideální pro <strong>loga, ikony a ilustrace s ostrými hranami</strong>.</p>
+      <p><strong>Rastrová grafika</strong> (JPEG, PNG, WebP, AVIF) je tvořena mřížkou pixelů. Každý pixel má svou barvu. Fotografie jsou vždy rastrová grafika — nelze je matematicky popsat. Při zvětšení se „rozkostičkují".</p>
+    </div>
+
+    <table class="data-table mb-24">
+      <thead>
+        <tr><th>Formát</th><th>Typ</th><th>Průhlednost</th><th>Nejlepší použití</th><th>Podpora prohlížečů</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>SVG</code></td><td>Vektorový</td><td class="tag-yes">✓</td><td>Loga, ikony, ilustrace</td><td class="tag-yes">Výborná</td></tr>
+        <tr><td><code>AVIF</code></td><td>Rastrový</td><td class="tag-yes">✓</td><td>Fotografie, UI obrázky</td><td>Moderní prohlížeče</td></tr>
+        <tr><td><code>WebP</code></td><td>Rastrový</td><td class="tag-yes">✓</td><td>Fotografie, UI obrázky</td><td class="tag-yes">Výborná</td></tr>
+        <tr><td><code>JPEG</code></td><td>Rastrový</td><td class="tag-no">✕</td><td>Fotografie (starší projekty)</td><td class="tag-yes">Univerzální</td></tr>
+        <tr><td><code>PNG</code></td><td>Rastrový</td><td class="tag-yes">✓</td><td>Screenshoty, grafy s textem</td><td class="tag-yes">Univerzální</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <div class="label">💡 Pravidlo palce</div>
+      <strong>Logo, ikona, ilustrace?</strong> → Použij SVG. &nbsp; <strong>Fotografie?</strong> → Použij AVIF nebo WebP (s fallbackem na JPEG pro starší prohlížeče). <strong>Screenshot s textem?</strong> → PNG kvůli ostré typografii.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num">1b</div>
+      <div class="block-title">
+        <h3>Moderní formáty: WebP a AVIF</h3>
+        <span class="time">Teorie — 7 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Proč na formátu záleží</h4>
+      <p>Mobilní uživatelé mají omezená data. Každý zbytečný kilobyte prodlužuje načítání a zvyšuje cenu. Moderní formáty dosahují dramaticky lepší komprese při stejné vizuální kvalitě.</p>
+      <p><strong>WebP</strong> (Google, 2010) — přibližně <strong>25–35 % menší</strong> než JPEG při stejné kvalitě. Podporuje průhlednost (jako PNG) i animace. Dnes podporují všechny moderní prohlížeče.</p>
+      <p><strong>AVIF</strong> (Alliance for Open Media, 2019) — přibližně <strong>40–55 % menší</strong> než JPEG. Ještě lepší než WebP, ale starší prohlížeče (IE, starší Safari) ho nepodporují. Proto se vždy poskytuje jako fallback WebP nebo JPEG.</p>
+    </div>
+
+    <div class="diagram">
+      <svg width="560" height="120" viewBox="0 0 560 120" style="max-width:100%">
+        <rect x="10" y="30" width="540" height="32" rx="4" fill="#e8e1d8"/>
+        <rect x="10" y="30" width="540" height="32" rx="4" fill="none" stroke="#ccc"/>
+        <text x="20" y="51" font-family="DM Mono, monospace" font-size="11" fill="#9a948e">JPEG (referenční velikost = 100 %)</text>
+        <text x="520" y="51" font-family="DM Mono, monospace" font-size="11" fill="#9a948e" text-anchor="end">100 %</text>
+
+        <rect x="10" y="68" width="378" height="32" rx="4" fill="#d4edda"/>
+        <rect x="10" y="68" width="378" height="32" rx="4" fill="none" stroke="#1a6b4a" stroke-width="1"/>
+        <text x="20" y="89" font-family="DM Mono, monospace" font-size="11" fill="#0d4028">WebP (přibližná velikost oproti JPEG)</text>
+        <text x="370" y="89" font-family="DM Mono, monospace" font-size="11" fill="#0d4028" text-anchor="end">~70 %</text>
+
+        <rect x="10" y="6" width="270" height="22" rx="4" fill="#c8410a" opacity="0.15"/>
+        <rect x="10" y="6" width="270" height="22" rx="4" fill="none" stroke="#c8410a" stroke-width="1"/>
+        <text x="20" y="21" font-family="DM Mono, monospace" font-size="10" fill="#6a2000">AVIF (přibližná velikost oproti JPEG)</text>
+        <text x="262" y="21" font-family="DM Mono, monospace" font-size="10" fill="#6a2000" text-anchor="end">~50 %</text>
+      </svg>
+    </div>
+
+    <div class="tip-box">
+      <div class="label">🛠️ Kde konvertovat?</div>
+      Online: <strong>squoosh.app</strong> (Google) — nahrát obrázek, porovnat formáty a stáhnout optimalizovanou verzi. Příkazová řádka: <code>cwebp foto.jpg -o foto.webp</code>, nebo ImageMagick, nebo automaticky přes build nástroj (Webpack, Vite).
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 2 -->
+<section class="section" id="b2">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 2 · 20 minut</div>
+    <h2>Sémantika a přístupnost</h2>
+    <p>Obrázek musí být přístupný — pro lidi i pro vyhledávače. Jeden atribut to změní úplně.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b2" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 2</div>
+      <p><strong>Klíčový moment lekce:</strong> Zapněte čtečku obrazovky (VoiceOver na Macu, NVDA na Windows) a přehrajte studentům stránku bez <code>alt</code> textu vs. se smysluplným <code>alt</code>. Tento zážitek si zapamatují mnohem déle než pouhý výklad.</p>
+      <p><strong>Evropský akt o přístupnosti 2025:</strong> Od 28. 6. 2025 musí komerční weby splňovat WCAG 2.1 AA. To zahrnuje alternativní texty. Toto je dobrý moment propojit techniku s reálnou legislativou.</p>
+      <p><strong>Kdy alt="" (prázdný)?</strong> U čistě dekorativních obrázků (vzory, ozdobné linky) se píše prázdný alt — čtečka ho pak přeskočí. Nikdy ale nezaměňovat za chybějící atribut!</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num green">2a</div>
+      <div class="block-title">
+        <h3>Tag &lt;img&gt; a atribut alt</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Proč je alt kritický</h4>
+      <p>Atribut <code>alt</code> (alternativní text) slouží pro situace, kdy obrázek <em>není vidět</em>:</p>
+      <ul>
+        <li>Uživatelé se zrakovým postižením používají <strong>čtečky obrazovky</strong>, které alt text přečtou nahlas.</li>
+        <li>Prohlížeče s vypnutými obrázky (mobilní data, přístupový režim) zobrazí alt text místo obrázku.</li>
+        <li><strong>Google</strong> a ostatní vyhledávače indexují alt text — špatný alt = horší SEO.</li>
+        <li>Pokud se obrázek nenačte (chybná cesta, výpadek serveru), prohlížeč zobrazí alt text.</li>
+      </ul>
+      <p><strong>Pravidlo:</strong> Alt text popisuje <em>obsah a funkci</em> obrázku, ne jeho vzhled. „Fotografie" je špatný alt. „Tým vývojářů pracující v zasedací místnosti" je dobrý alt.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="c-head">✕ Špatně — tyto chyby dělají všichni</div>
+        <pre><span class="c">&lt;!-- Alt chybí úplně --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"foto.jpg"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Alt je prázdný řetězec u důl. obrázku --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"logo.png"</span> <span class="a">alt</span>=<span class="v">""</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Alt popisuje soubor, ne obsah --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"img001.jpg"</span> <span class="a">alt</span>=<span class="v">"image"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Alt je příliš vágní --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"banner.jpg"</span> <span class="a">alt</span>=<span class="v">"fotografie"</span><span class="t">&gt;</span></pre>
+      </div>
+      <div class="compare-card good">
+        <div class="c-head">✓ Správně — smysluplné popisy</div>
+        <pre><span class="c">&lt;!-- Logo: stručně, název firmy --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"logo.svg"</span>
+     <span class="a">alt</span>=<span class="v">"CodeSchool — domovská stránka"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Fotografie: popis obsahu --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"tym.webp"</span>
+     <span class="a">alt</span>=<span class="v">"Pět studentů pracuje na projektu
+          u kulatého stolu v knihovně"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Dekorativní obrázek: prázdný alt --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"vlnka.svg"</span> <span class="a">alt</span>=<span class="v">""</span><span class="t">&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ Pozor</div>
+      Chybějící atribut <code>alt</code> (žádný atribut) a prázdný <code>alt=""</code> jsou dvě <strong>různé</strong> věci. Chybějící alt = čtečka přečte název souboru (např. „img0012.jpg"). Prázdný alt = čtečka obrázek přeskočí. Prázdný alt je správný POUZE u dekorativních obrázků.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num green">2b</div>
+      <div class="block-title">
+        <h3>Sémantické tagy &lt;figure&gt; a &lt;figcaption&gt;</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Kdy použít figure</h4>
+      <p>Někdy obrázek potřebuje viditelný popisek — například ve článku na blogu, ve vědeckém textu nebo u grafu. K tomu slouží tag <code>&lt;figure&gt;</code> a jeho potomek <code>&lt;figcaption&gt;</code>.</p>
+      <p><strong>Klíčová vlastnost:</strong> Tag <code>&lt;figure&gt;</code> říká prohlížeči i vyhledávači: „Tento obrázek a tento popisek patří k sobě a tvoří jednu logickou jednotku." Čtečky obrazovky je přečtou jako celek.</p>
+      <p><strong>Kdy NE použít figure:</strong> Pro čistě dekorativní obrázky (pozadí, ikony tlačítek) není <code>&lt;figure&gt;</code> vhodný — zbytečně přidává sémantický význam tam, kde žádný není.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Článek s obrázkem</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;article&gt;</span>
+  <span class="t">&lt;h1&gt;</span>Jak funguje kompostování<span class="t">&lt;/h1&gt;</span>
+
+  <span class="t">&lt;p&gt;</span>Kompostování je přirozený proces, kdy...<span class="t">&lt;/p&gt;</span>
+
+  <span class="c">&lt;!-- figure = obrázek + popisek jako nedělitelná jednotka --&gt;</span>
+  <span class="t">&lt;figure&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"kompost-schema.webp"</span>
+      <span class="a">alt</span>=<span class="v">"Diagram zobrazující vrstvy kompostovacího koše:
+           dřevo a větvičky dole, pak listí a tráva,
+           nahoře kuchyňské zbytky"</span>
+      <span class="a">width</span>=<span class="v">"800"</span>
+      <span class="a">height</span>=<span class="v">"500"</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;figcaption&gt;</span>
+      Schéma správného vrstvení kompostu. Zdroj: Wikipedie.
+    <span class="t">&lt;/figcaption&gt;</span>
+  <span class="t">&lt;/figure&gt;</span>
+
+  <span class="t">&lt;p&gt;</span>Správné vrstvení zajistí optimální přísun vzduchu...<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;/article&gt;</span></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="label">💡 Alt vs. figcaption</div>
+      <code>alt</code> je <em>náhrada</em> obrázku pro situace, kdy ho nelze vidět. <code>figcaption</code> je <em>doplněk</em> obrázku — viditelný popis pro všechny uživatele. Oboje může existovat zároveň a mít různý text. Alt bývá popisnější, figcaption stručnější (např. zdroj, kontext).
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 3 -->
+<section class="section" id="b3">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 3 · 25 minut</div>
+    <h2>Responzivní obrázky: srcset a sizes</h2>
+    <p>Proč by si uživatel mobilu měl stahovat fotografii určenou pro 4K monitor?</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b3" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 3</div>
+      <p><strong>Nejkomplexnější blok:</strong> <code>srcset</code> a <code>sizes</code> jsou pro studenty nejtěžší — syntaxe je neobvyklá. Doporučujeme napsat příklad na tabuli krok po kroku.</p>
+      <p><strong>Metafora „švédský stůl":</strong> <code>srcset</code> je jako švédský stůl — připravíte různé porce. <code>sizes</code> říká, jak velký talíř host potřebuje. Prohlížeč (host) si vybere tu nejmenší porci, která stačí na jeho „talíř".</p>
+      <p><strong>Jednotka <code>w</code> vs. <code>x</code>:</strong> Existují dva způsoby — popisování fyzické šířky (<code>800w</code>) nebo hustoty pixelů (<code>2x</code>). Pro fotografie vždy používejte <code>w</code>, pro ikony/loga může být <code>x</code>. V tomto bloku řešíme pouze <code>w</code>.</p>
+      <p><strong>Důležité:</strong> Prohlížeč může (a smí) ignorovat srcset, pokud má obrázek v cache z předchozí větší verze. Srcset jsou <em>nápovědy</em>, ne příkazy.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num blue">3a</div>
+      <div class="block-title">
+        <h3>Problém: jeden obrázek pro všechna zařízení</h3>
+        <span class="time">Motivace — 5 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Modelová situace</h4>
+      <p>Máte fotogalerii na webu. Na Macu s monitorem 4K načítáte fotografii o šířce 2400 pixelů — to dává smysl, ta fotografie je ostrá. Ale stejný soubor si stahuje i uživatel na mobilním telefonu se šířkou 390 pixelů. Stahuje <strong>6× větší data, než potřebuje</strong>.</p>
+      <p>Řešení: připravit fotografii ve <strong>více rozlišeních</strong> a říct prohlížeči, ať si vybere tu správnou. To dělají atributy <code>srcset</code> a <code>sizes</code>.</p>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ Reálná čísla</div>
+      Typická fotografie 2400 px = 800 kB JPEG. Stejná fotografie 600 px = 80 kB. Mobilní uživatel stahuje 10× zbytečně větší soubor. Na pomalém připojení to znamená rozdíl 4 sekund vs. 0,4 sekundy načítání.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num blue">3b</div>
+      <div class="block-title">
+        <h3>Syntaxe srcset a sizes — krok za krokem</h3>
+        <span class="time">Teorie + kód — 15 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Jak srcset funguje</h4>
+      <p><code>srcset</code> je seznam dostupných verzí obrázku. Pro každou verzi uvádíte cestu a za mezerou fyzickou šířku souboru v pixelech s jednotkou <code>w</code>.</p>
+      <p><code>sizes</code> říká prohlížeči, jak velký prostor obrázek na stránce zaujímá (v CSS jednotkách nebo jako procento viewportu). Prohlížeč tuto informaci použije ještě <em>před</em> tím, než si přečte CSS.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Responzivní obrázek (krok za krokem)</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">&lt;!-- KROK 1: Základní img bez srcset — vždy stejný soubor --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"foto.jpg"</span> <span class="a">alt</span>=<span class="v">"Hory za úsvitu"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- KROK 2: Přidáme srcset — seznam dostupných verzí --&gt;</span>
+<span class="c">&lt;!-- Číslo za mezerou = fyzická šířka SOUBORU v pixelech --&gt;</span>
+<span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"foto-800.jpg"</span>           <span class="c">&lt;!-- fallback pro velmi staré prohlížeče --&gt;</span>
+  <span class="a">srcset</span>=<span class="v">"foto-400.webp  400w,
+          foto-800.webp  800w,
+          foto-1200.webp 1200w,
+          foto-2400.webp 2400w"</span>
+  <span class="a">alt</span>=<span class="v">"Hory za úsvitu"</span>
+<span class="t">&gt;</span>
+
+<span class="c">&lt;!-- KROK 3: Přidáme sizes — jaký prostor obrázek zabere --&gt;</span>
+<span class="c">&lt;!-- Bez sizes prohlížeč předpokládá 100vw — vždy stáhne největší verzi! --&gt;</span>
+<span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"foto-800.jpg"</span>
+  <span class="a">srcset</span>=<span class="v">"foto-400.webp  400w,
+          foto-800.webp  800w,
+          foto-1200.webp 1200w,
+          foto-2400.webp 2400w"</span>
+  <span class="a">sizes</span>=<span class="v">"
+    (max-width: 600px) 100vw,
+    (max-width: 1200px) 50vw,
+    800px
+  "</span>
+  <span class="a">alt</span>=<span class="v">"Hory za úsvitu"</span>
+  <span class="a">width</span>=<span class="v">"2400"</span> <span class="a">height</span>=<span class="v">"1600"</span>
+<span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Jak prohlížeč sizes čte:
+  - Jsem mobilní telefon, šířka obrazovky = 390px → 100vw = 390px
+    → Ze srcset vyberu foto-400.webp (nejbližší vyšší)
+  - Jsem laptop, šířka = 1024px → 50vw = 512px
+    → Ze srcset vyberu foto-800.webp (nejbližší vyšší)
+  - Jsem desktop, šířka = 1440px → sizes říká fixně 800px
+    → Ze srcset vyberu foto-800.webp
+  - Jsem 4K monitor, šířka = 3840px → 800px × 2 (retina) = 1600px
+    → Ze srcset vyberu foto-2400.webp --&gt;</span></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="label">💡 Co znamená vw</div>
+      <code>vw</code> = viewport width = šířka okna prohlížeče. <code>100vw</code> = celá šířka, <code>50vw</code> = polovina šířky. Podmínky v <code>sizes</code> se čtou shora dolů — jako CSS media queries — a platí první splněná.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num blue">3c</div>
+        <div class="block-title">
+        <h3>Kompletní příklad: Galerie článků</h3>
+        <span class="time">Kód — 5 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Reálný scénář</h4>
+      <p>Máme mřížku článků, kde každý má náhledový obrázek. Na mobilu obrázek zabírá celou šířku. Na tabletu jsou vedle sebe dva sloupce (každý ~50 % šířky). Na desktopu tři sloupce (~33 % šířky). Přesně tuto situaci popíšeme v <code>sizes</code>.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Galerie karet s srcset</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+        <pre><span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"articles-grid"</span><span class="t">&gt;</span>
+
+  <span class="t">&lt;article</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"praze-800.jpg"</span>              <span class="c">&lt;!-- fallback --&gt;</span>
+      <span class="a">srcset</span>=<span class="v">"praze-400.webp   400w,
+              praze-800.webp   800w,
+              praze-1200.webp 1200w"</span>
+      <span class="a">sizes</span>=<span class="v">"
+        (max-width: 600px)  100vw,
+        (max-width: 1024px)  50vw,
+        33vw
+      "</span>
+      <span class="a">alt</span>=<span class="v">"Pohled na Karlův most za soumraku"</span>
+      <span class="a">width</span>=<span class="v">"1200"</span> <span class="a">height</span>=<span class="v">"800"</span>
+      <span class="a">loading</span>=<span class="v">"lazy"</span>          <span class="c">&lt;!-- galerie je dole → lazy --&gt;</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;h2&gt;</span>Praha v noci<span class="t">&lt;/h2&gt;</span>
+    <span class="t">&lt;p&gt;</span>Nejkrásnější výhledy na noční Prahu...<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/article&gt;</span>
+
+  <span class="c">&lt;!-- Další .card elementy stejnou strukturou --&gt;</span>
+
+<span class="t">&lt;/section&gt;</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 4 -->
+<section class="section" id="b4">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 4 · 20 minut</div>
+    <h2>Art Direction a moderní formáty</h2>
+    <p>Tag <code>&lt;picture&gt;</code> umožňuje dvě věci: jiný ořez pro jiné zařízení, a bezpečný fallback pro moderní formáty.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b4" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 4</div>
+      <p><strong>Klíčový rozdíl:</strong> <code>srcset</code> = prohlížeč si sám vybírá mezi verzemi stejného obrázku. <code>&lt;picture&gt;</code> = my rozhodujeme, kdy se zobrazí co. To je zásadní rozdíl, který studenti snadno zaměňují.</p>
+      <p><strong>Art Direction v praxi:</strong> Ukažte příklady skutečných webů, kde logo/obrázek vypadá jinak na mobilu vs. desktopu. Instagram nebo Airbnb jsou dobré příklady — hero fotky mají jiný ořez na telefonu.</p>
+      <p><strong>Pořadí &lt;source&gt; je důležité:</strong> Prohlížeč bere první &lt;source&gt;, jehož podmínka je splněna. Vždy dávejte nejspecifičtější podmínku první — pro formáty: AVIF před WebP. Pro art direction s media queries: podmínka pro desktop (<code>min-width: 1024px</code>) musí být před podmínkou pro tablet (<code>min-width: 600px</code>), protože desktop splňuje obě — pokud by byla tabletová podmínka první, nikdy by se nedostalo na desktopovou.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num red">4a</div>
+      <div class="block-title">
+        <h3>Art Direction: jiný ořez pro jiné zařízení</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Problém s pouhým přeškálováním</h4>
+      <p>Fotografie krajiny je na desktopu krásná v celé šíři. Na mobilním telefonu se zmenší a klíčový motiv (člověk, tvář, detail) se stane nečitelným. Řešení není zmenšit celou fotografii — je to <strong>zobrazit jiný ořez</strong>.</p>
+      <p>Tag <code>&lt;picture&gt;</code> slouží právě k tomuto. Uvnitř obsahuje jednu nebo více podmínek (<code>&lt;source media="..."&gt;</code>) a na konci vždy <code>&lt;img&gt;</code> jako fallback.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Art Direction s &lt;picture&gt;</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">&lt;!--
+  SCÉNÁŘ:
+  Desktop: Širokoúhlá fotka krajiny (1600×600 px)
+  Tablet:  Obdélníkový ořez na střed (800×600 px)
+  Mobil:   Svislý detail na postavu (400×600 px)
+--&gt;</span>
+
+<span class="t">&lt;picture&gt;</span>
+
+  <span class="c">&lt;!-- Podmínka 1: Plná šířka od 1024px → krajina --&gt;</span>
+  <span class="t">&lt;source</span>
+    <span class="a">media</span>=<span class="v">"(min-width: 1024px)"</span>
+    <span class="a">srcset</span>=<span class="v">"hero-krajina-desktop.webp"</span>
+  <span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Podmínka 2: Tablety 600–1023px → obdélníkový ořez --&gt;</span>
+  <span class="t">&lt;source</span>
+    <span class="a">media</span>=<span class="v">"(min-width: 600px)"</span>
+    <span class="a">srcset</span>=<span class="v">"hero-krajina-tablet.webp"</span>
+  <span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Fallback: Mobily pod 600px → svislý detail --&gt;</span>
+  <span class="c">&lt;!-- Tento &lt;img&gt; se zobrazí také ve velmi starých prohlížečích --&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"hero-krajina-mobil.webp"</span>
+    <span class="a">alt</span>=<span class="v">"Turista stojí na vrcholu hory, v pozadí rozlehlá krajina"</span>
+    <span class="a">width</span>=<span class="v">"400"</span> <span class="a">height</span>=<span class="v">"600"</span>
+  <span class="t">&gt;</span>
+
+<span class="t">&lt;/picture&gt;</span></pre>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ Pravidlo pro &lt;picture&gt;</div>
+      Tag <code>&lt;img&gt;</code> uvnitř <code>&lt;picture&gt;</code> musí být vždy <strong>poslední</strong> a musí mít atribut <code>alt</code>. Tento <code>&lt;img&gt;</code> je „záchranná síť" pro prohlížeče, které <code>&lt;picture&gt;</code> neznají (IE 11 a starší). Atributy <code>class</code>, <code>id</code> a CSS styly patří na <code>&lt;img&gt;</code>, NE na <code>&lt;picture&gt;</code>.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num red">4b</div>
+      <div class="block-title">
+        <h3>Fallback formátů: AVIF → WebP → JPEG</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Jak nabídnout AVIF bezpečně</h4>
+      <p>AVIF je nejlepší formát pro fotografie, ale ne všechny prohlížeče ho podporují (Safari před verzí 16, starší Android). Proto nabízíme fotku jako AVIF <em>pro nové prohlížeče</em> a WebP nebo JPEG jako zálohu pro ostatní.</p>
+      <p>Tag <code>&lt;source type="..."&gt;</code> říká prohlížeči: „Tento soubor je v tomto formátu. Umíš ho přehrát?" Pokud ne, přeskočí na další <code>&lt;source&gt;</code>.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Fallback formátů AVIF → WebP → JPEG</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;picture&gt;</span>
+
+  <span class="c">&lt;!-- Preferovaný formát: AVIF (nejmenší velikost) --&gt;</span>
+  <span class="c">&lt;!-- Prohlížeč použije POUZE pokud AVIF podporuje --&gt;</span>
+  <span class="t">&lt;source</span>
+    <span class="a">type</span>=<span class="v">"image/avif"</span>
+    <span class="a">srcset</span>=<span class="v">"foto-400.avif  400w,
+            foto-800.avif  800w,
+            foto-1200.avif 1200w"</span>
+    <span class="a">sizes</span>=<span class="v">"(max-width: 768px) 100vw, 50vw"</span>
+  <span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Záložní formát: WebP (dobrá podpora, malá velikost) --&gt;</span>
+  <span class="t">&lt;source</span>
+    <span class="a">type</span>=<span class="v">"image/webp"</span>
+    <span class="a">srcset</span>=<span class="v">"foto-400.webp  400w,
+            foto-800.webp  800w,
+            foto-1200.webp 1200w"</span>
+    <span class="a">sizes</span>=<span class="v">"(max-width: 768px) 100vw, 50vw"</span>
+  <span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Záložní záložního: JPEG pro IE a velmi staré prohlížeče --&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"foto-800.jpg"</span>
+    <span class="a">alt</span>=<span class="v">"Letecký pohled na prales při západu slunce"</span>
+    <span class="a">width</span>=<span class="v">"1200"</span>
+    <span class="a">height</span>=<span class="v">"800"</span>
+    <span class="a">loading</span>=<span class="v">"lazy"</span>
+  <span class="t">&gt;</span>
+
+<span class="t">&lt;/picture&gt;</span></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="label">💡 Kombinace art direction + formáty</div>
+      Obě techniky lze kombinovat — <code>&lt;source media="..."&gt;</code> pro ořez a <code>type="..."&gt;</code> pro formát v jednom <code>&lt;picture&gt;</code>. Nejprve podmínky pro media (desktop/mobil), uvnitř každé skupiny pak podmínky pro typ (AVIF/WebP). V praxi to bývá 4–6 <code>&lt;source&gt;</code> tagů.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 5 -->
+<section class="section" id="b5">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 5 · 15 minut</div>
+    <h2>Výkon webu a Core Web Vitals</h2>
+    <p>Google měří, jak rychlá a příjemná je vaše stránka. Obrázky jsou největší nepřítel výkonu — ale jen pokud je neřídíte správně.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b5" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 5</div>
+      <p><strong>CLS vizualizace:</strong> Nejúčinnější ukázka — otevřete stránku bez <code>width</code>/<code>height</code> atributů a sledujte v DevTools > Performance jak text poskakuje při načítání. Poté přidejte atributy a ukažte, že k tomu nedochází.</p>
+      <p><strong>LCP vs. CLS:</strong> LCP = "jak rychle vidím hlavní obsah" (cíl: pod 2,5 s). CLS = "jak moc stránka skáče" (cíl: pod 0,1). FID/INP = "jak rychle stránka reaguje na klik".</p>
+      <p><strong>Kritická kombinace k zapamatování:</strong> Hero obrázek = <code>fetchpriority="high"</code> + BEZ <code>loading="lazy"</code>. Všechno ostatní pod čarou = <code>loading="lazy"</code>. Toto pravidlo pokryje 90 % případů.</p>
+      <p><strong>Praktická demonstrace:</strong> Použijte Lighthouse v DevTools (záložka Lighthouse) a spusťte analýzu stránky. Google dá studentům konkrétní skóre a tipy — to je velmi motivující.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num gold">5a</div>
+      <div class="block-title">
+        <h3>CLS: Proč stránka poskakuje a jak tomu zabránit</h3>
+        <span class="time">Teorie + kód — 8 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Cumulative Layout Shift (CLS)</h4>
+      <p><strong>Cumulative Layout Shift</strong> je metrika, která měří, jak moc se stránka při načítání „pohybuje". Znáte to: čtete text a najednou vám ho obrázek posune dolů. Kliknete na tlačítko a mezitím se tam přesunul jiný odkaz. To je CLS.</p>
+      <p>Příčina: prohlížeč nezná rozměry obrázku, dokud ho nestáhne. Do té doby mu nevyhradí místo. Když se stáhne, vtlačí se do layoutu a posune vše kolem.</p>
+      <p><strong>Řešení:</strong> Vždy uvádějte atributy <code>width</code> a <code>height</code> přímo v HTML. Prohlížeč z nich spočítá <strong>poměr stran</strong> a místo rezervuje dopředu, i když obrázek ještě nevidí.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="c-head">✕ Způsobuje CLS — stránka skáče</div>
+        <pre><span class="c">&lt;!-- Prohlížeč: "Nevím, jak velký
+     obrázek bude, nezarezervuji místo." --&gt;</span>
+<span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"hero.webp"</span>
+  <span class="a">alt</span>=<span class="v">"Hlavní fotografie"</span>
+<span class="t">&gt;</span></pre>
+      </div>
+      <div class="compare-card good">
+        <div class="c-head">✓ Bez CLS — místo je rezervováno</div>
+        <pre><span class="c">&lt;!-- Prohlížeč: "Poměr 16:9, rezervuji
+     prostor. Stáhnout mohu aspoň." --&gt;</span>
+<span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"hero.webp"</span>
+  <span class="a">alt</span>=<span class="v">"Hlavní fotografie"</span>
+  <span class="a">width</span>=<span class="v">"1600"</span>
+  <span class="a">height</span>=<span class="v">"900"</span>
+<span class="t">&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="label">💡 Width/height a responzivita</div>
+      Neznamená to, že obrázek bude vždy 1600×900 pixelů. V CSS napíšete <code>img { width: 100%; height: auto; }</code> a obrázek se bude přizpůsobovat. Atributy <code>width</code>/<code>height</code> v HTML slouží jen k výpočtu poměru stran pro rezervaci místa — tím jsou v moderní praxi důležitější než kdy dřív.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num gold">5b</div>
+      <div class="block-title">
+        <h3>Loading a fetchpriority: co načíst hned a co počkat</h3>
+        <span class="time">Teorie + kód — 7 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Dvě kritické metriky</h4>
+      <p><strong>LCP (Largest Contentful Paint)</strong> — čas do zobrazení největšího viditelného prvku stránky (zpravidla hero obrázek nebo nadpis). Cíl: pod 2,5 sekundy. Hero obrázek musí prohlížeč stáhnout <em>co nejdříve</em>.</p>
+      <p><strong>Lazy loading</strong> — atribut <code>loading="lazy"</code> říká prohlížeči: „Tento obrázek není vidět na první obrazovce. Stáhni ho až když bude potřeba." Výsledek: úspora dat a rychlejší načtení toho, co je vidět.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Správné použití loading a fetchpriority</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">&lt;!-- ═══════════════════════════════════════════
+     HERO SEKCE — první obrázek viditelný hned
+     ═══════════════════════════════════════════ --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"hero"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"hero.webp"</span>
+    <span class="a">alt</span>=<span class="v">"Výhled na noční Prahu z Pražského hradu"</span>
+    <span class="a">width</span>=<span class="v">"1600"</span> <span class="a">height</span>=<span class="v">"900"</span>
+    <span class="c">&lt;!-- ✓ Říkáme: Tento obrázek je nejdůležitější, prioritizuj ho --&gt;</span>
+    <span class="a">fetchpriority</span>=<span class="v">"high"</span>
+    <span class="c">&lt;!-- ✗ NIKDY nepsat loading="lazy" na hero obrázek! --&gt;</span>
+  <span class="t">&gt;</span>
+<span class="t">&lt;/section&gt;</span>
+
+<span class="c">&lt;!-- ═══════════════════════════════════════════
+     GALERIE — obrázky jsou pod čarou, mimo první obrazovku
+     ═══════════════════════════════════════════ --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"gallery"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"foto1.webp"</span>
+    <span class="a">alt</span>=<span class="v">"Staroměstské náměstí zaplněné turisty"</span>
+    <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span>
+    <span class="c">&lt;!-- ✓ Galerie je dole → líné načítání, šetříme data --&gt;</span>
+    <span class="a">loading</span>=<span class="v">"lazy"</span>
+  <span class="t">&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"foto2.webp"</span>
+    <span class="a">alt</span>=<span class="v">"Vltava z Nuselského mostu za soumraku"</span>
+    <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span>
+    <span class="a">loading</span>=<span class="v">"lazy"</span>
+  <span class="t">&gt;</span>
+<span class="t">&lt;/section&gt;</span></pre>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ Nejčastější chyba: kombinace lazy + fetchpriority</div>
+      <code>loading="lazy"</code> + <code>fetchpriority="high"</code> na stejném obrázku jsou <strong>protichůdné instrukce</strong>. Prohlížeč dostane signál „stáhni hned" a zároveň „stáhni později". Výsledek je nepředvídatelný a zpravidla špatný pro výkon. <strong>Nikdy je nekombinujte.</strong>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Situace</th><th>loading</th><th>fetchpriority</th><th>Důvod</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hero obrázek (první na stránce)</td><td>—</td><td><code>fetchpriority="high"</code></td><td>Ovlivňuje metriku LCP</td></tr>
+        <tr><td>Obrázky v obsahu (nad čarou)</td><td>—</td><td>—</td><td>Výchozí chování prohlížeče</td></tr>
+        <tr><td>Galerie, patička, obrázky dole</td><td><code>loading="lazy"</code></td><td>—</td><td>Šetří data a urychluje první načtení</td></tr>
+        <tr><td>Loga, ikony SVG</td><td>—</td><td>—</td><td>SVG jsou malá, lazy zbytečný</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BLOK 6 -->
+<section class="section" id="b6">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Blok 6 · 20 minut</div>
+    <h2>CSS a layout obrázků</h2>
+    <p>Jak zobrazit obrázky v kontejnerech přesně tak, jak potřebujeme — bez deformace a bez poskakování.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-b6" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodická poznámka — Blok 6</div>
+      <p><strong>Proč ne background-image?</strong> Mnoho starších tutoriálů používalo <code>background-image</code> pro hero sekce. Je důležité vysvětlit, proč to dnes není vhodné: Google hůře indexuje background obrázky, čtečky je nevidí, a <code>fetchpriority</code> na ně nelze aplikovat.</p>
+      <p><strong>Object-fit živá ukázka:</strong> Ukažte v DevTools, jak změna <code>object-fit</code> z <code>cover</code> na <code>contain</code> nebo <code>fill</code> změní chování obrázku. Vizuální feedback je okamžitý a studenti pochopí rychle.</p>
+      <p><strong>aspect-ratio je nový CSS:</strong> Tato vlastnost je relativně nová (2021). Vysvětlete, že nahrazuje starý trik s <code>padding-top: 75%</code>. Všechny moderní prohlížeče ji podporují.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num">6a</div>
+      <div class="block-title">
+        <h3>Hero sekce: object-fit a překryv textu</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Scénář A: Hero sekce s textem přes obrázek</h4>
+      <p>Chceme obrázek, který vyplní celou šíři stránky na výšku 500 px. Obrázek nesmí být deformovaný — musí být oříznut tak, aby vyplnil prostor. Na obrázku je text s tlačítkem.</p>
+      <p><strong>Vlastnost <code>object-fit: cover</code></strong> zajistí, že obrázek vyplní kontejner a zachová svůj poměr stran (přebytečné části jsou oříznuty). Je to ekvivalent <code>background-size: cover</code>, ale pro sémantický tag <code>&lt;img&gt;</code>.</p>
+      <p><strong>Proč ne background-image?</strong> Pomocí <code>background-image</code> v CSS nelze přidat <code>alt</code> text, <code>fetchpriority</code>, <code>srcset</code>, ani <code>loading</code>. Přístupnost a výkon jsou horší. SEO je horší.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML + CSS — Hero sekce s textem přes obrázek</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">&lt;!-- HTML --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"hero"</span><span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Obrázek a text sdílí grid cell → překryv --&gt;</span>
+  <span class="t">&lt;picture&gt;</span>
+    <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/avif"</span> <span class="a">srcset</span>=<span class="v">"hero.avif"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">class</span>=<span class="v">"hero__img"</span>
+      <span class="a">src</span>=<span class="v">"hero.webp"</span>
+      <span class="a">alt</span>=<span class="v">"Panorama Prahy při červánkovém západu slunce"</span>
+      <span class="a">width</span>=<span class="v">"1600"</span> <span class="a">height</span>=<span class="v">"900"</span>
+      <span class="a">fetchpriority</span>=<span class="v">"high"</span>
+    <span class="t">&gt;</span>
+  <span class="t">&lt;/picture&gt;</span>
+
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"hero__content"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Objevte krásy Prahy<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"#tours"</span> <span class="a">class</span>=<span class="v">"btn"</span><span class="t">&gt;</span>Prohlédnout výlety<span class="t">&lt;/a&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+
+<span class="t">&lt;/section&gt;</span></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">CSS — Hero sekce (object-fit + grid overlay)</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">/* Kontejner je grid — obrázek i obsah zabírají stejnou buňku */</span>
+.<span class="a">hero</span> {
+  <span class="k">display</span>: grid;
+  <span class="k">height</span>: 500px;              <span class="c">/* pevná výška hero sekce */</span>
+  <span class="k">overflow</span>: hidden;
+}
+
+<span class="c">/* Obrázek i content do stejné grid buňky (překryv) */</span>
+.<span class="a">hero</span> > * {
+  <span class="k">grid-area</span>: 1 / 1;
+}
+
+<span class="c">/* object-fit: cover = obrázek vyplní prostor, ořízne přebytky */</span>
+.<span class="a">hero__img</span> {
+  <span class="k">width</span>: 100%;
+  <span class="k">height</span>: 100%;
+  <span class="k">object-fit</span>: cover;
+  <span class="k">object-position</span>: center 30%; <span class="c">/* zaostřit na horní část fotky */</span>
+}
+
+<span class="c">/* Text nad obrázkem, vertikálně vycentrovaný */</span>
+.<span class="a">hero__content</span> {
+  <span class="k">position</span>: relative;         <span class="c">/* nad obrázkem (z-index) */</span>
+  <span class="k">z-index</span>: 1;
+  <span class="k">display</span>: flex;
+  <span class="k">flex-direction</span>: column;
+  <span class="k">align-items</span>: center;
+  <span class="k">justify-content</span>: center;
+  <span class="k">text-align</span>: center;
+  <span class="k">padding</span>: 24px;
+  <span class="k">background</span>: linear-gradient(
+    to top,
+    rgba(0,0,0,0.6) 0%,   <span class="c">/* tmavý gradient dole pro čitelnost */</span>
+    transparent 50%
+  );
+  <span class="k">color</span>: white;
+}</pre>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num">6b</div>
+      <div class="block-title">
+        <h3>Galerie: aspect-ratio a stejně velké náhledy</h3>
+        <span class="time">Teorie + kód — 10 minut</span>
+      </div>
+    </div>
+
+    <div class="theory">
+      <h4>Scénář B: Responzivní fotogalerie s pevným poměrem stran</h4>
+      <p>Chceme mřížku fotografií, kde každý náhled je čtvercový (nebo 4:3), i když původní fotografie mají různé rozměry. Fotografie nesmí být deformovány — přebytky se oříznou.</p>
+      <p><strong>Vlastnost <code>aspect-ratio</code></strong> (CSS 2021) zajistí pevný poměr stran kontejneru bez ohledu na jeho šířku. Kombinací s <code>object-fit: cover</code> pak fotografie vyplní kontejner a zachová správný poměr stran.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML + CSS — Responzivní galerie s aspect-ratio</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">&lt;!-- HTML --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"gallery"</span><span class="t">&gt;</span>
+  <span class="t">&lt;figure</span> <span class="a">class</span>=<span class="v">"gallery__item"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"foto1.webp"</span>
+      <span class="a">alt</span>=<span class="v">"Katedrála sv. Víta z ptačí perspektivy"</span>
+      <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span>
+      <span class="a">loading</span>=<span class="v">"lazy"</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;figcaption&gt;</span>Katedrála sv. Víta<span class="t">&lt;/figcaption&gt;</span>
+  <span class="t">&lt;/figure&gt;</span>
+  <span class="c">&lt;!-- Další .gallery__item elementy --&gt;</span>
+<span class="t">&lt;/section&gt;</span>
+
+<span class="c">/* CSS */</span>
+
+.<span class="a">gallery</span> {
+  <span class="k">display</span>: grid;
+  <span class="c">/* Automaticky tolik sloupců, kolik se vejde — min 200px */</span>
+  <span class="k">grid-template-columns</span>: repeat(auto-fill, minmax(200px, 1fr));
+  <span class="k">gap</span>: 12px;
+}
+
+.<span class="a">gallery__item</span> {
+  <span class="k">margin</span>: 0;
+  <span class="k">overflow</span>: hidden;
+  <span class="k">border-radius</span>: 6px;
+}
+
+.<span class="a">gallery__item</span> img {
+  <span class="k">display</span>: block;
+  <span class="k">width</span>: 100%;
+  <span class="c">/* aspect-ratio = pevný poměr stran, i když je šířka proměnná */</span>
+  <span class="k">aspect-ratio</span>: 1 / 1;       <span class="c">/* čtvercový náhled */</span>
+  <span class="c">/* aspect-ratio: 4 / 3;    &lt;-- obdélníkový náhled */</span>
+  <span class="k">object-fit</span>: cover;           <span class="c">/* ořízne, nedeformuje */</span>
+  <span class="k">object-position</span>: center;    <span class="c">/* střed fotky jako ořez */</span>
+  <span class="k">transition</span>: transform 0.3s ease;
+}
+
+<span class="c">/* Hover efekt — mírné přiblížení */</span>
+.<span class="a">gallery__item</span>:hover img {
+  <span class="k">transform</span>: scale(1.05);
+}
+
+.<span class="a">gallery__item</span> figcaption {
+  <span class="k">padding</span>: 8px 10px;
+  <span class="k">font-size</span>: 0.85rem;
+  <span class="k">color</span>: #666;
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CVIČENÍ -->
+<section class="section" id="cviceni">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Praktická část</div>
+    <h2>Cvičení pro studenty</h2>
+    <p>Dvě samostatné úlohy — první opravuje špatný kód, druhá staví od základů. Čas: 30–40 minut celkem.</p>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="setView('student', this)">👩‍🎓 Student</button>
+    <button class="view-btn" onclick="setView('teacher', this)">👨‍🏫 Učitel</button>
+  </div>
+
+  <div id="teacher-cviceni" style="display:none">
+    <div class="teacher-box">
+      <div class="label">📋 Metodika hodnocení cvičení</div>
+      <p><strong>Cvičení 1 (Záchranná mise):</strong> Cílem není, aby studenti napsali „dokonalý" kód, ale aby si prošli chyby a věděli, <em>proč</em> jsou chybami. Doporučujeme pár minut před zadáním projet seznam problémů nahlas se třídou.</p>
+      <p><strong>Cvičení 2 (Galerie):</strong> Silnější studenti by měli zvládnout obě části. Slabší studenti stačí HTML část s srcset. CSS část galerie je bonusová.</p>
+      <p><strong>Hodnocení:</strong> Spusťte s celou třídou Lighthouse v DevTools po dokončení cvičení — studenti dostanou okamžitou zpětnou vazbu od nástroje, ne jen od učitele.</p>
+      <p><strong>Vzorová řešení</strong> jsou skryta v sekci „Zobrazit řešení" pod každým cvičením — studenti je mohou odhalit sami nebo je lze projít společně po odevzdání.</p>
+    </div>
+  </div>
+
+  <!-- Cvičení 1 -->
+  <div class="exercise mb-32">
+    <div class="exercise-badge">Cvičení 1 — 15 minut</div>
+    <h4>🔧 Záchranná mise: oprav toxický kód</h4>
+    <p>Dostali jste kód hero sekce od kolegy. Kód „funguje", ale je plný problémů, které zpomalují web, poškozují přístupnost a brzdí SEO. Najděte a opravte všechny chyby.</p>
+
+    <div class="code-wrap mb-16">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">HTML — Špatný kód k opravení</span>
+      </div>
+      <pre><span class="c">&lt;!-- TENTO KÓD MÁ 7 CHYB. NAJDI JE VŠECHNY. --&gt;</span>
+
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"hero"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span>
+    <span class="a">src</span>=<span class="v">"hero-photo.jpeg"</span>
+    <span class="a">loading</span>=<span class="v">"lazy"</span>
+    <span class="a">fetchpriority</span>=<span class="v">"high"</span>
+    <span class="a">alt</span>=<span class="v">"image"</span>
+  <span class="t">&gt;</span>
+  <span class="t">&lt;h1&gt;</span>Vítejte na naší stránce<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;/section&gt;</span>
+
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"gallery"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery1.png"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery2.png"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery3.png"</span><span class="t">&gt;</span>
+<span class="t">&lt;/section&gt;</span></pre>
+    </div>
+
+    <p><strong>Najdi a oprav těchto 7 chyb:</strong></p>
+    <ul class="checklist">
+      <li>Chyba 1: Hero obrázek má zakázané kombinované atributy</li>
+      <li>Chyba 2: Formát hero obrázku není optimální (nepoužívá moderní formát)</li>
+      <li>Chyba 3: Alt text hero obrázku je bezcenný</li>
+      <li>Chyba 4: Hero obrázku chybí atributy zabraňující CLS</li>
+      <li>Chyba 5: Galerie nepoužívá líné načítání (přitom je dole na stránce)</li>
+      <li>Chyba 6: Galerie používá nevhodný formát pro fotografie</li>
+      <li>Chyba 7: Obrázkům v galerii chybí atribut přístupnosti</li>
+    </ul>
+
+    <details class="solution">
+      <summary>Zobrazit vzorové řešení</summary>
+      <div class="solution-body">
+        <div class="code-wrap mt-0">
+          <div class="code-header">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <span class="lang">HTML — Opravený kód</span>
+          </div>
+          <pre><span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"hero"</span><span class="t">&gt;</span>
+  <span class="t">&lt;picture&gt;</span>
+    <span class="c">&lt;!-- Oprava 2: Moderní formát AVIF --&gt;</span>
+    <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/avif"</span> <span class="a">srcset</span>=<span class="v">"hero-photo.avif"</span><span class="t">&gt;</span>
+    <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/webp"</span> <span class="a">srcset</span>=<span class="v">"hero-photo.webp"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"hero-photo.jpg"</span>            <span class="c">&lt;!-- JPEG jako fallback --&gt;</span>
+      <span class="c">&lt;!-- Oprava 1: Odstraněno loading="lazy", ponecháno fetchpriority --&gt;</span>
+      <span class="a">fetchpriority</span>=<span class="v">"high"</span>
+      <span class="c">&lt;!-- Oprava 3: Smysluplný alt text --&gt;</span>
+      <span class="a">alt</span>=<span class="v">"Moderní kancelářský prostor s výhledem na město"</span>
+      <span class="c">&lt;!-- Oprava 4: Rozměry zabraňují CLS --&gt;</span>
+      <span class="a">width</span>=<span class="v">"1600"</span> <span class="a">height</span>=<span class="v">"900"</span>
+    <span class="t">&gt;</span>
+  <span class="t">&lt;/picture&gt;</span>
+  <span class="t">&lt;h1&gt;</span>Vítejte na naší stránce<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;/section&gt;</span>
+
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"gallery"</span><span class="t">&gt;</span>
+  <span class="c">&lt;!-- Oprava 5: loading="lazy" pro galerii --&gt;</span>
+  <span class="c">&lt;!-- Oprava 6: Formát WebP místo PNG pro fotografie --&gt;</span>
+  <span class="c">&lt;!-- Oprava 7: alt text na každém obrázku --&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery1.webp"</span> <span class="a">alt</span>=<span class="v">"Popis fotografie 1"</span>
+       <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery2.webp"</span> <span class="a">alt</span>=<span class="v">"Popis fotografie 2"</span>
+       <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery3.webp"</span> <span class="a">alt</span>=<span class="v">"Popis fotografie 3"</span>
+       <span class="a">width</span>=<span class="v">"600"</span> <span class="a">height</span>=<span class="v">"400"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span>
+<span class="t">&lt;/section&gt;</span></pre>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Cvičení 2 -->
+  <div class="exercise mb-32">
+    <div class="exercise-badge">Cvičení 2 — 20 minut</div>
+    <h4>🏗️ Postav to sám: stránka cestovního blogu</h4>
+    <p>Vytvořte část stránky cestovního blogu. Stránka bude mít hero sekci a pod ní tři karty článků s náhledy. Pracujte ve dvojicích.</p>
+
+    <p><strong>Část A — Hero sekce (10 minut):</strong></p>
+    <ol>
+      <li>Vytvořte <code>&lt;section class="hero"&gt;</code> s obrázkem šířky 1600px a výšky 900px.</li>
+      <li>Použijte <code>&lt;picture&gt;</code> s fallbackem AVIF → WebP → JPEG.</li>
+      <li>Napište smysluplný <code>alt</code> text popisující imaginární cestovatelskou fotografii.</li>
+      <li>Přidejte správné atributy pro výkon (bez CLS, správná priorita).</li>
+      <li>V CSS: výška hero sekce 500px, obrázek vyplní plochu bez deformace.</li>
+    </ol>
+
+    <p><strong>Část B — Galerie karet (10 minut):</strong></p>
+    <ol>
+      <li>Vytvořte tři <code>&lt;article class="card"&gt;</code> elementy, každý s obrázkem 800×500 px.</li>
+      <li>Přidejte <code>srcset</code> se třemi velikostmi (400w, 800w, 1200w) a odpovídající <code>sizes</code>.</li>
+      <li>Každý obrázek má jiný <code>alt</code> text (tři různá místa na světě).</li>
+      <li>Přidejte <code>loading="lazy"</code> (galerie je pod hero sekcí).</li>
+      <li>Bonusový úkol: CSS galerie — tři sloupce na desktopu, jeden na mobilu, čtvercové náhledy.</li>
+    </ol>
+
+    <ul class="checklist">
+      <li>Hero má &lt;picture&gt; s AVIF → WebP → JPEG fallbackem</li>
+      <li>Hero &lt;img&gt; má fetchpriority="high" a nemá loading="lazy"</li>
+      <li>Hero &lt;img&gt; má width a height (prevence CLS)</li>
+      <li>Každý &lt;img&gt; má smysluplný alt text (ne "image" nebo prázdný)</li>
+      <li>Obrázky karet mají srcset se třemi verzemi a sizes</li>
+      <li>Obrázky karet mají loading="lazy"</li>
+      <li>Hero CSS: object-fit: cover, výška kontejneru 500px</li>
+      <li>Galerie CSS: grid s aspect-ratio a object-fit: cover (bonus)</li>
+    </ul>
+
+    <details class="solution">
+      <summary>Zobrazit vzorové řešení</summary>
+      <div class="solution-body">
+        <div class="code-wrap mt-0">
+          <div class="code-header">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <span class="lang">HTML — Stránka cestovního blogu</span>
+          </div>
+          <pre><span class="t">&lt;!DOCTYPE html&gt;</span>
+<span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"cs"</span><span class="t">&gt;</span>
+<span class="t">&lt;head&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"viewport"</span> <span class="a">content</span>=<span class="v">"width=device-width, initial-scale=1.0"</span><span class="t">&gt;</span>
+  <span class="t">&lt;title&gt;</span>Cestovní blog<span class="t">&lt;/title&gt;</span>
+  <span class="t">&lt;style&gt;</span>
+    <span class="c">/* Reset */</span>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { display: block; max-width: 100%; }
+
+    <span class="c">/* HERO */</span>
+    .hero {
+      display: grid;
+      height: 500px;
+      overflow: hidden;
+    }
+    .hero > * { grid-area: 1 / 1; }
+    .hero__img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+    }
+    .hero__content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+      background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 50%);
+      color: white;
+    }
+
+    <span class="c">/* GALERIE */</span>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      padding: 32px 16px;
+    }
+    .card { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+    .card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      transition: transform .3s;
+    }
+    .card:hover img { transform: scale(1.04); }
+    .card-body { padding: 14px 16px; }
+  <span class="t">&lt;/style&gt;</span>
+<span class="t">&lt;/head&gt;</span>
+<span class="t">&lt;body&gt;</span>
+
+<span class="c">&lt;!-- HERO --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"hero"</span><span class="t">&gt;</span>
+  <span class="t">&lt;picture&gt;</span>
+    <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/avif"</span> <span class="a">srcset</span>=<span class="v">"hero.avif"</span><span class="t">&gt;</span>
+    <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/webp"</span> <span class="a">srcset</span>=<span class="v">"hero.webp"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">class</span>=<span class="v">"hero__img"</span>
+      <span class="a">src</span>=<span class="v">"hero.jpg"</span>
+      <span class="a">alt</span>=<span class="v">"Západ slunce nad pobřežím Amalfitánské riviéry,
+           výhled na vesničku Positano"</span>
+      <span class="a">width</span>=<span class="v">"1600"</span> <span class="a">height</span>=<span class="v">"900"</span>
+      <span class="a">fetchpriority</span>=<span class="v">"high"</span>
+    <span class="t">&gt;</span>
+  <span class="t">&lt;/picture&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"hero__content"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Svět je velký<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;p&gt;</span>Plánujte svou další cestu<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/section&gt;</span>
+
+<span class="c">&lt;!-- GALERIE KARET --&gt;</span>
+<span class="t">&lt;section</span> <span class="a">class</span>=<span class="v">"gallery"</span><span class="t">&gt;</span>
+
+  <span class="t">&lt;article</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"kyoto-800.jpg"</span>
+      <span class="a">srcset</span>=<span class="v">"kyoto-400.webp 400w, kyoto-800.webp 800w, kyoto-1200.webp 1200w"</span>
+      <span class="a">sizes</span>=<span class="v">"(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"</span>
+      <span class="a">alt</span>=<span class="v">"Bambusový háj Arashiyama v Kjótu za ranní mlhy"</span>
+      <span class="a">width</span>=<span class="v">"800"</span> <span class="a">height</span>=<span class="v">"500"</span>
+      <span class="a">loading</span>=<span class="v">"lazy"</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card-body"</span><span class="t">&gt;</span><span class="t">&lt;h2&gt;</span>Kjóto<span class="t">&lt;/h2&gt;&lt;/div&gt;</span>
+  <span class="t">&lt;/article&gt;</span>
+
+  <span class="t">&lt;article</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"patagonia-800.jpg"</span>
+      <span class="a">srcset</span>=<span class="v">"patagonia-400.webp 400w, patagonia-800.webp 800w, patagonia-1200.webp 1200w"</span>
+      <span class="a">sizes</span>=<span class="v">"(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"</span>
+      <span class="a">alt</span>=<span class="v">"Ledovec Perito Moreno v argentinské Patagonii pod modrou oblohou"</span>
+      <span class="a">width</span>=<span class="v">"800"</span> <span class="a">height</span>=<span class="v">"500"</span>
+      <span class="a">loading</span>=<span class="v">"lazy"</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card-body"</span><span class="t">&gt;</span><span class="t">&lt;h2&gt;</span>Patagonie<span class="t">&lt;/h2&gt;&lt;/div&gt;</span>
+  <span class="t">&lt;/article&gt;</span>
+
+  <span class="t">&lt;article</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;img</span>
+      <span class="a">src</span>=<span class="v">"marrakech-800.jpg"</span>
+      <span class="a">srcset</span>=<span class="v">"marrakech-400.webp 400w, marrakech-800.webp 800w, marrakech-1200.webp 1200w"</span>
+      <span class="a">sizes</span>=<span class="v">"(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"</span>
+      <span class="a">alt</span>=<span class="v">"Barevné koření na tržišti Jemaa el-Fna v Marrákeši"</span>
+      <span class="a">width</span>=<span class="v">"800"</span> <span class="a">height</span>=<span class="v">"500"</span>
+      <span class="a">loading</span>=<span class="v">"lazy"</span>
+    <span class="t">&gt;</span>
+    <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card-body"</span><span class="t">&gt;</span><span class="t">&lt;h2&gt;</span>Marrákeš<span class="t">&lt;/h2&gt;&lt;/div&gt;</span>
+  <span class="t">&lt;/article&gt;</span>
+
+<span class="t">&lt;/section&gt;</span>
+<span class="t">&lt;/body&gt;</span>
+<span class="t">&lt;/html&gt;</span></pre>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TAHÁK -->
+<section class="section" id="tahak">
+  <div class="section-header">
+    <div class="section-tag"><span class="dot"></span>Přehled</div>
+    <h2>Tahák — Best Practices 2025</h2>
+    <p>Jedna stránka s nejdůležitějšími pravidly. Vytiskněte si ji nebo si ji přidejte do záložek.</p>
+  </div>
+
+  <div class="cheatsheet-grid">
+    <div class="cheat-card green">
+      <h4>✓ Vždy dělej</h4>
+      <ul>
+        <li>Piš <code>alt</code> atribut na každý <code>&lt;img&gt;</code></li>
+        <li>Uváděj <code>width</code> a <code>height</code> (prevence CLS)</li>
+        <li>Používej WebP nebo AVIF pro fotografie</li>
+        <li>Přidej <code>loading="lazy"</code> pro obrázky pod čarou</li>
+        <li>Hero obrázek: <code>fetchpriority="high"</code></li>
+        <li>Použij <code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code> pro obrázky s popiskem</li>
+        <li>Poskytni srcset alespoň ve 3 velikostech</li>
+      </ul>
+    </div>
+    <div class="cheat-card red">
+      <h4>✕ Nikdy nedělej</h4>
+      <ul>
+        <li>Kombinovat <code>loading="lazy"</code> + <code>fetchpriority="high"</code></li>
+        <li>Vkládat hero fotografie přes <code>background-image</code></li>
+        <li>Mít <code>alt=""</code> (prázdný) u důležitých obrázků</li>
+        <li>Zapomenout na <code>src</code> fallback v <code>&lt;picture&gt;</code></li>
+        <li>Dávat CSS styly na <code>&lt;picture&gt;</code> místo <code>&lt;img&gt;</code></li>
+        <li>Používat PNG pro fotografie (zbytečně velké)</li>
+        <li>Zapisovat <code>srcset</code> bez atributu <code>sizes</code></li>
+      </ul>
+    </div>
+    <div class="cheat-card blue">
+      <h4>→ Formáty — kdy co</h4>
+      <ul>
+        <li>Logo, ikona, ilustrace → <code>SVG</code></li>
+        <li>Fotografie → <code>AVIF</code> (s fallback WebP/JPEG)</li>
+        <li>Fotografie, starší projekt → <code>WebP</code></li>
+        <li>Screenshot s textem → <code>PNG</code></li>
+        <li>Animace → <code>WebP animovaný</code> nebo video</li>
+        <li>Loga s průhledností → <code>SVG</code> nebo <code>WebP</code></li>
+      </ul>
+    </div>
+    <div class="cheat-card gold">
+      <h4>⚠ Záludnosti</h4>
+      <ul>
+        <li><code>alt=""</code> ≠ chybějící <code>alt</code> (různý dopad)</li>
+        <li>Pořadí <code>&lt;source&gt;</code> v <code>&lt;picture&gt;</code> je důležité</li>
+        <li><code>srcset</code> bez <code>sizes</code> → prohlížeč si vždy stáhne velký</li>
+        <li><code>w</code> v <code>srcset</code> = šířka SOUBORU, ne kontejneru</li>
+        <li>CSS styly patří na <code>&lt;img&gt;</code>, nikoli na <code>&lt;picture&gt;</code></li>
+        <li>IE nepodporuje <code>&lt;picture&gt;</code> — vždy mít <code>&lt;img&gt;</code> fallback</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="block">
+    <div class="block-head">
+      <div class="block-num">📋</div>
+      <div class="block-title">
+        <h3>Rychlé vzory kódu</h3>
+        <span class="time">Kopírovat a přizpůsobit</span>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">VZOR A — Hero obrázek (nejdůležitější prvek stránky)</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;picture&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/avif"</span> <span class="a">srcset</span>=<span class="v">"hero.avif"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">type</span>=<span class="v">"image/webp"</span> <span class="a">srcset</span>=<span class="v">"hero.webp"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"hero.jpg"</span> <span class="a">alt</span>=<span class="v">"[popis]"</span>
+       <span class="a">width</span>=<span class="v">"1600"</span> <span class="a">height</span>=<span class="v">"900"</span>
+       <span class="a">fetchpriority</span>=<span class="v">"high"</span><span class="t">&gt;</span>
+<span class="t">&lt;/picture&gt;</span></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">VZOR B — Obrázek v článku s popiskem</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;figure&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"foto.webp"</span> <span class="a">alt</span>=<span class="v">"[podrobný popis obsahu obrázku]"</span>
+       <span class="a">width</span>=<span class="v">"800"</span> <span class="a">height</span>=<span class="v">"500"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span>
+  <span class="t">&lt;figcaption&gt;</span>Stručný popis viditelný pro čtenáře. Zdroj: Autor.<span class="t">&lt;/figcaption&gt;</span>
+<span class="t">&lt;/figure&gt;</span></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">VZOR C — Responzivní obrázek v mřížce (srcset + sizes)</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"foto-800.jpg"</span>
+  <span class="a">srcset</span>=<span class="v">"foto-400.webp  400w,
+          foto-800.webp  800w,
+          foto-1200.webp 1200w"</span>
+  <span class="a">sizes</span>=<span class="v">"(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"</span>
+  <span class="a">alt</span>=<span class="v">"[popis]"</span>
+  <span class="a">width</span>=<span class="v">"1200"</span> <span class="a">height</span>=<span class="v">"800"</span>
+  <span class="a">loading</span>=<span class="v">"lazy"</span>
+<span class="t">&gt;</span></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">VZOR D — Art Direction: jiný ořez pro mobil a desktop</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="t">&lt;picture&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">media</span>=<span class="v">"(min-width: 1024px)"</span> <span class="a">srcset</span>=<span class="v">"foto-desktop.webp"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">media</span>=<span class="v">"(min-width: 600px)"</span>  <span class="a">srcset</span>=<span class="v">"foto-tablet.webp"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"foto-mobil.webp"</span> <span class="a">alt</span>=<span class="v">"[popis]"</span>
+       <span class="a">width</span>=<span class="v">"400"</span> <span class="a">height</span>=<span class="v">"600"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span>
+<span class="t">&lt;/picture&gt;</span></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="lang">VZOR E — CSS pro galerii s pevným poměrem stran</span>
+        <button class="copy-btn" onclick="copyCode(this)">Kopírovat</button>
+      </div>
+      <pre><span class="c">/* Galerie — responzivní mřížka čtvercových náhledů */</span>
+.<span class="a">gallery</span> {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.<span class="a">gallery</span> img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;    <span class="c">/* čtverec */</span>
+  object-fit: cover;       <span class="c">/* ořízne, nedeformuje */</span>
+  object-position: center;
+}</pre>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Výukový materiál pro seminář z informatiky · Gymnázium · RVP G 2025</p>
+  <p style="margin-top:6px; font-size:0.75rem; opacity:0.6">Obrázky na moderním webu: responzivita, přístupnost, výkon</p>
+</footer>
+
+<script>
+// ─── NAVIGATION ──────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  const btn = [...document.querySelectorAll('.nav-btn')]
+    .find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${id}'`));
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── VIEW TOGGLE (Student / Teacher) ────────────────────
+function setView(view, clickedBtn) {
+  // toggle buttons in the clicked section
+  const section = clickedBtn.closest('.section');
+  section.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+
+  // Find and toggle teacher box in this section
+  const sectionId = section.id;
+  const teacherEl = document.getElementById('teacher-' + sectionId);
+  if (teacherEl) {
+    teacherEl.style.display = (view === 'teacher') ? 'block' : 'none';
+  }
+}
+
+// ─── COPY CODE ───────────────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Zkopírováno ✓';
+    btn.style.color = '#98d090';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  }).catch(() => {
+    btn.textContent = 'Chyba';
+    setTimeout(() => { btn.textContent = 'Kopírovat'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>

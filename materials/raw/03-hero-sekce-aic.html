@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tvorba moderních Hero sekcí — Výukový materiál pro SŠ</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   CSS PROMĚNNÉ — DESIGN SYSTÉM
+   ═══════════════════════════════════════════ */
+:root {
+  --clr-bg: #0a0a0f;
+  --clr-surface: #12121a;
+  --clr-surface-2: #1a1a26;
+  --clr-surface-3: #22222f;
+  --clr-border: #2a2a3a;
+  --clr-text: #e8e8ed;
+  --clr-text-muted: #8888a0;
+  --clr-text-dim: #5a5a72;
+  --clr-accent: #6c5ce7;
+  --clr-accent-light: #a29bfe;
+  --clr-accent-glow: rgba(108, 92, 231, 0.15);
+  --clr-green: #00cec9;
+  --clr-green-dim: rgba(0, 206, 201, 0.12);
+  --clr-orange: #f0932b;
+  --clr-orange-dim: rgba(240, 147, 43, 0.12);
+  --clr-red: #e17055;
+  --clr-red-dim: rgba(225, 112, 85, 0.12);
+
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+  --font-display: 'Playfair Display', serif;
+
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --shadow-glow: 0 0 60px rgba(108, 92, 231, 0.08);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--clr-accent);
+  color: #fff;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--clr-accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+.page-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ═══════════════════════════════════════════
+   COVER / HERO materiálu
+   ═══════════════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 30% 20%, rgba(108,92,231,0.12), transparent),
+    radial-gradient(ellipse 500px 350px at 70% 70%, rgba(0,206,201,0.08), transparent);
+  pointer-events: none;
+}
+
+.cover-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem 1rem;
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border);
+  border-radius: 100px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--clr-accent-light);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+.cover-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--clr-green);
+  box-shadow: 0 0 8px var(--clr-green);
+}
+
+.cover h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw + 1rem, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.cover h1 span {
+  background: linear-gradient(135deg, var(--clr-accent-light), var(--clr-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cover-sub {
+  font-size: 1.15rem;
+  color: var(--clr-text-muted);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cover-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  font-size: .85rem;
+  color: var(--clr-text-dim);
+  position: relative;
+  z-index: 1;
+}
+.cover-meta strong { color: var(--clr-text-muted); }
+
+/* ═══════════════════════════════════════════
+   TABLE OF CONTENTS
+   ═══════════════════════════════════════════ */
+.toc {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  margin: 0 auto 4rem;
+  max-width: 700px;
+}
+.toc h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--clr-text-muted);
+  margin-bottom: 1.2rem;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc-counter;
+}
+.toc ol li {
+  counter-increment: toc-counter;
+  margin-bottom: .6rem;
+}
+.toc ol li a {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  padding: .4rem 0;
+  color: var(--clr-text);
+  font-weight: 500;
+  transition: color .2s;
+}
+.toc ol li a::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  font-family: var(--font-code);
+  font-size: .75rem;
+  color: var(--clr-accent);
+  min-width: 1.5rem;
+}
+.toc ol li a:hover {
+  color: var(--clr-accent-light);
+  text-decoration: none;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADINGS
+   ═══════════════════════════════════════════ */
+.section {
+  margin-bottom: 5rem;
+  scroll-margin-top: 2rem;
+}
+
+.section-number {
+  font-family: var(--font-code);
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--clr-accent);
+  letter-spacing: .05em;
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.section > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: .75rem;
+}
+
+.section > .section-lead {
+  font-size: 1.05rem;
+  color: var(--clr-text-muted);
+  max-width: 680px;
+  margin-bottom: 2.5rem;
+}
+
+h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  color: var(--clr-text);
+}
+
+h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 2rem 0 .75rem;
+  color: var(--clr-accent-light);
+}
+
+p { margin-bottom: 1rem; }
+p + p { margin-top: 0; }
+
+/* ═══════════════════════════════════════════
+   CARDS & BOXES
+   ═══════════════════════════════════════════ */
+.card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card.accent {
+  border-color: var(--clr-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.card-sm {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+.card-sm h4 {
+  margin: 0 0 .6rem;
+  font-size: 1rem;
+}
+.card-sm p {
+  font-size: .92rem;
+  color: var(--clr-text-muted);
+  margin: 0;
+}
+
+/* Icon pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .7rem;
+  border-radius: 100px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.pill.green  { background: var(--clr-green-dim); color: var(--clr-green); }
+.pill.orange { background: var(--clr-orange-dim); color: var(--clr-orange); }
+.pill.red    { background: var(--clr-red-dim); color: var(--clr-red); }
+
+/* Callout */
+.callout {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-md);
+  margin: 1.5rem 0;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+.callout.tip   { background: var(--clr-green-dim); border-left: 3px solid var(--clr-green); }
+.callout.warn  { background: var(--clr-orange-dim); border-left: 3px solid var(--clr-orange); }
+.callout.idea  { background: var(--clr-accent-glow); border-left: 3px solid var(--clr-accent); }
+.callout-icon  { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+
+/* Timeline / Steps */
+.steps {
+  position: relative;
+  padding-left: 2.5rem;
+  margin: 1.5rem 0 2rem;
+}
+.steps::before {
+  content: '';
+  position: absolute;
+  left: .75rem;
+  top: .5rem;
+  bottom: .5rem;
+  width: 2px;
+  background: var(--clr-border);
+}
+.step {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.step::before {
+  content: '';
+  position: absolute;
+  left: -1.85rem;
+  top: .55rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+  border: 2px solid var(--clr-bg);
+}
+.step-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: .3rem;
+}
+.step p {
+  color: var(--clr-text-muted);
+  font-size: .92rem;
+  margin: 0;
+}
+
+/* Table */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--clr-border);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+thead th {
+  background: var(--clr-surface-2);
+  padding: .8rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--clr-text-muted);
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  border-bottom: 1px solid var(--clr-border);
+}
+tbody td {
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--clr-border);
+  vertical-align: top;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--clr-surface); }
+
+/* ═══════════════════════════════════════════
+   CODE BLOCKS
+   ═══════════════════════════════════════════ */
+.code-block {
+  position: relative;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem 1rem;
+  background: var(--clr-surface-3);
+  border-bottom: 1px solid var(--clr-border);
+  font-family: var(--font-code);
+  font-size: .75rem;
+  color: var(--clr-text-muted);
+}
+.code-header .lang {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--clr-accent-light);
+}
+.code-block pre {
+  background: var(--clr-surface);
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-code);
+  font-size: .82rem;
+  line-height: 1.65;
+  color: var(--clr-text);
+  tab-size: 2;
+}
+
+/* Syntax coloring */
+.code-block .cm  { color: #5a5a72; font-style: italic; }
+.code-block .kw  { color: #c792ea; }
+.code-block .tg  { color: #e17055; }
+.code-block .at  { color: #6c5ce7; }
+.code-block .vl  { color: #00cec9; }
+.code-block .st  { color: #ffeaa7; }
+.code-block .fn  { color: #74b9ff; }
+.code-block .nb  { color: #fab1a0; }
+.code-block .pr  { color: #a29bfe; }
+
+code {
+  font-family: var(--font-code);
+  font-size: .85em;
+  background: var(--clr-surface-2);
+  padding: .15em .4em;
+  border-radius: 4px;
+  color: var(--clr-accent-light);
+}
+
+/* ═══════════════════════════════════════════
+   LIVE DEMO FRAMES
+   ═══════════════════════════════════════════ */
+.demo-frame {
+  margin: 2rem 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+.demo-label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1rem;
+  background: var(--clr-surface-3);
+  border-bottom: 1px solid var(--clr-border);
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--clr-green);
+}
+.demo-label::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--clr-green);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+.demo-content {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE DIAGRAM STYLES
+   ═══════════════════════════════════════════ */
+.diagram-box {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+/* Glossary term definition */
+.term-def {
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-accent);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin: .75rem 0 1rem;
+  font-size: .92rem;
+  line-height: 1.6;
+}
+.term-def strong {
+  color: var(--clr-accent-light);
+}
+
+/* Explanation annotation */
+.explain {
+  background: var(--clr-surface-2);
+  border-left: 3px solid var(--clr-accent);
+  padding: 1rem 1.25rem;
+  margin: .5rem 0 1.5rem;
+  font-size: .9rem;
+  color: var(--clr-text-muted);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.explain strong { color: var(--clr-text); }
+
+/* ═══════════════════════════════════════════
+   TOGGLE SWITCH for demos
+   ═══════════════════════════════════════════ */
+.toggle-bar {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+  width: fit-content;
+  margin: 1rem 0;
+}
+.toggle-btn {
+  padding: .5rem 1.2rem;
+  background: var(--clr-surface-2);
+  color: var(--clr-text-muted);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 600;
+  transition: background .2s, color .2s;
+}
+.toggle-btn.active {
+  background: var(--clr-accent);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.material-footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  margin-top: 4rem;
+  border-top: 1px solid var(--clr-border);
+  color: var(--clr-text-dim);
+  font-size: .85rem;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .page-wrapper { padding: 0 1rem; }
+  .card { padding: 1.25rem; }
+  .toc { padding: 1.5rem; }
+  .code-block pre { padding: 1rem; font-size: .78rem; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; color: #111; }
+  .cover { min-height: auto; padding: 2rem 0; }
+  .demo-content { max-height: 400px; overflow: hidden; }
+  .code-block pre { white-space: pre-wrap; word-break: break-all; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════
+     TITULNÍ STRANA
+     ════════════════════════════════════════════════════ -->
+<header class="cover">
+  <div class="cover-badge">Výukový materiál 2025/26</div>
+  <h1>Tvorba moderních<br><span>Hero sekcí</span></h1>
+  <p class="cover-sub">Kompletní metodický a praktický průvodce pro učitele střední odborné školy. Od teorie UI/UX přes sémantické HTML5 až po pixel-perfect CSS — vše v jedné 90minutové lekci.</p>
+  <div class="cover-meta">
+    <span>⏱️ <strong>90 minut</strong></span>
+    <span>🎯 <strong>HTML + CSS</strong></span>
+    <span>📐 <strong>Responzivní design</strong></span>
+    <span>🧑‍🎓 <strong>3.–4. ročník SŠ</strong></span>
+  </div>
+</header>
+
+<main class="page-wrapper">
+
+<!-- ════════════════════════════════════════════════════
+     OBSAH LEKCE
+     ════════════════════════════════════════════════════ -->
+<nav class="toc">
+  <h2>Obsah lekce</h2>
+  <ol>
+    <li><a href="#s0">Slovníček klíčových pojmů</a></li>
+    <li><a href="#s1">Metodický list pro učitele</a></li>
+    <li><a href="#s2">Teoretický blok — Moderní UI/UX trendy</a></li>
+    <li><a href="#s3">Praktická část — Kódovací tutoriál (Split-Screen)</a></li>
+    <li><a href="#s3b">Responzivní přeuspořádání — <code>order</code> a <code>grid-template-areas</code></a></li>
+    <li><a href="#s3c">Tutoriál — Glassmorphism Hero krok za krokem</a></li>
+    <li><a href="#s4">Aktivita pro studenty (20 min)</a></li>
+    <li><a href="#s5">Reálný přesah — A11y, výkon a měření LCP v Lighthouse</a></li>
+    <li><a href="#full-code">Kompletní kód — vše v jednom</a></li>
+  </ol>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     0. SLOVNÍČEK POJMŮ
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s0">
+  <span class="section-number">00</span>
+  <h2>Slovníček klíčových pojmů</h2>
+  <p class="section-lead">Než začneme, ujistěte se, že všichni rozumí základním termínům. Tuto sekci můžete promítnout na začátku hodiny nebo vytisknout jako handout.</p>
+
+  <div class="term-def">
+    <strong>Hero sekce</strong> — První velký vizuální blok, který návštěvník vidí po načtení webu (tzv. „above the fold" — nad záhybem). Je to digitální ekvivalent výlohy obchodu nebo filmového plakátu. Typicky zabírá celou výšku obrazovky (<code>100svh</code> — viz pojem „Viewport jednotky" níže) a obsahuje nadpis, podnadpis, obrázek/video a tlačítko.
+  </div>
+
+  <div class="term-def">
+    <strong>CTA (Call to Action)</strong> — doslova „výzva k akci". Je to tlačítko nebo odkaz, který návštěvníkovi jasně říká, co má udělat dál. Příklady: „Začít zdarma", „Koupit nyní", „Zaregistrovat se". Dobré CTA je krátké (2–4 slova), konkrétní (ne „Klikněte zde") a vizuálně výrazné (kontrastní barva, dostatečná velikost). Na Hero sekci typicky najdeme jedno primární CTA (plná barva) a jedno sekundární (pouze obrys — aby neodvádělo pozornost od hlavního).
+  </div>
+
+  <div class="term-def">
+    <strong>A11y (Accessibility / Přístupnost)</strong> — Zkratka vznikla z anglického „a-<em>11 písmen</em>-y" (accessibilit<strong>y</strong>). Znamená, že web mohou používat všichni lidé — včetně nevidomých (používají čtečky obrazovky), slabozrakých (potřebují dostatečný kontrast), lidí s motorickým postižením (ovládají web klávesnicí) i lidí s kognitivním handicapem (potřebují jasnou strukturu). Klíčový standard je <strong>WCAG 2.1</strong> — sada pravidel, která definují minimální kontrastní poměry (4.5:1 pro běžný text), povinnost alternativních textů pro obrázky a další požadavky.
+  </div>
+
+  <div class="term-def">
+    <strong>LCP (Largest Contentful Paint)</strong> — Metrika z rodiny Core Web Vitals od Google. Měří, za jak dlouho se vykreslí největší viditelný prvek na stránce (u Hero sekce typicky obrázek nebo velký nadpis). Ideální hodnota je <strong>pod 2,5 sekundy</strong>. Google ji používá jako jeden z faktorů pro řazení výsledků vyhledávání. Měří se v nástroji Lighthouse (viz <a href="#s5">sekce 07 — měření LCP</a>).
+  </div>
+
+  <div class="term-def">
+    <strong>Sémantické HTML</strong> — Používání HTML tagů podle jejich významu, ne jen vzhledu. Příklad: <code>&lt;header&gt;</code> říká „toto je hlavička" (sémantické), zatímco <code>&lt;div&gt;</code> říká jen „toto je krabice" (nesémantické). Sémantika pomáhá: vyhledávačům (SEO), čtečkám obrazovky (A11y) a dalším vývojářům (čitelnost kódu).
+  </div>
+
+  <div class="term-def">
+    <strong>CSS proměnné (Custom Properties)</strong> — Hodnoty, které definujeme jednou a používáme opakovaně. Syntaxe: <code>--nazev: hodnota;</code> v definici, <code>var(--nazev)</code> při použití. Výhoda: když změníte barvu v proměnné, změní se všude najednou.
+  </div>
+
+  <h3>clamp() — podrobné vysvětlení s diagramem</h3>
+
+  <div class="term-def">
+    <strong>clamp(minimum, ideál, maximum)</strong> — CSS funkce, která říká: „Použij <em>ideální</em> hodnotu, ale nikdy nejdi pod <em>minimum</em> a nikdy nepřekroč <em>maximum</em>." Je to jako termostat: nastavíte rozsah (18–24 °C) a systém se snaží udržet ideální teplotu, ale nikdy nepřekročí limity.
+  </div>
+
+  <p>Podívejme se na konkrétní příklad <code>font-size: clamp(2rem, 5vw + 1rem, 4rem)</code>:</p>
+
+  <!-- INTERAKTIVNÍ DIAGRAM: clamp() -->
+  <div class="diagram-box">
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:700px; display:block; margin:0 auto;">
+      <!-- Axes -->
+      <line x1="80" y1="220" x2="660" y2="220" stroke="#2a2a3a" stroke-width="2"/>
+      <line x1="80" y1="220" x2="80" y2="30" stroke="#2a2a3a" stroke-width="2"/>
+      <!-- X axis label -->
+      <text x="370" y="260" fill="#8888a0" text-anchor="middle" font-family="Inter, sans-serif" font-size="13">Šířka obrazovky (px)</text>
+      <!-- Y axis label -->
+      <text x="30" y="125" fill="#8888a0" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" transform="rotate(-90, 30, 125)">Velikost písma</text>
+
+      <!-- Zones -->
+      <!-- MIN zone -->
+      <rect x="80" y="30" width="150" height="190" fill="rgba(225,112,85,0.08)" rx="4"/>
+      <text x="155" y="55" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600">MINIMUM</text>
+      <text x="155" y="72" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="11">2rem (32px)</text>
+
+      <!-- IDEAL zone -->
+      <rect x="230" y="30" width="250" height="190" fill="rgba(108,92,231,0.08)" rx="4"/>
+      <text x="355" y="55" fill="#a29bfe" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600">IDEÁLNÍ ZÓNA</text>
+      <text x="355" y="72" fill="#a29bfe" text-anchor="middle" font-family="Inter, sans-serif" font-size="11">5vw + 1rem (roste plynule)</text>
+
+      <!-- MAX zone -->
+      <rect x="480" y="30" width="180" height="190" fill="rgba(225,112,85,0.08)" rx="4"/>
+      <text x="570" y="55" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600">MAXIMUM</text>
+      <text x="570" y="72" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="11">4rem (64px)</text>
+
+      <!-- The clamp line -->
+      <!-- Flat min -->
+      <line x1="80" y1="170" x2="230" y2="170" stroke="#e17055" stroke-width="3"/>
+      <!-- Rising ideal -->
+      <line x1="230" y1="170" x2="480" y2="100" stroke="#6c5ce7" stroke-width="3"/>
+      <!-- Flat max -->
+      <line x1="480" y1="100" x2="660" y2="100" stroke="#e17055" stroke-width="3"/>
+
+      <!-- Breakpoints -->
+      <circle cx="230" cy="170" r="5" fill="#6c5ce7"/>
+      <circle cx="480" cy="100" r="5" fill="#6c5ce7"/>
+
+      <!-- X axis ticks -->
+      <text x="80" y="240" fill="#5a5a72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">320px</text>
+      <text x="230" y="240" fill="#5a5a72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">~480px</text>
+      <text x="480" y="240" fill="#5a5a72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">~960px</text>
+      <text x="660" y="240" fill="#5a5a72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">1920px</text>
+
+      <!-- Y axis ticks -->
+      <text x="70" y="174" fill="#5a5a72" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10">2rem</text>
+      <text x="70" y="104" fill="#5a5a72" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10">4rem</text>
+
+      <!-- Annotation arrows -->
+      <text x="155" y="195" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Na mobilu: fixní 32px</text>
+      <text x="355" y="148" fill="#a29bfe" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Tablety: plynule roste</text>
+      <text x="570" y="128" fill="#e17055" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Desktop: fixní 64px</text>
+    </svg>
+  </div>
+
+  <div class="explain">
+    <strong>Jak to číst:</strong> Na úzkém mobilu (320px) bude písmo vždy minimálně 2rem (32px) — nebude se dále zmenšovat. Jak se obrazovka rozšiřuje (tablety), písmo plynule roste podle vzorce <code>5vw + 1rem</code>. Na velkém desktopu (960px+) se zastaví na maximu 4rem (64px) a dál už neporoste. Tím jedním řádkem CSS nahradíte 3–4 media queries!
+  </div>
+
+  <div class="term-def">
+    <strong>Viewport jednotky (vw, vh, svh)</strong> — <code>1vw</code> = 1 % šířky okna prohlížeče. <code>1vh</code> = 1 % výšky okna. <code>svh</code> (Small Viewport Height) = výška obrazovky, která počítá s tím, že na mobilu je zobrazený adresní řádek prohlížeče. Pokud byste použili <code>100vh</code>, na mobilu by obsah přetékal pod adresní řádek. <code>100svh</code> tento problém řeší.
+  </div>
+
+  <div class="term-def">
+    <strong>object-fit: cover</strong> — CSS vlastnost pro obrázky a videa. Funguje jako rámeček na fotku: obrázek se ořízne tak, aby vyplnil celý prostor kontejneru bez deformace (žádné „roztažení"). Alternativa <code>contain</code> místo toho zmenší obrázek, aby se celý vešel — ale vzniknou prázdné pruhy po stranách.
+  </div>
+
+  <!-- DIAGRAM: object-fit cover vs contain -->
+  <div class="diagram-box">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; text-align:center;">
+      <div>
+        <div style="width:180px; height:120px; margin:0 auto .8rem; border:2px dashed var(--clr-accent); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;">
+          <div style="width:250px; height:120px; background:linear-gradient(135deg, #6c5ce7, #00cec9); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:.75rem;">OBRÁZEK (vyplní vše)</div>
+        </div>
+        <div style="font-size:.85rem; color:var(--clr-green); font-weight:600;">object-fit: cover</div>
+        <div style="font-size:.78rem; color:var(--clr-text-muted); margin-top:.3rem;">Vyplní celý rámeček, ořízne přebytek</div>
+      </div>
+      <div>
+        <div style="width:180px; height:120px; margin:0 auto .8rem; border:2px dashed var(--clr-orange); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--clr-surface-3);">
+          <div style="width:150px; height:90px; background:linear-gradient(135deg, #f0932b, #e17055); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:.75rem;">OBRÁZEK (celý)</div>
+        </div>
+        <div style="font-size:.85rem; color:var(--clr-orange); font-weight:600;">object-fit: contain</div>
+        <div style="font-size:.78rem; color:var(--clr-text-muted); margin-top:.3rem;">Zobrazí celý obrázek, vzniknou pruhy</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="term-def">
+    <strong>Glassmorphism</strong> — Designový trend, kde prvky vypadají jako matné sklo — jsou poloprůhledné a rozmazávají pozadí za sebou. V CSS se dosahuje pomocí <code>backdrop-filter: blur()</code> + poloprůhledné pozadí (<code>rgba</code>) + jemný okraj. Populární u Apple, Linear a dalších moderních brandů. Podrobný tutoriál viz <a href="#s3c">sekce 05</a>.
+  </div>
+
+  <div class="term-def">
+    <strong>Overlay (překryv)</strong> — Poloprůhledná vrstva (obvykle tmavá nebo gradientová), položená mezi obrázek na pozadí a text. Účel: zajistit, že text bude vždy čitelný bez ohledu na obsah fotografie. Bez overlay hrozí, že bílý text na světlé části fotky zmizí.
+  </div>
+
+  <div class="term-def">
+    <strong>BEM metodologie</strong> — Způsob pojmenovávání CSS tříd: <code>.blok__element--modifikátor</code>. Příklad: <code>.hero__title</code> = element „title" uvnitř bloku „hero". <code>.btn--primary</code> = modifikátor „primary" tlačítka. Výhoda: kód je čitelný a předvídatelný.
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     1. METODICKÝ LIST PRO UČITELE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <span class="section-number">01</span>
+  <h2>Metodický list pro učitele</h2>
+  <p class="section-lead">Vše, co potřebujete vědět, než vstoupíte do třídy. Cíle, časový plán, didaktický háček a vizuální příměry pro vysvětlení složitých konceptů.</p>
+
+  <h3>🎯 Cíle lekce</h3>
+  <p>Na konci 90minutové lekce student:</p>
+
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>✅ Rozumí sémantice HTML5</h4>
+      <p>Dokáže správně použít <code>&lt;header&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;nav&gt;</code> a vysvětlí, proč je sémantika klíčová pro SEO a přístupnost.</p>
+    </div>
+    <div class="card-sm">
+      <h4>✅ Ovládá CSS layout</h4>
+      <p>Postaví responzivní layout pomocí CSS Grid nebo Flexboxu. Umí vytvořit vrstvení prvků přes sebe bez <code>position: absolute</code>.</p>
+    </div>
+    <div class="card-sm">
+      <h4>✅ Zvládá responzivitu</h4>
+      <p>Používá <code>clamp()</code> pro fluidní typografii, <code>object-fit: cover</code> pro obrázky a umí napsat jednoduchý media query.</p>
+    </div>
+    <div class="card-sm">
+      <h4>✅ Navrhne vizuální hierarchii</h4>
+      <p>Pochopí princip kontrastu, CTA tlačítka a dokáže vysvětlit, proč Hero sekce funguje jako „filmový plakát".</p>
+    </div>
+  </div>
+
+  <h3>⏱️ Časový plán lekce (90 min)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Čas</th><th>Blok</th><th>Činnost</th><th>Forma</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0–10 min</td><td><strong>Háček + Úvod</strong></td><td>Srovnání „před a po" u reálných webů, slovníček pojmů</td><td>Frontálně</td></tr>
+        <tr><td>10–25 min</td><td><strong>Teorie UI/UX</strong></td><td>3 typy Hero sekcí, anatomie, vizuální hierarchie</td><td>Prezentace + rozbor</td></tr>
+        <tr><td>25–35 min</td><td><strong>HTML struktura</strong></td><td>Společné kódování sémantického základu</td><td>Live-coding</td></tr>
+        <tr><td>35–55 min</td><td><strong>CSS styling</strong></td><td>Grid canvas, vrstvení, typografie, barvy</td><td>Live-coding</td></tr>
+        <tr><td>55–60 min</td><td><strong>Responzivita</strong></td><td>clamp(), media queries, přeuspořádání prvků, object-fit</td><td>Live-coding</td></tr>
+        <tr><td>60–80 min</td><td><strong>Studentská aktivita</strong></td><td>Samostatná úprava kódu — hover efekty, barvy, Glassmorphism</td><td>Individuálně / dvojice</td></tr>
+        <tr><td>80–90 min</td><td><strong>Reflexe + Lighthouse</strong></td><td>Měření LCP, přístupnost, diskuze nad výsledky</td><td>Společně</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🪝 Didaktický „háček" — Prvních 5 minut</h3>
+
+  <div class="card accent">
+    <h4 style="margin-top:0;">Příměr: Hero sekce = filmový plakát</h4>
+    <p>Začněte lekci otázkou: <em>„Když jdete kolem kina, co vás přesvědčí se zastavit? Plakát. Musí tam být hlavní hrdina (obrázek), název filmu (nadpis) a jasné pozvání ‚kup si lístek' (tlačítko). Hero sekce funguje úplně stejně."</em></p>
+    <p style="margin-bottom:0;">Promítněte dva weby vedle sebe — jeden se zastaralou Hero sekcí (malý obrázek, hodně textu, nejasné CTA) a jeden moderní (Stripe, Apple, Shopify). Ptejte se studentů: <strong>„Na kterém webu byste strávili 10 sekund? Proč?"</strong></p>
+  </div>
+
+  <h3>🌍 Vizuální příměry pro složité koncepty</h3>
+
+  <!-- DIAGRAM: z-index as stacked layers -->
+  <h4>🍰 z-index = Vrstvy dortu</h4>
+  <div class="diagram-box">
+    <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:600px; display:block; margin:0 auto;">
+      <!-- Layer 1 - Background image -->
+      <rect x="80" y="140" width="240" height="60" rx="8" fill="#1a1a26" stroke="#e17055" stroke-width="2"/>
+      <text x="200" y="175" fill="#e17055" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">z-index: 1  →  Obrázek</text>
+
+      <!-- Layer 2 - Overlay -->
+      <rect x="130" y="90" width="240" height="60" rx="8" fill="#1a1a26" stroke="#f0932b" stroke-width="2"/>
+      <text x="250" y="125" fill="#f0932b" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">z-index: 2  →  Overlay</text>
+
+      <!-- Layer 3 - Content -->
+      <rect x="180" y="40" width="240" height="60" rx="8" fill="#1a1a26" stroke="#6c5ce7" stroke-width="2"/>
+      <text x="300" y="75" fill="#a29bfe" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">z-index: 3  →  Text + CTA</text>
+
+      <!-- Arrow -->
+      <text x="480" y="80" fill="#5a5a72" font-family="Inter, sans-serif" font-size="11">← nahoře</text>
+      <text x="480" y="180" fill="#5a5a72" font-family="Inter, sans-serif" font-size="11">← dole</text>
+      <line x1="490" y1="90" x2="490" y2="170" stroke="#5a5a72" stroke-width="1" stroke-dasharray="4"/>
+      <polygon points="490,170 486,160 494,160" fill="#5a5a72"/>
+    </svg>
+  </div>
+  <div class="explain">
+    Vyšší <code>z-index</code> = prvek je blíže k uživateli. V Hero sekci typicky: obrázek na pozadí (1), tmavý překryv pro čitelnost (2), samotný text a tlačítka navrchu (3).
+  </div>
+
+  <h4>📏 Flexbox = Knihy na poličce</h4>
+  <!-- INTERACTIVE: Flexbox demo -->
+  <div class="diagram-box">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+      <div>
+        <div style="font-size:.78rem; color:var(--clr-green); font-weight:600; margin-bottom:.5rem;">justify-content: center</div>
+        <div style="display:flex; justify-content:center; gap:.5rem; padding:1rem; background:var(--clr-surface-3); border-radius:8px; min-height:60px; border:1px dashed var(--clr-border);">
+          <div style="width:35px; height:45px; background:var(--clr-accent); border-radius:3px;"></div>
+          <div style="width:35px; height:55px; background:#00cec9; border-radius:3px;"></div>
+          <div style="width:35px; height:40px; background:#e17055; border-radius:3px;"></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.78rem; color:var(--clr-green); font-weight:600; margin-bottom:.5rem;">justify-content: space-between</div>
+        <div style="display:flex; justify-content:space-between; gap:.5rem; padding:1rem; background:var(--clr-surface-3); border-radius:8px; min-height:60px; border:1px dashed var(--clr-border);">
+          <div style="width:35px; height:45px; background:var(--clr-accent); border-radius:3px;"></div>
+          <div style="width:35px; height:55px; background:#00cec9; border-radius:3px;"></div>
+          <div style="width:35px; height:40px; background:#e17055; border-radius:3px;"></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.78rem; color:var(--clr-green); font-weight:600; margin-bottom:.5rem;">align-items: center</div>
+        <div style="display:flex; align-items:center; gap:.5rem; padding:1rem; background:var(--clr-surface-3); border-radius:8px; min-height:80px; border:1px dashed var(--clr-border);">
+          <div style="width:35px; height:30px; background:var(--clr-accent); border-radius:3px;"></div>
+          <div style="width:35px; height:55px; background:#00cec9; border-radius:3px;"></div>
+          <div style="width:35px; height:40px; background:#e17055; border-radius:3px;"></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.78rem; color:var(--clr-green); font-weight:600; margin-bottom:.5rem;">flex-direction: column</div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:.3rem; padding:1rem; background:var(--clr-surface-3); border-radius:8px; border:1px dashed var(--clr-border);">
+          <div style="width:80px; height:20px; background:var(--clr-accent); border-radius:3px;"></div>
+          <div style="width:80px; height:20px; background:#00cec9; border-radius:3px;"></div>
+          <div style="width:80px; height:20px; background:#e17055; border-radius:3px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="explain">
+    <strong>justify-content</strong> = jak jsou prvky rozložené podél hlavní osy (horizontálně u <code>row</code>, vertikálně u <code>column</code>). <strong>align-items</strong> = zarovnání podél vedlejší osy (kolmo). <strong>flex-direction: column</strong> = prvky se řadí pod sebe místo vedle sebe — přesně to děláme na mobilu!
+  </div>
+
+  <h4>🔲 Grid Canvas = Všechno na jedno políčko</h4>
+  <!-- DIAGRAM: Grid Canvas stacking -->
+  <div class="diagram-box">
+    <svg viewBox="0 0 650 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:650px; display:block; margin:0 auto;">
+      <!-- Grid cell -->
+      <rect x="30" y="20" width="250" height="160" rx="10" fill="none" stroke="#2a2a3a" stroke-width="2" stroke-dasharray="6"/>
+      <text x="155" y="16" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">grid-area: stack</text>
+      <!-- Stacked elements -->
+      <rect x="45" y="35" width="220" height="130" rx="6" fill="#1a3040" stroke="#00cec9" stroke-width="1.5"/>
+      <text x="155" y="105" fill="#00cec9" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">&lt;img&gt; — obrázek</text>
+      <rect x="45" y="35" width="220" height="130" rx="6" fill="rgba(0,0,0,0.3)" stroke="#f0932b" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="155" y="125" fill="#f0932b" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">&lt;div&gt; — overlay</text>
+      <rect x="70" y="55" width="170" height="60" rx="6" fill="rgba(108,92,231,0.2)" stroke="#a29bfe" stroke-width="1.5"/>
+      <text x="155" y="82" fill="#a29bfe" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10">&lt;div&gt; — obsah</text>
+      <text x="155" y="100" fill="#a29bfe" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">nadpis + CTA</text>
+
+      <!-- Arrow -->
+      <line x1="310" y1="100" x2="370" y2="100" stroke="#5a5a72" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+      <defs><marker id="arrowHead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#5a5a72"/></marker></defs>
+
+      <!-- Result -->
+      <rect x="390" y="20" width="240" height="160" rx="10" fill="#0f1a2a" stroke="#2a2a3a" stroke-width="2"/>
+      <!-- Simulated hero -->
+      <rect x="395" y="25" width="230" height="150" rx="8" fill="#1a3040"/>
+      <rect x="395" y="25" width="230" height="150" rx="8" fill="rgba(0,0,0,0.4)"/>
+      <text x="510" y="85" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700">Nadpis Hero</text>
+      <text x="510" y="105" fill="rgba(255,255,255,0.6)" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Podnadpis s popisem</text>
+      <rect x="470" y="118" width="80" height="24" rx="6" fill="#6c5ce7"/>
+      <text x="510" y="134" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="600">Tlačítko</text>
+      <text x="510" y="190" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Výsledek: vrstvy přes sebe</text>
+    </svg>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <strong>Metoda malých výher.</strong> Pokud se studenti ztrácejí, postupujte po malých krocích: 1) jen text na bílém pozadí, 2) přidáme barvu, 3) přidáme obrázek na pozadí, 4) vystředíme — to je v CSS vždycky ten největší vítězný moment! Každý krok je viditelný pokrok, který motivuje.
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     2. TEORETICKÝ BLOK
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <span class="section-number">02</span>
+  <h2>Teoretický blok — Moderní UI/UX trendy</h2>
+  <p class="section-lead">Co dělá Hero sekci úspěšnou a jaké moderní varianty dnes dominují webu.</p>
+
+  <h3>Anatomie úspěšné Hero sekce</h3>
+
+  <!-- DIAGRAM: Anatomy of Hero -->
+  <div class="diagram-box">
+    <svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:680px; display:block; margin:0 auto;">
+      <!-- Hero frame -->
+      <rect x="140" y="10" width="400" height="260" rx="12" fill="#12121a" stroke="#2a2a3a" stroke-width="2"/>
+      <!-- Nav bar -->
+      <rect x="145" y="15" width="390" height="25" rx="6" fill="#1a1a26"/>
+      <circle cx="165" cy="28" r="5" fill="#e17055"/>
+      <text x="350" y="32" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="8">Navigace</text>
+      <!-- Badge -->
+      <rect x="230" y="60" width="80" height="16" rx="8" fill="rgba(108,92,231,0.2)"/>
+      <text x="270" y="71" fill="#a29bfe" text-anchor="middle" font-family="Inter, sans-serif" font-size="7">BADGE</text>
+      <!-- H1 -->
+      <text x="270" y="105" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="800">Hlavní nadpis</text>
+      <!-- Subtext -->
+      <text x="270" y="130" fill="#8888a0" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Podnadpis s vysvětlením hodnoty</text>
+      <!-- CTA buttons -->
+      <rect x="210" y="150" width="70" height="22" rx="6" fill="#6c5ce7"/>
+      <text x="245" y="165" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif" font-size="8" font-weight="600">Primární</text>
+      <rect x="290" y="150" width="70" height="22" rx="6" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="325" y="165" fill="#ccc" text-anchor="middle" font-family="Inter, sans-serif" font-size="8" font-weight="600">Sekundární</text>
+      <!-- Image area -->
+      <rect x="380" y="55" width="150" height="140" rx="8" fill="#1a2a3a"/>
+      <text x="455" y="130" fill="#00cec9" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">Vizuál / foto</text>
+
+      <!-- Annotations -->
+      <line x1="140" y1="100" x2="90" y2="80" stroke="#f0932b" stroke-width="1"/>
+      <text x="20" y="75" fill="#f0932b" font-family="Inter, sans-serif" font-size="10" font-weight="600">1. Vizuální</text>
+      <text x="20" y="88" fill="#f0932b" font-family="Inter, sans-serif" font-size="10" font-weight="600">   hierarchie</text>
+
+      <line x1="455" y1="200" x2="600" y2="240" stroke="#00cec9" stroke-width="1"/>
+      <text x="570" y="255" fill="#00cec9" font-family="Inter, sans-serif" font-size="10" font-weight="600">2. Kontrast</text>
+      <text x="570" y="268" fill="#00cec9" font-family="Inter, sans-serif" font-size="10" font-weight="600">   čitelnost</text>
+
+      <line x1="245" y1="175" x2="90" y2="220" stroke="#a29bfe" stroke-width="1"/>
+      <text x="20" y="220" fill="#a29bfe" font-family="Inter, sans-serif" font-size="10" font-weight="600">3. CTA</text>
+      <text x="20" y="233" fill="#a29bfe" font-family="Inter, sans-serif" font-size="10" font-weight="600">   (výzva k akci)</text>
+
+      <!-- Browser chrome -->
+      <text x="340" y="305" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10">↕ 100svh — celá výška obrazovky</text>
+    </svg>
+  </div>
+
+  <h3>3 moderní varianty Hero sekcí</h3>
+
+  <div class="card" style="margin-top: 1.5rem;">
+    <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+      <span class="pill green">Varianta 1</span>
+      <h4 style="margin:0;">Split-Screen — Text vlevo, obraz vpravo</h4>
+    </div>
+    <p>Klasická, vysoce konverzní varianta. Text a vizuál jsou rovnocenní partneři, oddělení do dvou sloupců. Na mobilu se automaticky skládají pod sebe. Ideální pro SaaS produkty, portfolio a e-commerce.</p>
+    <p><strong>Technický klíč:</strong> CSS Grid s <code>grid-template-columns: 1fr 1fr</code>. Na mobilu přepneme na <code>1fr</code> a pomocí vlastnosti <code>order</code> určíme, zda obrázek skočí nad nebo pod text (viz <a href="#s3b">sekce 04</a>).</p>
+    <p><strong>Příklady z praxe:</strong> Stripe, Shopify, Notion.</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+      <span class="pill orange">Varianta 2</span>
+      <h4 style="margin:0;">Center-Aligned s pozadím přes celou obrazovku</h4>
+    </div>
+    <p>Emocionálně nejsilnější varianta. Celá obrazovka je vyplněná fotografií nebo videem, přes kterou je centrovaný text s gradientovým překryvem (overlay). Vzbuzuje „wow" efekt, ale vyžaduje důraz na výkon.</p>
+    <p><strong>Technický klíč:</strong> Strategie „Grid jako plátno" — <code>display: grid</code> s jednou buňkou, všechny prvky přes <code>grid-area: 1 / 1</code>. Overlay přes <code>linear-gradient</code>.</p>
+    <p><strong>Příklady z praxe:</strong> Apple (produktové launchy), Airbnb, Nike.</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+      <span class="pill red">Varianta 3</span>
+      <h4 style="margin:0;">Minimalistická s typografií a Glassmorphism</h4>
+    </div>
+    <p>Méně je více. Žádný velký obrázek — místo něj výrazná, oversized typografie kombinovaná s „skleněným" efektem (Glassmorphism): <code>backdrop-filter: blur()</code>, poloprůhledné plochy a jemné stíny. Podrobný tutoriál viz <a href="#s3c">sekce 05</a>.</p>
+    <p><strong>Příklady z praxe:</strong> Linear, Vercel, moderní portfolia.</p>
+  </div>
+
+  <div class="callout idea">
+    <span class="callout-icon">🎨</span>
+    <div>
+      <strong>Trendy 2025/2026:</strong> „Glow Design" (neonové efekty na tmavém pozadí), návrat asymetrických kompozic, Scroll-Driven Animations (animace řízené scrollem, bez JavaScriptu), Container Queries (prvky reagují na velikost svého kontejneru, ne okna prohlížeče) a OKLCH barevný model pro percepčně rovnoměrné barvy.
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     3. PRAKTICKÁ ČÁST — SPLIT-SCREEN TUTORIÁL
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <span class="section-number">03</span>
+  <h2>Praktická část — Kódovací tutoriál</h2>
+  <p class="section-lead">Vybraná varianta: <strong>Moderní Split-Screen</strong> Hero sekce. Kód je komentovaný řádek po řádku s vysvětlením každého rozhodnutí.</p>
+
+  <div class="callout warn">
+    <span class="callout-icon">📌</span>
+    <div>
+      <strong>Před kódováním:</strong> Studenti si otevřou editor (VS Code, CodePen nebo jsfiddle.net). Tento tutoriál je navržen pro metodu live-coding — učitel píše kód před třídou, studenti přepisují.
+    </div>
+  </div>
+
+  <h3>Krok 1 — Sémantické HTML5</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">HTML</span><span>index.html</span></div>
+    <pre><span class="tg">&lt;!DOCTYPE html&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="st">"cs"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;head&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">charset</span>=<span class="st">"UTF-8"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="st">"viewport"</span> <span class="at">content</span>=<span class="st">"width=device-width, initial-scale=1.0"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;title&gt;</span>Můj první Hero<span class="tg">&lt;/title&gt;</span>
+  <span class="tg">&lt;link</span> <span class="at">rel</span>=<span class="st">"stylesheet"</span> <span class="at">href</span>=<span class="st">"style.css"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/head&gt;</span>
+<span class="tg">&lt;body&gt;</span>
+
+<span class="tg">&lt;header</span> <span class="at">class</span>=<span class="st">"hero"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__content"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;span</span> <span class="at">class</span>=<span class="st">"hero__badge"</span><span class="tg">&gt;</span>🚀 Nový kurz 2026<span class="tg">&lt;/span&gt;</span>
+    <span class="tg">&lt;h1</span> <span class="at">class</span>=<span class="st">"hero__title"</span><span class="tg">&gt;</span>
+      Nauč se tvořit
+      <span class="tg">&lt;span</span> <span class="at">class</span>=<span class="st">"hero__highlight"</span><span class="tg">&gt;</span>moderní weby<span class="tg">&lt;/span&gt;</span>
+    <span class="tg">&lt;/h1&gt;</span>
+    <span class="tg">&lt;p</span> <span class="at">class</span>=<span class="st">"hero__text"</span><span class="tg">&gt;</span>Od první řádky HTML po responzivní design.<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__actions"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#start"</span> <span class="at">class</span>=<span class="st">"btn btn--primary"</span><span class="tg">&gt;</span>Začít zdarma<span class="tg">&lt;/a&gt;</span>
+      <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#demo"</span> <span class="at">class</span>=<span class="st">"btn btn--secondary"</span><span class="tg">&gt;</span>Ukázka projektu<span class="tg">&lt;/a&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__visual"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;img</span> <span class="at">src</span>=<span class="st">"hero.avif"</span> <span class="at">alt</span>=<span class="st">"Student kóduje na notebooku"</span>
+         <span class="at">class</span>=<span class="st">"hero__image"</span> <span class="at">fetchpriority</span>=<span class="st">"high"</span>
+         <span class="at">width</span>=<span class="st">"800"</span> <span class="at">height</span>=<span class="st">"600"</span><span class="tg">/&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/header&gt;</span>
+<span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span></pre>
+  </div>
+
+  <div class="explain">
+    <strong>&lt;header&gt;</strong> — sémantický tag, který říká „toto je úvodní část stránky". Na rozdíl od <code>&lt;div&gt;</code> má význam pro čtečky obrazovky a vyhledávače.<br>
+    <strong>&lt;h1&gt;</strong> — hlavní nadpis stránky. Na stránce by měl být ideálně jeden (doporučení pro SEO a přístupnost).<br>
+    <strong>fetchpriority="high"</strong> — řekne prohlížeči: „tento obrázek je nejdůležitější, stáhni ho jako první". Kritické pro dobré LCP skóre.<br>
+    <strong>width a height</strong> — pomáhají prohlížeči rezervovat správný prostor ještě před stažením obrázku, čímž se eliminuje „poskakování" layoutu (Cumulative Layout Shift).<br>
+    <strong>class="hero__content"</strong> — BEM metodologie: <code>hero</code> = blok, <code>content</code> = element uvnitř bloku, oddělené dvěma podtržítky.
+  </div>
+
+  <h3>Krok 2 — CSS proměnné, reset a layout</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">CSS</span><span>style.css — proměnné + layout</span></div>
+    <pre><span class="cm">/* ═══ CSS PROMĚNNÉ ═══
+   Definujeme barvy na jednom místě.
+   Když budete chtít změnit paletu, stačí
+   upravit tyto řádky — zbytek se změní sám.
+*/</span>
+<span class="kw">:root</span> {
+  <span class="pr">--clr-bg</span>:      <span class="vl">#0f0f1a</span>;     <span class="cm">/* tmavé pozadí */</span>
+  <span class="pr">--clr-text</span>:    <span class="vl">#f0f0f5</span>;     <span class="cm">/* světlý text */</span>
+  <span class="pr">--clr-muted</span>:   <span class="vl">#8888a0</span>;     <span class="cm">/* šedý podtext */</span>
+  <span class="pr">--clr-accent</span>:  <span class="vl">#6c5ce7</span>;     <span class="cm">/* fialový akcent */</span>
+  <span class="pr">--clr-accent2</span>: <span class="vl">#00cec9</span>;     <span class="cm">/* tyrkysový akcent */</span>
+  <span class="pr">--radius</span>:      <span class="vl">12px</span>;
+
+  <span class="cm">/* Typografie */</span>
+  <span class="pr">--font-body</span>:   <span class="vl">'Segoe UI', system-ui, sans-serif</span>;
+}
+
+<span class="cm">/* ═══ RESET ═══
+   Každý prohlížeč má jiné výchozí styly.
+   Reset je „vyrovnává" na nulu.
+*/</span>
+<span class="kw">*</span>, <span class="kw">*::before</span>, <span class="kw">*::after</span> {
+  <span class="pr">box-sizing</span>: <span class="vl">border-box</span>;
+  <span class="pr">margin</span>: <span class="vl">0</span>;
+  <span class="pr">padding</span>: <span class="vl">0</span>;
+}
+
+<span class="kw">body</span> {
+  <span class="pr">font-family</span>: <span class="fn">var</span>(<span class="pr">--font-body</span>);
+  <span class="pr">background</span>:  <span class="fn">var</span>(<span class="pr">--clr-bg</span>);
+  <span class="pr">color</span>:       <span class="fn">var</span>(<span class="pr">--clr-text</span>);
+  <span class="pr">line-height</span>: <span class="vl">1.6</span>;
+}
+
+<span class="cm">/* ═══ HERO LAYOUT ═══ */</span>
+<span class="kw">.hero</span> {
+  <span class="pr">display</span>: <span class="vl">grid</span>;
+  <span class="pr">grid-template-columns</span>: <span class="vl">1fr 1fr</span>;
+  <span class="pr">align-items</span>: <span class="vl">center</span>;
+  <span class="pr">gap</span>: <span class="vl">3rem</span>;
+  <span class="pr">min-height</span>: <span class="vl">100svh</span>;
+  <span class="pr">padding</span>: <span class="vl">2rem 4rem</span>;
+  <span class="pr">overflow</span>: <span class="vl">hidden</span>;
+}</pre>
+  </div>
+
+  <div class="explain">
+    <strong>box-sizing: border-box</strong> — padding a border se počítají dovnitř šířky prvku, ne navíc. Bez toho by prvek s <code>width: 100%</code> a <code>padding: 20px</code> přetékal.<br>
+    <strong>grid-template-columns: 1fr 1fr</strong> — vytvoří 2 stejně široké sloupce. <code>1fr</code> znamená „jeden díl volného prostoru". Dva <code>1fr</code> = 50 % + 50 %.<br>
+    <strong>align-items: center</strong> — vertikálně vystředí obsah obou sloupců (text nebude „přilepený" nahoře).<br>
+    <strong>gap: 3rem</strong> — mezera mezi sloupci. Čistější než margin na jednotlivých prvcích.<br>
+    <strong>min-height: 100svh</strong> — Hero zabere minimálně celou výšku obrazovky. <code>svh</code> (Small Viewport Height) na rozdíl od <code>vh</code> respektuje adresní řádek mobilního prohlížeče.
+  </div>
+
+  <h3>Krok 3 — Typografie, tlačítka a obrázek</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">CSS</span><span>style.css — typografie + komponenty</span></div>
+    <pre><span class="cm">/* ═══ NADPIS ═══ */</span>
+<span class="kw">.hero__title</span> {
+  <span class="pr">font-size</span>: <span class="fn">clamp</span>(<span class="nb">2rem</span>, <span class="nb">5vw</span> + <span class="nb">1rem</span>, <span class="nb">4rem</span>);
+  <span class="pr">font-weight</span>: <span class="vl">800</span>;
+  <span class="pr">line-height</span>: <span class="vl">1.1</span>;
+  <span class="pr">text-wrap</span>: <span class="vl">balance</span>;
+  <span class="pr">margin-bottom</span>: <span class="vl">1rem</span>;
+}
+
+<span class="cm">/* Gradientový text — barva se plynule mění */</span>
+<span class="kw">.hero__highlight</span> {
+  <span class="pr">background</span>: <span class="fn">linear-gradient</span>(<span class="nb">135deg</span>,
+    <span class="fn">var</span>(<span class="pr">--clr-accent</span>), <span class="fn">var</span>(<span class="pr">--clr-accent2</span>));
+  <span class="pr">-webkit-background-clip</span>: <span class="vl">text</span>;
+  <span class="pr">background-clip</span>: <span class="vl">text</span>;
+  <span class="pr">-webkit-text-fill-color</span>: <span class="vl">transparent</span>;
+}
+
+<span class="cm">/* ═══ PODNADPIS ═══ */</span>
+<span class="kw">.hero__text</span> {
+  <span class="pr">font-size</span>: <span class="fn">clamp</span>(<span class="nb">1rem</span>, <span class="nb">1vw</span> + <span class="nb">0.75rem</span>, <span class="nb">1.2rem</span>);
+  <span class="pr">color</span>: <span class="fn">var</span>(<span class="pr">--clr-muted</span>);
+  <span class="pr">max-width</span>: <span class="vl">45ch</span>;
+  <span class="pr">margin-bottom</span>: <span class="vl">2rem</span>;
+}
+
+<span class="cm">/* ═══ TLAČÍTKA ═══ */</span>
+<span class="kw">.hero__actions</span> {
+  <span class="pr">display</span>: <span class="vl">flex</span>;
+  <span class="pr">gap</span>: <span class="vl">1rem</span>;
+  <span class="pr">flex-wrap</span>: <span class="vl">wrap</span>;
+}
+
+<span class="kw">.btn</span> {
+  <span class="pr">display</span>: <span class="vl">inline-flex</span>;
+  <span class="pr">align-items</span>: <span class="vl">center</span>;
+  <span class="pr">padding</span>: <span class="vl">0.8rem 1.8rem</span>;
+  <span class="pr">border-radius</span>: <span class="fn">var</span>(<span class="pr">--radius</span>);
+  <span class="pr">font-weight</span>: <span class="vl">600</span>;
+  <span class="pr">text-decoration</span>: <span class="vl">none</span>;
+  <span class="pr">transition</span>: <span class="vl">transform 0.2s, box-shadow 0.2s</span>;
+}
+<span class="kw">.btn--primary</span>   { <span class="pr">background</span>: <span class="fn">var</span>(<span class="pr">--clr-accent</span>); <span class="pr">color</span>: <span class="vl">#fff</span>; }
+<span class="kw">.btn--secondary</span> { <span class="pr">background</span>: <span class="vl">transparent</span>; <span class="pr">color</span>: <span class="fn">var</span>(<span class="pr">--clr-text</span>);
+                   <span class="pr">border</span>: <span class="vl">2px solid rgba(255,255,255,0.2)</span>; }
+<span class="kw">.btn:hover</span> {
+  <span class="pr">transform</span>: <span class="fn">translateY</span>(<span class="nb">-2px</span>);
+  <span class="pr">box-shadow</span>: <span class="vl">0 8px 25px rgba(108,92,231,0.3)</span>;
+}
+
+<span class="cm">/* ═══ OBRÁZEK ═══ */</span>
+<span class="kw">.hero__image</span> {
+  <span class="pr">width</span>: <span class="vl">100%</span>;
+  <span class="pr">height</span>: <span class="vl">100%</span>;
+  <span class="pr">max-height</span>: <span class="vl">520px</span>;
+  <span class="pr">object-fit</span>: <span class="vl">cover</span>;
+  <span class="pr">border-radius</span>: <span class="vl">20px</span>;
+}</pre>
+  </div>
+
+  <div class="explain">
+    <strong>text-wrap: balance</strong> (CSS 2023+) — prohlížeč automaticky vyváží délku řádků nadpisu, aby nevznikl jeden dlouhý a jeden krátký řádek. Čistě vizuální vylepšení.<br>
+    <strong>max-width: 45ch</strong> — jednotka <code>ch</code> odpovídá šířce znaku „0". Výzkumy čitelnosti doporučují 45–75 znaků na řádek. Tím zajistíme komfortní čtení.<br>
+    <strong>transition: transform 0.2s</strong> — při hoveru se tlačítko plynule posune nahoru (0.2 sekundy). Bez <code>transition</code> by pohyb byl okamžitý a „škubavý".<br>
+    <strong>background-clip: text</strong> — trik, který „ořízne" gradient pozadí tak, aby byl viditelný pouze skrze text. Výsledek: duhový/gradientový text.
+  </div>
+
+  <!-- LIVE DEMO -->
+  <h3>🖥️ Živá ukázka — Split-Screen Hero</h3>
+  <div class="demo-frame">
+    <div class="demo-label">Živá ukázka — výsledek</div>
+    <div class="demo-content">
+      <div style="display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:2.5rem; min-height:480px; padding:2.5rem 3rem; background:linear-gradient(135deg, #0f0f1a 0%, #1a1028 100%); font-family:'Inter',system-ui,sans-serif; color:#f0f0f5; overflow:hidden; position:relative;">
+        <div style="position:absolute; top:-80px; left:-80px; width:300px; height:300px; background:radial-gradient(circle, rgba(108,92,231,0.15), transparent 70%); pointer-events:none;"></div>
+        <div style="position:relative; z-index:1;">
+          <span style="display:inline-block; padding:.3rem .9rem; background:rgba(108,92,231,0.15); color:#a29bfe; border-radius:100px; font-size:.75rem; font-weight:600; margin-bottom:1.2rem;">🚀 Nový kurz 2026</span>
+          <h2 style="font-size:clamp(1.6rem, 3vw, 2.6rem); font-weight:800; line-height:1.1; margin-bottom:.8rem;">Nauč se tvořit <span style="background:linear-gradient(135deg,#a29bfe,#00cec9); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">moderní weby</span></h2>
+          <p style="font-size:.95rem; color:#8888a0; line-height:1.6; max-width:40ch; margin-bottom:1.5rem;">Od první řádky HTML po responzivní design. Prakticky, srozumitelně, krok za krokem.</p>
+          <div style="display:flex; gap:.8rem; flex-wrap:wrap;">
+            <a href="#" onclick="return false" style="display:inline-flex; padding:.65rem 1.4rem; background:#6c5ce7; color:#fff; border-radius:10px; font-weight:600; font-size:.88rem; text-decoration:none; transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(108,92,231,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Začít zdarma</a>
+            <a href="#" onclick="return false" style="display:inline-flex; padding:.65rem 1.4rem; background:transparent; color:#f0f0f5; border:2px solid rgba(255,255,255,0.15); border-radius:10px; font-weight:600; font-size:.88rem; text-decoration:none; transition:transform .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Ukázka projektu</a>
+          </div>
+        </div>
+        <div style="position:relative; z-index:1;">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=700&q=80" alt="Kódování" style="width:100%; height:320px; object-fit:cover; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.4);" fetchpriority="high">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     3B. RESPONZIVNÍ PŘEUSPOŘÁDÁNÍ
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3b">
+  <span class="section-number">04</span>
+  <h2>Responzivní přeuspořádání — <code>order</code> a <code>grid-template-areas</code></h2>
+  <p class="section-lead">Na mobilu nechceme, aby se sloupce jen „zmáčkly" vedle sebe. Chceme je přeskládat — obrázek nad text nebo pod text. V praxi se to řeší dvěma způsoby.</p>
+
+  <h3>Problém: Proč nestačí jen zmenšit?</h3>
+
+  <!-- DIAGRAM: squeeze vs reorder -->
+  <div class="diagram-box">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+      <div style="text-align:center;">
+        <div style="font-size:.82rem; font-weight:600; color:var(--clr-red); margin-bottom:.5rem;">❌ Jen zmenšení (špatně)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.3rem; padding:.5rem; background:var(--clr-surface-3); border-radius:8px; border:2px solid var(--clr-red); max-width:160px; margin:0 auto;">
+          <div style="background:var(--clr-accent); border-radius:4px; padding:.3rem; font-size:.5rem; color:#fff; text-align:center;">Text, který je tak malinký, že ho nikdo nepřečte</div>
+          <div style="background:#1a3040; border-radius:4px; height:50px;"></div>
+        </div>
+        <div style="font-size:.75rem; color:var(--clr-text-muted); margin-top:.5rem;">Oba sloupce vedle sebe — nečitelné</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:.82rem; font-weight:600; color:var(--clr-green); margin-bottom:.5rem;">✅ Přeskládání (správně)</div>
+        <div style="display:grid; grid-template-columns:1fr; gap:.3rem; padding:.5rem; background:var(--clr-surface-3); border-radius:8px; border:2px solid var(--clr-green); max-width:160px; margin:0 auto;">
+          <div style="background:#1a3040; border-radius:4px; height:40px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:#00cec9;">📷 Obrázek</div>
+          <div style="background:var(--clr-accent); border-radius:4px; padding:.4rem; font-size:.6rem; color:#fff; text-align:center;">Text je teď čitelný<br>a tlačítko viditelné</div>
+        </div>
+        <div style="font-size:.75rem; color:var(--clr-text-muted); margin-top:.5rem;">Prvky pod sebou — pohodlné čtení</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Řešení 1 — Vlastnost <code>order</code> (jednoduché)</h3>
+  <p>Vlastnost <code>order</code> mění pořadí prvků v Gridu/Flexboxu, aniž by se měnilo HTML. Výchozí hodnota je <code>0</code>. Nižší číslo = prvek se zobrazí dříve.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">CSS</span><span>Přeuspořádání pomocí order</span></div>
+    <pre><span class="cm">/* ═══ DESKTOP — výchozí stav ═══
+   Text je vlevo (1. sloupec), obrázek vpravo (2. sloupec).
+   Oba mají výchozí order: 0, takže se řadí podle HTML.
+*/</span>
+<span class="kw">.hero</span> {
+  <span class="pr">display</span>: <span class="vl">grid</span>;
+  <span class="pr">grid-template-columns</span>: <span class="vl">1fr 1fr</span>;
+  <span class="pr">align-items</span>: <span class="vl">center</span>;
+  <span class="pr">gap</span>: <span class="vl">3rem</span>;
+  <span class="pr">min-height</span>: <span class="vl">100svh</span>;
+  <span class="pr">padding</span>: <span class="vl">2rem 4rem</span>;
+}
+
+<span class="cm">/* ═══ MOBIL — přeuspořádání ═══ */</span>
+<span class="kw">@media</span> (<span class="pr">max-width</span>: <span class="nb">768px</span>) {
+  <span class="kw">.hero</span> {
+    <span class="pr">grid-template-columns</span>: <span class="vl">1fr</span>;  <span class="cm">/* 1 sloupec */</span>
+    <span class="pr">padding</span>: <span class="vl">2rem 1.5rem</span>;
+    <span class="pr">text-align</span>: <span class="vl">center</span>;
+  }
+
+  <span class="cm">/*
+    TRIK: obrázek má v HTML order: 0 (výchozí).
+    Nastavíme mu order: -1, čímž "poskočí" NAD text.
+    Chcete obrázek POD text? Nastavte order: 1.
+  */</span>
+  <span class="kw">.hero__visual</span> {
+    <span class="pr">order</span>: <span class="nb">-1</span>;  <span class="cm">/* obrázek NAHOŘE nad textem */</span>
+  }
+
+  <span class="kw">.hero__actions</span> {
+    <span class="pr">justify-content</span>: <span class="vl">center</span>;
+  }
+
+  <span class="kw">.hero__image</span> {
+    <span class="pr">max-height</span>: <span class="vl">280px</span>;
+  }
+}</pre>
+  </div>
+
+  <div class="explain">
+    <strong>order: -1</strong> — prvek se posune na začátek (před všechny prvky s výchozím <code>order: 0</code>). Hodnota <code>order: 1</code> by ho naopak posunula na konec (pod text). Čísla mohou být jakákoliv celá čísla — záporná i kladná.<br><br>
+    <strong>Kdy použít obrázek NAHOŘE?</strong> Když je obrázek vizuálně dominantní a měl by upoutat pozornost jako první (e-commerce, portfolia).<br>
+    <strong>Kdy použít obrázek DOLE?</strong> Když je důležitější text a CTA (SaaS, landing pages) — návštěvník si nejdřív přečte nabídku.
+  </div>
+
+  <h3>Řešení 2 — <code>grid-template-areas</code> (pokročilejší, plná kontrola)</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">CSS</span><span>Přeuspořádání pomocí grid-template-areas</span></div>
+    <pre><span class="cm">/* ═══ DESKTOP ═══ */</span>
+<span class="kw">.hero</span> {
+  <span class="pr">display</span>: <span class="vl">grid</span>;
+  <span class="cm">/* Pojmenujeme oblasti: „text" vlevo, „vizual" vpravo */</span>
+  <span class="pr">grid-template-areas</span>: <span class="st">"text vizual"</span>;
+  <span class="pr">grid-template-columns</span>: <span class="vl">1fr 1fr</span>;
+  <span class="pr">align-items</span>: <span class="vl">center</span>;
+  <span class="pr">gap</span>: <span class="vl">3rem</span>;
+  <span class="pr">min-height</span>: <span class="vl">100svh</span>;
+}
+
+<span class="cm">/* Přiřadíme prvkům jejich oblasti */</span>
+<span class="kw">.hero__content</span> { <span class="pr">grid-area</span>: <span class="vl">text</span>; }
+<span class="kw">.hero__visual</span>  { <span class="pr">grid-area</span>: <span class="vl">vizual</span>; }
+
+<span class="cm">/* ═══ MOBIL ═══ */</span>
+<span class="kw">@media</span> (<span class="pr">max-width</span>: <span class="nb">768px</span>) {
+  <span class="kw">.hero</span> {
+    <span class="cm">/* Zcela nové rozložení: obrázek nahoře, text dole */</span>
+    <span class="pr">grid-template-areas</span>:
+      <span class="st">"vizual"</span>
+      <span class="st">"text"</span>;
+    <span class="pr">grid-template-columns</span>: <span class="vl">1fr</span>;
+
+    <span class="cm">/* Varianta: text nahoře, obrázek dole —
+       stačí prohodit řádky:
+       grid-template-areas:
+         "text"
+         "vizual";
+    */</span>
+  }
+}</pre>
+  </div>
+
+  <div class="explain">
+    <strong>grid-template-areas</strong> je jako „mapa" layoutu psaná ASCII textem. Na desktopu říkáme: „jeden řádek: text vlevo, vizual vpravo." Na mobilu: „dva řádky: vizual nahoře, text dole." Stačí přepsat řetězec a celý layout se přeskládá — HTML zůstává beze změny. Tato technika je výkonnější než <code>order</code>, protože umožňuje libovolné přeuspořádání, ne jen posuny v jednom směru.
+  </div>
+
+  <!-- LIVE DEMO: Mobile reorder -->
+  <h3>🔄 Interaktivní ukázka — Přepni si Desktop ↔ Mobil</h3>
+  <div class="demo-frame">
+    <div class="demo-label">Živá ukázka — přeuspořádání na mobilu (obrázek nahoře)</div>
+    <div class="demo-content">
+      <div style="padding:1rem; background:var(--clr-surface-3);">
+        <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
+          <button onclick="document.getElementById('reorderDemo').style.gridTemplateColumns='1fr 1fr';document.getElementById('reorderDemo').style.gridTemplateAreas='\'text vizual\'';document.getElementById('reorderDemo').style.maxWidth='100%';document.getElementById('reorderDemo').style.textAlign='left';this.style.background='#6c5ce7';this.style.color='#fff';this.nextElementSibling.style.background='var(--clr-surface-2)';this.nextElementSibling.style.color='var(--clr-text-muted)'" style="padding:.5rem 1.2rem; background:#6c5ce7; color:#fff; border:1px solid var(--clr-border); border-radius:8px; cursor:pointer; font-family:var(--font-body); font-size:.82rem; font-weight:600;">🖥️ Desktop</button>
+          <button onclick="document.getElementById('reorderDemo').style.gridTemplateColumns='1fr';document.getElementById('reorderDemo').style.gridTemplateAreas='\'vizual\' \'text\'';document.getElementById('reorderDemo').style.maxWidth='360px';document.getElementById('reorderDemo').style.textAlign='center';this.style.background='#6c5ce7';this.style.color='#fff';this.previousElementSibling.style.background='var(--clr-surface-2)';this.previousElementSibling.style.color='var(--clr-text-muted)'" style="padding:.5rem 1.2rem; background:var(--clr-surface-2); color:var(--clr-text-muted); border:1px solid var(--clr-border); border-radius:8px; cursor:pointer; font-family:var(--font-body); font-size:.82rem; font-weight:600;">📱 Mobil</button>
+        </div>
+        <div id="reorderDemo" style="display:grid; grid-template-areas:'text vizual'; grid-template-columns:1fr 1fr; align-items:center; gap:1.5rem; padding:1.5rem; background:#0f0f1a; border-radius:12px; font-family:'Inter',sans-serif; color:#f0f0f5; transition: all 0.4s ease; margin:0 auto;">
+          <div style="grid-area:text;">
+            <span style="display:inline-block; padding:.2rem .7rem; background:rgba(108,92,231,0.15); color:#a29bfe; border-radius:100px; font-size:.65rem; font-weight:600; margin-bottom:.8rem;">🚀 Nový kurz</span>
+            <h3 style="font-size:clamp(1.2rem, 2.5vw, 1.8rem); font-weight:800; line-height:1.1; margin-bottom:.5rem; color:#f0f0f5;">Nauč se tvořit <span style="background:linear-gradient(135deg,#a29bfe,#00cec9); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">moderní weby</span></h3>
+            <p style="font-size:.8rem; color:#8888a0; margin-bottom:1rem;">Od HTML po responzivní design.</p>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+              <span style="padding:.4rem 1rem; background:#6c5ce7; color:#fff; border-radius:8px; font-size:.75rem; font-weight:600;">Začít</span>
+              <span style="padding:.4rem 1rem; border:1px solid rgba(255,255,255,0.2); color:#ccc; border-radius:8px; font-size:.75rem; font-weight:600;">Demo</span>
+            </div>
+          </div>
+          <div style="grid-area:vizual;">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&q=75" alt="Kódování" style="width:100%; height:200px; object-fit:cover; border-radius:12px;" fetchpriority="high">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <strong>Která varianta je v praxi běžnější?</strong> Obrázek NAD textem je populárnější na mobilních verzích, protože vizuál okamžitě zaujme palec scrollujícího uživatele. Text POD obrázkem pak funguje jako „vysvětlení toho, co právě vidí". Tento vzor používají Stripe, Shopify i Apple.
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     3C. GLASSMORPHISM TUTORIÁL
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3c">
+  <span class="section-number">05</span>
+  <h2>Tutoriál — Glassmorphism Hero krok za krokem</h2>
+  <p class="section-lead">Kompletní vysvětlení „skleněného" efektu. Každý řádek kódu je rozebrán — proč je tam a co by se stalo bez něj.</p>
+
+  <h3>Anatomie Glassmorphism efektu</h3>
+
+  <!-- DIAGRAM: Glassmorphism layers -->
+  <div class="diagram-box">
+    <svg viewBox="0 0 650 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:650px;display:block;margin:0 auto;">
+      <!-- Background -->
+      <rect x="20" y="20" width="200" height="180" rx="12" fill="#0c0c1d"/>
+      <circle cx="70" cy="80" r="40" fill="rgba(108,92,231,0.4)" filter="url(#blur1)"/>
+      <circle cx="160" cy="140" r="35" fill="rgba(0,206,201,0.3)" filter="url(#blur1)"/>
+      <defs><filter id="blur1"><feGaussianBlur stdDeviation="10"/></filter></defs>
+      <text x="120" y="210" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600">1. Animované pozadí</text>
+      <text x="120" y="16" fill="#8888a0" text-anchor="middle" font-family="Inter, sans-serif" font-size="9">barevné „bloby"</text>
+
+      <!-- + sign -->
+      <text x="245" y="115" fill="#5a5a72" font-size="24" text-anchor="middle">+</text>
+
+      <!-- Glass card -->
+      <rect x="270" y="45" width="160" height="130" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="350" y="95" fill="#f0f0f5" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700">backdrop-filter:</text>
+      <text x="350" y="112" fill="#a29bfe" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11">blur(20px)</text>
+      <text x="350" y="135" fill="#8888a0" text-anchor="middle" font-family="Inter, sans-serif" font-size="8">+ rgba pozadí + border</text>
+      <text x="350" y="210" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600">2. Skleněná karta</text>
+
+      <!-- = sign -->
+      <text x="455" y="115" fill="#5a5a72" font-size="24" text-anchor="middle">=</text>
+
+      <!-- Result -->
+      <rect x="480" y="20" width="160" height="180" rx="12" fill="#0c0c1d"/>
+      <circle cx="520" cy="70" r="30" fill="rgba(108,92,231,0.3)" filter="url(#blur1)"/>
+      <circle cx="590" cy="140" r="25" fill="rgba(0,206,201,0.25)" filter="url(#blur1)"/>
+      <rect x="500" y="55" width="120" height="100" rx="12" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="560" y="95" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700">Obsah</text>
+      <text x="560" y="115" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-family="Inter, sans-serif" font-size="8">text přes sklo</text>
+      <text x="560" y="210" fill="#5a5a72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600">3. Výsledek</text>
+    </svg>
+  </div>
+
+  <h3>Kompletní kód s vysvětlením</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">HTML + CSS</span><span>glassmorphism-hero.html</span></div>
+    <pre><span class="tg">&lt;header</span> <span class="at">class</span>=<span class="st">"glass-hero"</span><span class="tg">&gt;</span>
+  <span class="cm">&lt;!-- Animované barevné "bloby" na pozadí --&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"glass-hero__blob glass-hero__blob--1"</span><span class="tg">&gt;&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"glass-hero__blob glass-hero__blob--2"</span><span class="tg">&gt;&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"glass-hero__blob glass-hero__blob--3"</span><span class="tg">&gt;&lt;/div&gt;</span>
+
+  <span class="cm">&lt;!-- Skleněná karta s obsahem --&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"glass-card"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;h1&gt;</span>Myšlení.<span class="tg">&lt;br&gt;&lt;span&gt;</span>Bez hranic.<span class="tg">&lt;/span&gt;&lt;/h1&gt;</span>
+    <span class="tg">&lt;p&gt;</span>Minimalistický design, který mluví sám za sebe.<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#"</span> <span class="at">class</span>=<span class="st">"glass-btn"</span><span class="tg">&gt;</span>Prozkoumat<span class="tg">&lt;/a&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/header&gt;</span>
+
+<span class="tg">&lt;style&gt;</span>
+<span class="cm">/* ═══ KONTEJNER ═══ */</span>
+<span class="kw">.glass-hero</span> {
+  <span class="pr">min-height</span>: <span class="vl">100svh</span>;
+  <span class="pr">display</span>: <span class="vl">flex</span>;
+  <span class="pr">justify-content</span>: <span class="vl">center</span>;
+  <span class="pr">align-items</span>: <span class="vl">center</span>;
+  <span class="pr">background</span>: <span class="fn">linear-gradient</span>(<span class="nb">135deg</span>, <span class="vl">#0c0c1d</span>, <span class="vl">#1a0a2e</span>, <span class="vl">#0c1a2e</span>);
+  <span class="pr">position</span>: <span class="vl">relative</span>;     <span class="cm">/* kotva pro absolutní bloby */</span>
+  <span class="pr">overflow</span>: <span class="vl">hidden</span>;       <span class="cm">/* bloby nepřetékají */</span>
+}
+
+<span class="cm">/* ═══ BAREVNÉ BLOBY ═══
+   Velké, rozmazané kruhy, které se pomalu pohybují.
+   Díky blur() vypadají jako světelné skvrny.
+*/</span>
+<span class="kw">.glass-hero__blob</span> {
+  <span class="pr">position</span>: <span class="vl">absolute</span>;
+  <span class="pr">border-radius</span>: <span class="vl">50%</span>;    <span class="cm">/* kruh */</span>
+  <span class="pr">filter</span>: <span class="fn">blur</span>(<span class="nb">40px</span>);    <span class="cm">/* silné rozmazání */</span>
+  <span class="pr">pointer-events</span>: <span class="vl">none</span>;  <span class="cm">/* neklikatelné */</span>
+}
+
+<span class="kw">.glass-hero__blob--1</span> {
+  <span class="pr">width</span>: <span class="vl">250px</span>; <span class="pr">height</span>: <span class="vl">250px</span>;
+  <span class="pr">top</span>: <span class="vl">10%</span>; <span class="pr">left</span>: <span class="vl">15%</span>;
+  <span class="pr">background</span>: <span class="fn">radial-gradient</span>(<span class="vl">circle</span>,
+    <span class="fn">rgba</span>(<span class="nb">108</span>,<span class="nb">92</span>,<span class="nb">231</span>,<span class="nb">0.4</span>), <span class="vl">transparent</span> <span class="nb">70%</span>);
+  <span class="pr">animation</span>: <span class="fn">float</span> <span class="nb">8s</span> <span class="vl">ease-in-out</span> <span class="vl">infinite</span>;
+}
+
+<span class="kw">.glass-hero__blob--2</span> {
+  <span class="pr">width</span>: <span class="vl">300px</span>; <span class="pr">height</span>: <span class="vl">300px</span>;
+  <span class="pr">bottom</span>: <span class="vl">10%</span>; <span class="pr">right</span>: <span class="vl">15%</span>;
+  <span class="pr">background</span>: <span class="fn">radial-gradient</span>(<span class="vl">circle</span>,
+    <span class="fn">rgba</span>(<span class="nb">0</span>,<span class="nb">206</span>,<span class="nb">201</span>,<span class="nb">0.3</span>), <span class="vl">transparent</span> <span class="nb">70%</span>);
+  <span class="pr">animation</span>: <span class="fn">float</span> <span class="nb">10s</span> <span class="vl">ease-in-out</span> <span class="vl">infinite</span> <span class="vl">reverse</span>;
+}
+
+<span class="kw">.glass-hero__blob--3</span> {
+  <span class="pr">width</span>: <span class="vl">200px</span>; <span class="pr">height</span>: <span class="vl">200px</span>;
+  <span class="pr">top</span>: <span class="vl">50%</span>; <span class="pr">left</span>: <span class="vl">50%</span>;
+  <span class="pr">background</span>: <span class="fn">radial-gradient</span>(<span class="vl">circle</span>,
+    <span class="fn">rgba</span>(<span class="nb">253</span>,<span class="nb">121</span>,<span class="nb">168</span>,<span class="nb">0.25</span>), <span class="vl">transparent</span> <span class="nb">70%</span>);
+  <span class="pr">animation</span>: <span class="fn">float</span> <span class="nb">12s</span> <span class="vl">ease-in-out</span> <span class="vl">infinite</span>;
+}
+
+<span class="cm">/* Pomalý pohyb blobů sem a tam */</span>
+<span class="kw">@keyframes</span> <span class="fn">float</span> {
+  <span class="nb">0%</span>, <span class="nb">100%</span> { <span class="pr">transform</span>: <span class="fn">translate</span>(<span class="nb">0</span>, <span class="nb">0</span>); }
+  <span class="nb">50%</span>       { <span class="pr">transform</span>: <span class="fn">translate</span>(<span class="nb">30px</span>, <span class="nb">-20px</span>); }
+}
+
+<span class="cm">/* ═══ SKLENĚNÁ KARTA ═══
+   Klíčové vlastnosti:
+   1. backdrop-filter: blur() — rozmazává vše ZA kartou
+   2. background: rgba() — poloprůhledné pozadí
+   3. border: rgba() — jemný okraj pro dojem "hrany skla"
+*/</span>
+<span class="kw">.glass-card</span> {
+  <span class="pr">position</span>: <span class="vl">relative</span>;      <span class="cm">/* nad bloby */</span>
+  <span class="pr">z-index</span>: <span class="vl">1</span>;
+
+  <span class="cm">/* KLÍČOVÁ VLASTNOST — rozmazání pozadí */</span>
+  <span class="pr">backdrop-filter</span>: <span class="fn">blur</span>(<span class="nb">20px</span>);
+  <span class="pr">-webkit-backdrop-filter</span>: <span class="fn">blur</span>(<span class="nb">20px</span>);  <span class="cm">/* Safari */</span>
+
+  <span class="cm">/* Poloprůhledné pozadí — nesmí být zcela průhledné,
+     jinak efekt skla není vidět */</span>
+  <span class="pr">background</span>: <span class="fn">rgba</span>(<span class="nb">255</span>, <span class="nb">255</span>, <span class="nb">255</span>, <span class="nb">0.05</span>);
+
+  <span class="cm">/* Jemný okraj simuluje "hranu skla" */</span>
+  <span class="pr">border</span>: <span class="vl">1px solid rgba(255, 255, 255, 0.1)</span>;
+  <span class="pr">border-radius</span>: <span class="vl">24px</span>;
+  <span class="pr">padding</span>: <span class="vl">3rem</span>;
+  <span class="pr">max-width</span>: <span class="vl">520px</span>;
+  <span class="pr">text-align</span>: <span class="vl">center</span>;
+  <span class="pr">color</span>: <span class="vl">#f0f0f5</span>;
+}
+<span class="tg">&lt;/style&gt;</span></pre>
+  </div>
+
+  <div class="explain">
+    <strong>backdrop-filter: blur(20px)</strong> — toto je jádro celého efektu. Rozmazává vše, co je <em>za</em> prvkem (na rozdíl od <code>filter: blur()</code>, který rozmazává samotný prvek). Potřebuje <code>-webkit-</code> prefix pro Safari.<br>
+    <strong>rgba(255, 255, 255, 0.05)</strong> — velmi lehce bílé pozadí (5 % neprůhlednosti). Bez něj by blur neměl „skleněný" dojem. Hodnotu 0.05–0.15 lze ladit podle vkusu.<br>
+    <strong>border: rgba(255, 255, 255, 0.1)</strong> — simuluje odlesk na hraně skla. Bez toho karta splývá s pozadím.
+  </div>
+
+  <!-- LIVE DEMO: Glassmorphism -->
+  <h3>✨ Živá ukázka — Glassmorphism Hero</h3>
+  <div class="demo-frame">
+    <div class="demo-label">Živá ukázka — Glassmorphism (bloby se pohybují)</div>
+    <div class="demo-content">
+      <div style="min-height:420px; display:flex; justify-content:center; align-items:center; padding:2rem; font-family:'Inter',system-ui,sans-serif; background:linear-gradient(135deg,#0c0c1d,#1a0a2e,#0c1a2e); position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10%; left:15%; width:250px; height:250px; background:radial-gradient(circle,rgba(108,92,231,0.4),transparent 70%); border-radius:50%; filter:blur(40px); animation:float1g 8s ease-in-out infinite;"></div>
+        <div style="position:absolute; bottom:10%; right:15%; width:300px; height:300px; background:radial-gradient(circle,rgba(0,206,201,0.3),transparent 70%); border-radius:50%; filter:blur(50px); animation:float2g 10s ease-in-out infinite;"></div>
+        <div style="position:absolute; top:50%; left:50%; width:200px; height:200px; background:radial-gradient(circle,rgba(253,121,168,0.25),transparent 70%); border-radius:50%; filter:blur(35px); animation:float1g 12s ease-in-out infinite reverse;"></div>
+        <div style="position:relative; z-index:1; background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:3rem; max-width:520px; text-align:center; color:#f0f0f5;">
+          <h2 style="font-size:clamp(2rem,4vw,3rem); font-weight:800; line-height:1.1; margin-bottom:1rem; letter-spacing:-0.02em;">Myšlení.<br><span style="background:linear-gradient(135deg,#a29bfe,#00cec9); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">Bez hranic.</span></h2>
+          <p style="color:rgba(255,255,255,0.55); font-size:.95rem; margin-bottom:1.5rem; line-height:1.6;">Minimalistický design, který mluví sám za sebe. Méně je více — když víte, co děláte.</p>
+          <a href="#" onclick="return false" style="display:inline-flex; padding:.7rem 2rem; background:rgba(108,92,231,0.8); backdrop-filter:blur(10px); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; border:1px solid rgba(255,255,255,0.1); font-size:.9rem;">Prozkoumat</a>
+        </div>
+      </div>
+      <style>
+        @keyframes float1g { 0%,100% { transform:translate(0,0); } 50% { transform:translate(30px,-20px); } }
+        @keyframes float2g { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-25px,15px); } }
+      </style>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     4. AKTIVITA PRO STUDENTY
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <span class="section-number">06</span>
+  <h2>Aktivita pro studenty (20 minut)</h2>
+  <p class="section-lead">Studenti dostanou hotový kód Split-Screen Hero a plní konkrétní úkoly.</p>
+
+  <div class="card accent">
+    <h4 style="margin-top:0;">📋 Zadání: „Přetvoř Hero sekci podle svého"</h4>
+    <p>Studenti obdrží hotový kód z tutoriálu (sekce 3) a postupně plní tyto výzvy:</p>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-title">Úkol 1 — Změň barevné schéma (5 min)</div>
+      <p>Uprav CSS proměnné <code>--clr-accent</code> a <code>--clr-accent2</code> na vlastní barvy. Použij nástroj <a href="https://coolors.co" target="_blank">coolors.co</a>. Sleduj, jak se změní celý design najednou — to je síla CSS proměnných!</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Úkol 2 — Přidej interaktivní hover efekt na tlačítko (5 min)</div>
+      <p>Primární tlačítko (<code>.btn--primary</code>) musí při hoveru: a) změnit barvu pozadí, b) zvětšit se o 5 % (<code>transform: scale(1.05)</code>), c) zobrazit barevný stín (<code>box-shadow</code>). Nezapomeň na <code>transition</code>!</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Úkol 3 — Změň vizuální hierarchii (5 min)</div>
+      <p>Přesuň badge MEZI nadpis a podnadpis (v HTML přesuň <code>&lt;span class="hero__badge"&gt;</code> za <code>&lt;/h1&gt;</code>), zvětši nadpis o 20 %, zmenši podnadpis. Přidej podtržení pod klíčové slovo pomocí <code>border-bottom</code> nebo <code>text-decoration</code>.</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Úkol 4 — Bonus: vstupní animace + přeuspořádání (5 min)</div>
+      <p>Přidej animaci <code>@keyframes fadeUp</code> (viz nápověda níže) a vyzkoušej si přeuspořádání na mobilu pomocí <code>order: -1</code> na <code>.hero__visual</code> v media query.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">CSS</span><span>Nápověda — vstupní animace fadeUp</span></div>
+    <pre><span class="kw">@keyframes</span> <span class="fn">fadeUp</span> {
+  <span class="kw">from</span> { <span class="pr">opacity</span>: <span class="nb">0</span>; <span class="pr">transform</span>: <span class="fn">translateY</span>(<span class="nb">30px</span>); }
+  <span class="kw">to</span>   { <span class="pr">opacity</span>: <span class="nb">1</span>; <span class="pr">transform</span>: <span class="fn">translateY</span>(<span class="nb">0</span>); }
+}
+
+<span class="kw">.hero__content</span> {
+  <span class="pr">animation</span>: <span class="fn">fadeUp</span> <span class="nb">0.8s</span> <span class="vl">ease-out</span>;
+}
+
+<span class="kw">.hero__visual</span> {
+  <span class="pr">animation</span>: <span class="fn">fadeUp</span> <span class="nb">0.8s</span> <span class="vl">ease-out</span> <span class="nb">0.2s</span>;
+  <span class="pr">animation-fill-mode</span>: <span class="vl">backwards</span>;
+}</pre>
+  </div>
+
+  <div class="explain">
+    <strong>@keyframes</strong> — definuje „scénář" animace. <code>from</code> = počáteční stav (neviditelný, posunutý dolů), <code>to</code> = konečný stav (viditelný, na místě).<br>
+    <strong>animation: fadeUp 0.8s ease-out</strong> — „přehraj animaci ‚fadeUp', trvá 0.8 sekundy, zpomaluje na konci (ease-out)".<br>
+    <strong>0.2s</strong> (čtvrtý parametr) — zpoždění. Obrázek se začne animovat 0.2s po textu, čímž vznikne příjemný „kaskádový" efekt.<br>
+    <strong>animation-fill-mode: backwards</strong> — před začátkem animace (během delay) prvek vypadá jako ve stavu <code>from</code> (neviditelný). Bez toho by na 0.2s problikl na plnou neprůhlednost a pak začal animaci.
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">🏆</span>
+    <div>
+      <strong>Hodnocení aktivity:</strong> Na konci si studenti navzájem ukáží výsledky. Třída hlasuje o nejlepším barevném schématu a nejkreativnějším hover efektu. Sociální zpětná vazba motivuje víc než jakákoliv známka.
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     5. REÁLNÝ PŘESAH + LIGHTHOUSE NÁVOD
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <span class="section-number">07</span>
+  <h2>Reálný přesah — A11y, výkon a měření LCP</h2>
+  <p class="section-lead">Hero sekce není jen o tom, aby vypadala hezky. Její kód přímo ovlivňuje, kdo ji uvidí, jak rychle se načte a jak vysoko se web umístí v Google.</p>
+
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>♿ Přístupnost (A11y)</h4>
+      <p>Sémantické HTML umožňuje čtečkám obrazovky správně interpretovat strukturu. Atribut <code>alt</code> popisuje obsah obrázku pro nevidomé. Kontrastní poměr textu přes overlay musí splňovat WCAG 2.1 (minimálně 4.5:1 pro běžný text, 3:1 pro velký). Dekorativní obrázky mají prázdný <code>alt=""</code>.</p>
+    </div>
+    <div class="card-sm">
+      <h4>⚡ Rychlost (LCP)</h4>
+      <p><strong>Largest Contentful Paint</strong> měří, jak rychle se vykreslí největší prvek (hero obrázek). Cíl: pod 2,5 s. Proto používáme <code>fetchpriority="high"</code>, moderní formáty (AVIF, WebP) a nikdy <code>loading="lazy"</code> na hero obrázek.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div>
+      <strong>Častá chyba:</strong> Nikdy nepoužívejte <code>loading="lazy"</code> na hero obrázek! Lazy loading je skvělý pro obrázky „pod záhybem" (dole na stránce), ale u Hero sekce zhorší LCP, protože obrázek se nezačne stahovat hned.
+    </div>
+  </div>
+
+  <h3>📏 Jak přesně měřit LCP v prohlížeči — Lighthouse krok za krokem</h3>
+  <p>Lighthouse je nástroj zabudovaný přímo v Google Chrome. Nemusíte nic instalovat — stačí otevřít DevTools.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-title">Krok 1 — Otevřete svou stránku v Chrome</div>
+      <p>Spusťte soubor <code>index.html</code> v prohlížeči Google Chrome (lokálně nebo na serveru).</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Krok 2 — Otevřete DevTools</div>
+      <p>Stiskněte <code>F12</code> nebo <code>Ctrl+Shift+I</code> (Windows) / <code>Cmd+Opt+I</code> (Mac). Otevře se panel vývojářských nástrojů.</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Krok 3 — Přejděte na záložku Lighthouse</div>
+      <p>V horním menu DevTools klikněte na záložku <strong>Lighthouse</strong> (může být schovaná za <code>»</code>).</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Krok 4 — Nastavte analýzu</div>
+      <p>Zaškrtněte <strong>Performance</strong> a <strong>Accessibility</strong>. Zvolte mód <strong>Navigation</strong> a zařízení <strong>Mobile</strong> (mobilní simulace je přísnější a reálnější). Klikněte na <strong>Analyze page load</strong>.</p>
+    </div>
+    <div class="step">
+      <div class="step-title">Krok 5 — Přečtěte si výsledky</div>
+      <p>Po několika sekundách se zobrazí skóre (0–100) a konkrétní metriky. Hledejte řádek <strong>Largest Contentful Paint</strong>:</p>
+    </div>
+  </div>
+
+  <!-- DIAGRAM: Lighthouse scores -->
+  <div class="diagram-box">
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; text-align:center;">
+      <div>
+        <div style="width:70px; height:70px; border-radius:50%; border:4px solid #00cec9; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:1.3rem; font-weight:800; color:#00cec9;">≤2.5s</div>
+        <div style="font-size:.82rem; font-weight:600; color:#00cec9;">Dobrý</div>
+        <div style="font-size:.75rem; color:var(--clr-text-muted);">Zelené skóre</div>
+      </div>
+      <div>
+        <div style="width:70px; height:70px; border-radius:50%; border:4px solid #f0932b; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:1.3rem; font-weight:800; color:#f0932b;">≤4.0s</div>
+        <div style="font-size:.82rem; font-weight:600; color:#f0932b;">Vyžaduje zlepšení</div>
+        <div style="font-size:.75rem; color:var(--clr-text-muted);">Oranžové skóre</div>
+      </div>
+      <div>
+        <div style="width:70px; height:70px; border-radius:50%; border:4px solid #e17055; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:1.3rem; font-weight:800; color:#e17055;">&gt;4.0s</div>
+        <div style="font-size:.82rem; font-weight:600; color:#e17055;">Špatný</div>
+        <div style="font-size:.75rem; color:var(--clr-text-muted);">Červené skóre</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">🔬</span>
+    <div>
+      <strong>Tip pro hodinu:</strong> Nechte studenty spustit Lighthouse na svém Hero projektu a porovnat skóre. Kdo má nejrychlejší LCP? Kdo má nejvyšší Accessibility skóre? Tím se abstraktní metriky stanou soutěží — a soutěž motivuje. Lighthouse navíc přesně ukáže, CO zlepšit (např. „obrázek nemá atribut width/height" nebo „kontrastní poměr je příliš nízký").
+    </div>
+  </div>
+
+  <h3>Jak zlepšit LCP — praktické tipy</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Problém</th><th>Řešení</th><th>Dopad na LCP</th></tr></thead>
+      <tbody>
+        <tr><td>Velký obrázek (5 MB JPEG)</td><td>Převést na AVIF/WebP, komprimovat pod 200 KB</td><td>🟢 Výrazný</td></tr>
+        <tr><td>Chybí <code>fetchpriority="high"</code></td><td>Přidat na hero obrázek</td><td>🟢 Výrazný</td></tr>
+        <tr><td>Chybí <code>width</code> a <code>height</code></td><td>Přidat rozměry, aby prohlížeč rezervoval prostor</td><td>🟡 Střední</td></tr>
+        <tr><td>Používá se <code>loading="lazy"</code></td><td>Odstranit z hero obrázku (je above the fold)</td><td>🟢 Výrazný</td></tr>
+        <tr><td>Příliš mnoho fontů</td><td>Omezit na 2 fonty, použít <code>font-display: swap</code></td><td>🟡 Střední</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Tyto principy nejsou „teorie navíc" — jsou to reálné dovednosti, které profesionální vývojáři řeší denně. Student, který chápe souvislost mezi kvalitou kódu a uživatelským zážitkem, má výrazný náskok. Moderní web development je průsečíkem techniky, designu a empatie.</p>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     KOMPLETNÍ KÓD
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="section" id="full-code">
+  <span class="section-number">08</span>
+  <h2>Kompletní kód — vše v jednom</h2>
+  <p class="section-lead">Celý hotový kód Split-Screen Hero v jednom souboru. Studenti ho mohou zkopírovat do editoru a okamžitě upravovat.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">HTML + CSS</span><span>hero-komplet.html — hotové řešení ke zkopírování</span></div>
+    <pre><span class="tg">&lt;!DOCTYPE html&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="st">"cs"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;head&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">charset</span>=<span class="st">"UTF-8"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="st">"viewport"</span> <span class="at">content</span>=<span class="st">"width=device-width, initial-scale=1.0"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;title&gt;</span>Moderní Hero Sekce<span class="tg">&lt;/title&gt;</span>
+  <span class="tg">&lt;style&gt;</span>
+    <span class="kw">:root</span> {
+      <span class="pr">--clr-bg</span>:      <span class="vl">#0f0f1a</span>;
+      <span class="pr">--clr-text</span>:    <span class="vl">#f0f0f5</span>;
+      <span class="pr">--clr-muted</span>:   <span class="vl">#8888a0</span>;
+      <span class="pr">--clr-accent</span>:  <span class="vl">#6c5ce7</span>;
+      <span class="pr">--clr-accent2</span>: <span class="vl">#00cec9</span>;
+      <span class="pr">--radius</span>:      <span class="vl">12px</span>;
+    }
+    <span class="kw">*</span>, <span class="kw">*::before</span>, <span class="kw">*::after</span> {
+      <span class="pr">box-sizing</span>: <span class="vl">border-box</span>; <span class="pr">margin</span>: <span class="nb">0</span>; <span class="pr">padding</span>: <span class="nb">0</span>;
+    }
+    <span class="kw">body</span> {
+      <span class="pr">font-family</span>: <span class="vl">'Segoe UI', system-ui, sans-serif</span>;
+      <span class="pr">background</span>: <span class="fn">var</span>(<span class="pr">--clr-bg</span>); <span class="pr">color</span>: <span class="fn">var</span>(<span class="pr">--clr-text</span>);
+      <span class="pr">line-height</span>: <span class="vl">1.6</span>;
+    }
+    <span class="kw">.hero</span> {
+      <span class="pr">display</span>: <span class="vl">grid</span>;
+      <span class="pr">grid-template-columns</span>: <span class="vl">1fr 1fr</span>;
+      <span class="pr">align-items</span>: <span class="vl">center</span>; <span class="pr">gap</span>: <span class="vl">3rem</span>;
+      <span class="pr">min-height</span>: <span class="vl">100svh</span>; <span class="pr">padding</span>: <span class="vl">2rem 4rem</span>;
+    }
+    <span class="kw">.hero__badge</span> {
+      <span class="pr">display</span>: <span class="vl">inline-block</span>; <span class="pr">padding</span>: <span class="vl">.35rem 1rem</span>;
+      <span class="pr">background</span>: <span class="fn">rgba</span>(<span class="nb">108</span>,<span class="nb">92</span>,<span class="nb">231</span>,<span class="nb">.15</span>);
+      <span class="pr">color</span>: <span class="fn">var</span>(<span class="pr">--clr-accent</span>); <span class="pr">border-radius</span>: <span class="vl">100px</span>;
+      <span class="pr">font-size</span>: <span class="vl">.85rem</span>; <span class="pr">font-weight</span>: <span class="vl">600</span>;
+      <span class="pr">margin-bottom</span>: <span class="vl">1.5rem</span>;
+    }
+    <span class="kw">.hero__title</span> {
+      <span class="pr">font-size</span>: <span class="fn">clamp</span>(<span class="nb">2rem</span>, <span class="nb">5vw</span> + <span class="nb">1rem</span>, <span class="nb">4rem</span>);
+      <span class="pr">font-weight</span>: <span class="vl">800</span>; <span class="pr">line-height</span>: <span class="vl">1.1</span>;
+      <span class="pr">text-wrap</span>: <span class="vl">balance</span>; <span class="pr">margin-bottom</span>: <span class="vl">1rem</span>;
+    }
+    <span class="kw">.hero__highlight</span> {
+      <span class="pr">background</span>: <span class="fn">linear-gradient</span>(<span class="nb">135deg</span>,
+        <span class="fn">var</span>(<span class="pr">--clr-accent</span>), <span class="fn">var</span>(<span class="pr">--clr-accent2</span>));
+      <span class="pr">-webkit-background-clip</span>: <span class="vl">text</span>; <span class="pr">background-clip</span>: <span class="vl">text</span>;
+      <span class="pr">-webkit-text-fill-color</span>: <span class="vl">transparent</span>;
+    }
+    <span class="kw">.hero__text</span> {
+      <span class="pr">font-size</span>: <span class="fn">clamp</span>(<span class="nb">1rem</span>, <span class="nb">1vw</span> + <span class="nb">.75rem</span>, <span class="nb">1.2rem</span>);
+      <span class="pr">color</span>: <span class="fn">var</span>(<span class="pr">--clr-muted</span>); <span class="pr">max-width</span>: <span class="vl">45ch</span>;
+      <span class="pr">margin-bottom</span>: <span class="vl">2rem</span>;
+    }
+    <span class="kw">.hero__actions</span> { <span class="pr">display</span>:<span class="vl">flex</span>; <span class="pr">gap</span>:<span class="vl">1rem</span>; <span class="pr">flex-wrap</span>:<span class="vl">wrap</span>; }
+    <span class="kw">.btn</span> {
+      <span class="pr">display</span>: <span class="vl">inline-flex</span>; <span class="pr">padding</span>: <span class="vl">.8rem 1.8rem</span>;
+      <span class="pr">border-radius</span>: <span class="fn">var</span>(<span class="pr">--radius</span>); <span class="pr">font-weight</span>: <span class="vl">600</span>;
+      <span class="pr">text-decoration</span>: <span class="vl">none</span>;
+      <span class="pr">transition</span>: <span class="vl">transform .2s, box-shadow .2s</span>;
+    }
+    <span class="kw">.btn--primary</span> { <span class="pr">background</span>:<span class="fn">var</span>(<span class="pr">--clr-accent</span>); <span class="pr">color</span>:<span class="vl">#fff</span>; }
+    <span class="kw">.btn--secondary</span> {
+      <span class="pr">background</span>:<span class="vl">transparent</span>; <span class="pr">color</span>:<span class="fn">var</span>(<span class="pr">--clr-text</span>);
+      <span class="pr">border</span>: <span class="vl">2px solid rgba(255,255,255,.2)</span>;
+    }
+    <span class="kw">.btn:hover</span> {
+      <span class="pr">transform</span>: <span class="fn">translateY</span>(<span class="nb">-2px</span>);
+      <span class="pr">box-shadow</span>: <span class="vl">0 8px 25px rgba(108,92,231,.3)</span>;
+    }
+    <span class="kw">.hero__image</span> {
+      <span class="pr">width</span>: <span class="vl">100%</span>; <span class="pr">max-height</span>: <span class="vl">520px</span>;
+      <span class="pr">object-fit</span>: <span class="vl">cover</span>; <span class="pr">border-radius</span>: <span class="vl">20px</span>;
+    }
+    <span class="cm">/* Animace */</span>
+    <span class="kw">@keyframes</span> <span class="fn">fadeUp</span> {
+      <span class="kw">from</span> { <span class="pr">opacity</span>:<span class="nb">0</span>; <span class="pr">transform</span>:<span class="fn">translateY</span>(<span class="nb">30px</span>); }
+      <span class="kw">to</span>   { <span class="pr">opacity</span>:<span class="nb">1</span>; <span class="pr">transform</span>:<span class="fn">translateY</span>(<span class="nb">0</span>); }
+    }
+    <span class="kw">.hero__content</span> { <span class="pr">animation</span>: <span class="fn">fadeUp</span> <span class="nb">.8s</span> <span class="vl">ease-out</span>; }
+    <span class="kw">.hero__visual</span>  {
+      <span class="pr">animation</span>: <span class="fn">fadeUp</span> <span class="nb">.8s</span> <span class="vl">ease-out</span> <span class="nb">.2s</span>;
+      <span class="pr">animation-fill-mode</span>: <span class="vl">backwards</span>;
+    }
+    <span class="cm">/* Responzivita + přeuspořádání */</span>
+    <span class="kw">@media</span> (<span class="pr">max-width</span>: <span class="nb">768px</span>) {
+      <span class="kw">.hero</span> {
+        <span class="pr">grid-template-columns</span>: <span class="vl">1fr</span>;
+        <span class="pr">padding</span>: <span class="vl">2rem 1.5rem</span>; <span class="pr">text-align</span>: <span class="vl">center</span>;
+      }
+      <span class="kw">.hero__visual</span>  { <span class="pr">order</span>: <span class="nb">-1</span>; }
+      <span class="kw">.hero__actions</span> { <span class="pr">justify-content</span>: <span class="vl">center</span>; }
+      <span class="kw">.hero__image</span>   { <span class="pr">max-height</span>: <span class="vl">280px</span>; }
+    }
+  <span class="tg">&lt;/style&gt;</span>
+<span class="tg">&lt;/head&gt;</span>
+<span class="tg">&lt;body&gt;</span>
+  <span class="tg">&lt;header</span> <span class="at">class</span>=<span class="st">"hero"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__content"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;span</span> <span class="at">class</span>=<span class="st">"hero__badge"</span><span class="tg">&gt;</span>🚀 Nový kurz 2026<span class="tg">&lt;/span&gt;</span>
+      <span class="tg">&lt;h1</span> <span class="at">class</span>=<span class="st">"hero__title"</span><span class="tg">&gt;</span>Nauč se tvořit
+        <span class="tg">&lt;span</span> <span class="at">class</span>=<span class="st">"hero__highlight"</span><span class="tg">&gt;</span>moderní weby<span class="tg">&lt;/span&gt;&lt;/h1&gt;</span>
+      <span class="tg">&lt;p</span> <span class="at">class</span>=<span class="st">"hero__text"</span><span class="tg">&gt;</span>Od první řádky HTML po responzivní design.
+        Prakticky, srozumitelně, krok za krokem.<span class="tg">&lt;/p&gt;</span>
+      <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__actions"</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#"</span> <span class="at">class</span>=<span class="st">"btn btn--primary"</span><span class="tg">&gt;</span>Začít zdarma<span class="tg">&lt;/a&gt;</span>
+        <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#"</span> <span class="at">class</span>=<span class="st">"btn btn--secondary"</span><span class="tg">&gt;</span>Ukázka projektu<span class="tg">&lt;/a&gt;</span>
+      <span class="tg">&lt;/div&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"hero__visual"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;img</span> <span class="at">src</span>=<span class="st">"https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800"</span>
+           <span class="at">alt</span>=<span class="st">"Student kóduje"</span> <span class="at">class</span>=<span class="st">"hero__image"</span>
+           <span class="at">fetchpriority</span>=<span class="st">"high"</span> <span class="at">width</span>=<span class="st">"800"</span> <span class="at">height</span>=<span class="st">"600"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;/header&gt;</span>
+<span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span></pre>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="material-footer">
+  <p>Výukový materiál pro učitele SŠ — Tvorba moderních Hero sekcí · 2025/2026</p>
+  <p style="margin-top:.5rem;">Vytvořeno na základě výzkumného materiálu „Architektura, typologie a didaktika moderních hero sekcí v kontextu webového vývoje 2025" a aktuálních zdrojů z webu.</p>
+</footer>
+
+</body>
+</html>

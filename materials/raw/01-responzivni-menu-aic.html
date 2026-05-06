@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responzivní navigační menu – Výukový materiál pro učitele</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --text: #2d2d3d;
+    --muted: #6b6b80;
+    --accent: #3d5afe;
+    --accent-light: #e8eaff;
+    --accent-dark: #2a3eb1;
+    --bg: #faf9f7;
+    --card: #ffffff;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --tip-bg: #e8f0fe;
+    --tip-border: #4285f4;
+    --warn-bg: #fef7e0;
+    --warn-border: #f9a825;
+    --success-bg: #e6f4ea;
+    --success-border: #34a853;
+    --diagram-bg: #f0f0f8;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', 'Consolas', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 17px; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--ink);
+    color: white;
+    padding: 4rem 2rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(61,90,254,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(130,100,255,0.1) 0%, transparent 60%);
+  }
+  .site-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    position: relative;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+  .site-header .subtitle {
+    font-size: 1.15rem;
+    opacity: 0.75;
+    font-weight: 400;
+    position: relative;
+  }
+  .site-header .tags {
+    margin-top: 1.2rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .site-header .tag {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.25rem 0.85rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    max-width: 780px;
+    margin: -1.5rem auto 2rem;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  .toc h2 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+  .toc ol {
+    counter-reset: toc;
+    list-style: none;
+    columns: 2;
+    column-gap: 2rem;
+  }
+  .toc li {
+    counter-increment: toc;
+    break-inside: avoid;
+    margin-bottom: 0.35rem;
+  }
+  .toc li::before {
+    content: counter(toc) ".";
+    display: inline-block;
+    width: 2em;
+    color: var(--accent);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* ── STEP CARDS ── */
+  .step {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border-top: 4px solid var(--accent);
+  }
+  .step-number {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.2rem 0.9rem;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  h2 {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 1.8rem 0 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  h3 .icon { font-size: 1.2rem; }
+  h4 {
+    font-weight: 600;
+    color: var(--ink);
+    margin: 1.4rem 0 0.5rem;
+    font-size: 1rem;
+  }
+  p { margin-bottom: 1rem; }
+  strong { color: var(--ink); }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 1rem 0 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    tab-size: 2;
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+  }
+  .comment { color: #6c7086; font-style: italic; }
+  .keyword { color: #cba6f7; }
+  .string { color: #a6e3a1; }
+  .property { color: #89b4fa; }
+  .value { color: #f9e2af; }
+  .tag-name { color: #f38ba8; }
+  .attr { color: #fab387; }
+  .punctuation { color: #9399b2; }
+
+  /* ── INFO BOXES ── */
+  .box {
+    padding: 1.2rem 1.4rem;
+    border-radius: 10px;
+    margin: 1.2rem 0;
+    border-left: 5px solid;
+    font-size: 0.95rem;
+  }
+  .box p:last-child { margin-bottom: 0; }
+  .box-tip { background: var(--tip-bg); border-color: var(--tip-border); }
+  .box-warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .box-success { background: var(--success-bg); border-color: var(--success-border); }
+  .box-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+  }
+  .box-tip .box-label { color: var(--tip-border); }
+  .box-warn .box-label { color: #e65100; }
+  .box-success .box-label { color: #1b5e20; }
+
+  /* ── DIAGRAMS ── */
+  .diagram {
+    background: var(--diagram-bg);
+    border: 2px dashed #c0c0d0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.2rem 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .diagram .label {
+    font-family: var(--sans);
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── VISUAL DEMO BOXES ── */
+  .visual-demo {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin: 1rem 0 1.2rem;
+  }
+  .visual-demo .demo-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── TABLES ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.2rem;
+    font-size: 0.92rem;
+  }
+  th {
+    background: var(--ink);
+    color: white;
+    text-align: left;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child { border-radius: 0 8px 0 0; }
+  td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #e8e8ee;
+  }
+  tr:nth-child(even) td { background: #f8f8fc; }
+
+  /* ── LISTS ── */
+  ul, ol { padding-left: 1.6rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.4rem; }
+
+  /* ── PRINT ── */
+  @media print {
+    .site-header { padding: 2rem; }
+    .step { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    pre { font-size: 0.75rem; }
+    .toc { box-shadow: none; border: 1px solid #ddd; }
+  }
+
+  @media (max-width: 600px) {
+    html { font-size: 15px; }
+    .step { padding: 1.5rem; }
+    .toc ol { columns: 1; }
+    .site-header { padding: 2.5rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<header class="site-header">
+  <h1>Responzivní navigační menu</h1>
+  <p class="subtitle">Podrobný průvodce kódováním pro studenty gymnázia – materiál pro učitele</p>
+  <div class="tags">
+    <span class="tag">HTML</span>
+    <span class="tag">CSS Flexbox</span>
+    <span class="tag">Media Queries</span>
+    <span class="tag">JavaScript</span>
+    <span class="tag">Responzivní design</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ TOC ═══════════════════════════════════ -->
+<nav class="toc">
+  <h2>Obsah</h2>
+  <ol>
+    <li><a href="#uvod">Úvod a cíle hodiny</a></li>
+    <li><a href="#krok1">HTML kostra stránky</a></li>
+    <li><a href="#krok2">CSS reset a box-sizing</a></li>
+    <li><a href="#krok3">Flexbox na navigační lištu</a></li>
+    <li><a href="#krok4">Seznam odkazů jako flex kontejner</a></li>
+    <li><a href="#krok5">Odkazy jako tlačítka (padding)</a></li>
+    <li><a href="#krok6">Hover efekt s transition</a></li>
+    <li><a href="#krok7">Responzivita a media queries</a></li>
+    <li><a href="#krok8">Hamburger tlačítko v HTML</a></li>
+    <li><a href="#krok9">Stylování hamburgeru – ::before a ::after</a></li>
+    <li><a href="#krok10">Media query pro mobilní zobrazení</a></li>
+    <li><a href="#krok11">JavaScript – otevírání/zavírání</a></li>
+    <li><a href="#krok12">Animace hamburgeru na křížek</a></li>
+    <li><a href="#shrnuti">Shrnutí a tipy pro výuku</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════ ÚVOD ═══════════════════════════════════ -->
+<section class="step" id="uvod">
+  <span class="step-number">ÚVOD</span>
+  <h2>Úvod a cíle hodiny</h2>
+
+  <p>Tento materiál vás provede <strong>postupným kódováním responzivního navigačního menu</strong> od úplné nuly až po funkční hamburger menu s animací. Každý krok staví na předchozím a je doprovázen kódem, podrobným vysvětlením každého řádku a konkrétními návrhy, jak danou látku předat studentům srozumitelně a názorně.</p>
+
+  <p>Cílem není jen „opsat kód, aby fungoval" – ale aby studenti porozuměli <strong>principům</strong>. Proto každý krok obsahuje:</p>
+  <ul>
+    <li><strong>Kód</strong> – co přesně napsat</li>
+    <li><strong>Řádek po řádku</strong> – co každý řádek dělá a proč</li>
+    <li><strong>Jak to vysvětlit</strong> – analogie, co nakreslit na tabuli, co ukázat v prohlížeči</li>
+    <li><strong>Časté chyby</strong> – na co si dát pozor</li>
+  </ul>
+
+  <h3><span class="icon">🎯</span> Co studenti zvládnou na konci</h3>
+  <ul>
+    <li>Vytvořit sémantickou HTML strukturu navigace</li>
+    <li>Rozložit prvky vedle sebe pomocí CSS Flexbox a chápat, co jednotlivé vlastnosti dělají</li>
+    <li>Nastavit klikací plochu odkazu pomocí <code>padding</code> tak, aby fungoval jako tlačítko</li>
+    <li>Přidat plynulý hover efekt pomocí <code>transition</code></li>
+    <li>Použít <code>@media</code> queries pro přizpůsobení různým šířkám obrazovky</li>
+    <li>Vytvořit hamburger ikonu pomocí CSS pseudo-elementů <code>::before</code> a <code>::after</code></li>
+    <li>Naprogramovat otevírání/zavírání menu v JavaScriptu</li>
+  </ul>
+
+  <h3><span class="icon">📋</span> Předpokládané znalosti</h3>
+  <p>Studenti by měli znát základní HTML tagy (<code>&lt;h1&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;div&gt;</code>, <code>&lt;ul&gt;</code>/<code>&lt;li&gt;</code>), umět otevřít HTML soubor v prohlížeči a mít alespoň základní představu o CSS (co je selektor, vlastnost a hodnota). Pokud studenti CSS ještě nepoužívali, doporučujeme začít úplným základem – co je <code>&lt;style&gt;</code> tag, jak funguje selektor.</p>
+
+  <div class="box box-tip">
+    <div class="box-label">⏱️ Časový odhad</div>
+    <p><strong>3–4 vyučovací hodiny (135–180 minut).</strong> Kroky 1–6 tvoří první hodinu (základní navigace s hover efektem). Kroky 7–10 druhou hodinu (responzivita a hamburger CSS). Kroky 11–12 třetí hodinu (JavaScript a animace). Čtvrtá hodina je na experimenty, individuální úpravy a bonusové úkoly.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 1 ═══════════════════════════════════ -->
+<section class="step" id="krok1">
+  <span class="step-number">KROK 1</span>
+  <h2>Základní HTML kostra stránky</h2>
+
+  <h3><span class="icon">🏗️</span> Co stavíme a proč</h3>
+  <p>Každá webová stránka začíná HTML strukturou. HTML je <strong>„kostra" stránky</strong> – říká prohlížeči, jaké prvky na stránce jsou, v jakém pořadí a jaký mají význam. V tomto kroku vytvoříme kompletní HTML soubor s navigační lištou.</p>
+  <p>Zatím <strong>bez žádného CSS</strong> – v prohlížeči se zobrazí jen nenaformátovaný seznam odkazů. A to je naprosto správně! Postup je vždy: <strong>nejdříve struktura, pak vzhled</strong>.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="punctuation">&lt;!</span><span class="keyword">DOCTYPE</span> <span class="attr">html</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;</span><span class="tag-name">html</span> <span class="attr">lang</span>=<span class="string">"cs"</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;</span><span class="tag-name">head</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;</span><span class="tag-name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;</span><span class="tag-name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span>
+        <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;</span><span class="tag-name">title</span><span class="punctuation">&gt;</span>Moje stránka<span class="punctuation">&lt;/</span><span class="tag-name">title</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;</span><span class="tag-name">style</span><span class="punctuation">&gt;</span>
+    <span class="comment">/* Sem budeme psát CSS */</span>
+  <span class="punctuation">&lt;/</span><span class="tag-name">style</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;/</span><span class="tag-name">head</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;</span><span class="tag-name">body</span><span class="punctuation">&gt;</span>
+
+  <span class="punctuation">&lt;</span><span class="tag-name">nav</span> <span class="attr">class</span>=<span class="string">"navbar"</span><span class="punctuation">&gt;</span>
+    <span class="punctuation">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__logo"</span><span class="punctuation">&gt;</span>MůjWeb<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;</span>
+
+    <span class="punctuation">&lt;</span><span class="tag-name">ul</span> <span class="attr">class</span>=<span class="string">"navbar__menu"</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>Domů<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>O nás<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>Služby<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>Portfolio<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>Blog<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+      <span class="punctuation">&lt;</span><span class="tag-name">li</span><span class="punctuation">&gt;&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"navbar__link"</span><span class="punctuation">&gt;</span>Kontakt<span class="punctuation">&lt;/</span><span class="tag-name">a</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">li</span><span class="punctuation">&gt;</span>
+    <span class="punctuation">&lt;/</span><span class="tag-name">ul</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;/</span><span class="tag-name">nav</span><span class="punctuation">&gt;</span>
+
+<span class="punctuation">&lt;/</span><span class="tag-name">body</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;/</span><span class="tag-name">html</span><span class="punctuation">&gt;</span></code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení každého řádku</h3>
+
+  <h4><code>&lt;!DOCTYPE html&gt;</code></h4>
+  <p>Říká prohlížeči: <em>„Toto je moderní HTML5 dokument."</em> Musí být vždy na úplně prvním řádku souboru. Bez něj by prohlížeč mohl přepnout do starého režimu vykreslování (tzv. „quirks mode"), kde se některé věci chovají jinak.</p>
+
+  <h4><code>&lt;html lang="cs"&gt;</code></h4>
+  <p>Kořenový element celé stránky – vše ostatní je uvnitř něj. Atribut <code>lang="cs"</code> říká, že stránka je česky. Proč na tom záleží? Čtečky obrazovky (pro nevidomé) díky tomu vědí, že mají text číst českou výslovností. Google díky tomu nabídne stránku českým uživatelům.</p>
+
+  <h4><code>&lt;meta charset="UTF-8"&gt;</code></h4>
+  <p>Nastaví kódování znaků. UTF-8 je univerzální kódování, které podporuje háčky, čárky, čínštinu, emoji – prakticky všechno. <strong>Bez tohoto řádku</strong> se české znaky mohou zobrazit jako „rozbitý" text (místo „ř" uvidíte „Å™").</p>
+
+  <h4><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></h4>
+  <p>Toto je <strong>naprosto klíčový řádek pro responzivní design</strong>. Co dělá:</p>
+  <ul>
+    <li><code>width=device-width</code> – říká: „Šířka stránky = šířka obrazovky zařízení" (ne výchozích 980 px, které mobily předpokládají)</li>
+    <li><code>initial-scale=1.0</code> – „Nezoomovat, zobrazit v měřítku 1:1"</li>
+  </ul>
+  <p><strong>Bez tohoto řádku</strong> mobilní prohlížeč zobrazí stránku zmenšenou – jako byste se na celou desktopovou stránku dívali přes malý průzor. Uživatel by musel neustále zoomovat a scrollovat.</p>
+
+  <h4><code>&lt;nav class="navbar"&gt;</code></h4>
+  <p>Sémantický HTML5 tag pro navigaci. Prohlížeč díky němu ví, že obsah uvnitř je navigace. Čtečky obrazovky oznámí: <em>„Nyní jste v navigační oblasti."</em> Mohli bychom použít <code>&lt;div&gt;</code>, ale <code>&lt;nav&gt;</code> má <strong>význam</strong> (sémantiku).</p>
+
+  <h4><code>&lt;ul&gt;</code> a <code>&lt;li&gt;</code></h4>
+  <p>Neřazený seznam. Navigace skutečně <strong>je</strong> seznam odkazů, takže je sémanticky správné použít seznamové tagy. Každá položka menu je <code>&lt;li&gt;</code> (list item) a uvnitř ní je odkaz <code>&lt;a&gt;</code>.</p>
+
+  <h4><code>class="navbar__link"</code></h4>
+  <p>Atribut <code>class</code> pojmenovává element pro CSS. Používáme tzv. <strong>BEM konvenci</strong>:</p>
+  <ul>
+    <li><code>navbar</code> = „blok" (celá navigace)</li>
+    <li><code>__link</code> = „element" (součást bloku)</li>
+    <li>Čteme: „link, který patří do navbaru"</li>
+  </ul>
+  <p>Není to povinné, ale dělá kód čitelnějším – na první pohled víte, co k čemu patří.</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie s domem:</strong> HTML je jako surová stavba – zdi, dveře, okna. Zatím je to šedivý beton, ale všechno je na svém místě. CSS bude malíř, který vše vymaluje a nastyluje. JavaScript bude elektrikář, který zapojí vypínače, aby se něco dělo po stisknutí. <strong>Teď stavíme zdi.</strong></p>
+
+  <p><strong>Po uložení souboru:</strong> Nechte studenty otevřít soubor v prohlížeči. Uvidí nenaformátovaný seznam s odrážkami a modrými podtrženými odkazy. Řekněte: <em>„Takhle vypadá holé HTML. Každý web, který znáte – Instagram, YouTube, Seznam – začínal takhle. Jako obyčejný text. Teď to začneme měnit pomocí CSS."</em></p>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Tip na tabuli</div>
+    <p>Nakreslete jednoduchý obrázek: velký obdélník (nav), uvnitř vlevo text „Logo", vpravo řadu malých obdélníků (odkazy menu). Řekněte: <em>„Tohle chceme. Teď máme holou kostru, v dalším kroku ji začneme formovat."</em></p>
+  </div>
+
+  <div class="box box-warn">
+    <div class="box-label">⚠️ Častá chyba studentů</div>
+    <p>Zapomenou uzavřít tag (chybějící <code>&lt;/li&gt;</code> nebo <code>&lt;/ul&gt;</code>). Prohlížeč chybu „opraví" sám, což může vést k nepředvídatelným problémům později. Ukažte studentům, jak v DevTools (F12 → Elements) zkontrolovat, že struktura je správná – prohlížeč tam zobrazuje skutečnou strukturu, včetně svých „oprav".</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 2 ═══════════════════════════════════ -->
+<section class="step" id="krok2">
+  <span class="step-number">KROK 2</span>
+  <h2>CSS reset a box-sizing</h2>
+
+  <h3><span class="icon">🧹</span> Proč potřebujeme CSS reset</h3>
+  <p>Každý prohlížeč (Chrome, Firefox, Safari, Edge) má své <strong>výchozí styly</strong>. Například:</p>
+  <ul>
+    <li><code>&lt;body&gt;</code> má v Chrome automaticky <code>margin: 8px</code> – proto je kolem stránky malá mezera</li>
+    <li><code>&lt;ul&gt;</code> má <code>padding-left: 40px</code> – proto je seznam odsazený zleva</li>
+    <li><code>&lt;h1&gt;</code> má velký <code>margin</code> nahoře i dole</li>
+  </ul>
+  <p>To znamená, že stejný HTML kód může vypadat <strong>mírně jinak</strong> v různých prohlížečích. CSS reset toto sjednocuje – řekneme: <em>„Zapomeň na výchozí hodnoty, všechno začíná od nuly."</em></p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+  <p>Vše píšeme dovnitř tagu <code>&lt;style&gt;</code> v <code>&lt;head&gt;</code>:</p>
+<pre><code><span class="comment">/* CSS RESET */</span>
+<span class="keyword">*</span>, <span class="keyword">*::before</span>, <span class="keyword">*::after</span> {
+  <span class="property">margin</span>: <span class="value">0</span>;
+  <span class="property">padding</span>: <span class="value">0</span>;
+  <span class="property">box-sizing</span>: <span class="value">border-box</span>;
+}
+
+<span class="keyword">body</span> {
+  <span class="property">font-family</span>: <span class="value">'Segoe UI', Tahoma, sans-serif</span>;
+  <span class="property">background</span>: <span class="value">#f0f2f5</span>;
+  <span class="property">color</span>: <span class="value">#1a1a2e</span>;
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>Hvězdička <code>*</code> – univerzální selektor</h4>
+  <p>Hvězdička v CSS znamená <strong>„všechny elementy na stránce"</strong>. Takže <code>* { margin: 0; }</code> říká: „U všech elementů nastav margin na nulu." Tím odstraníme výchozí mezery prohlížeče.</p>
+
+  <h4><code>*::before</code> a <code>*::after</code></h4>
+  <p>Tyto selektory říkají: „Také na všechny pseudo-elementy aplikuj reset." Pseudo-elementy si podrobně vysvětlíme v kroku 9. Zatím stačí vědět, že je dobré je do resetu zahrnout, aby se chovaly konzistentně.</p>
+
+  <h4><code>box-sizing: border-box</code> – klíčový koncept</h4>
+  <p>Toto je jedna z <strong>nejdůležitějších CSS vlastností</strong> a zároveň jedna z nejčastějších příčin zmatku u začátečníků. Vysvětlení:</p>
+  <p>Ve výchozím stavu (<code>content-box</code>) se šířka elementu počítá takto:</p>
+
+  <div class="diagram">
+    <div class="label">content-box (výchozí chování)</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+Nastavíte:    width: 200px;  padding: 20px;  border: 2px;
+
+Skutečná šířka na obrazovce:
+  200px (obsah) + 20px (padding vlevo) + 20px (padding vpravo)
+                + 2px (border vlevo)   + 2px (border vpravo)
+  = 244 px  ← PŘEKVAPENÍ! Element je širší, než jste chtěli.</pre>
+  </div>
+
+  <p>S <code>border-box</code> se to změní:</p>
+
+  <div class="diagram">
+    <div class="label">border-box (po nastavení)</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+Nastavíte:    width: 200px;  padding: 20px;  border: 2px;
+
+Skutečná šířka na obrazovce:
+  200 px  ← přesně to, co jste chtěli!
+
+Prohlížeč AUTOMATICKY zmenší prostor pro obsah:
+  200px - 20px - 20px - 2px - 2px = 156px pro obsah</pre>
+  </div>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie s krabicí od bot:</strong></p>
+  <p>Představte si, že si objednáte krabici přesně 30 cm širokou.</p>
+  <ul>
+    <li><strong>content-box</strong> = dovnitř dáte polstrování (molitanové výplně) a krabice <em>naroste</em> – je najednou 36 cm. To nechcete, protože se vám nevejde na poličku.</li>
+    <li><strong>border-box</strong> = krabice zůstane 30 cm. Polstrování jde <em>dovnitř</em> – zmenší se prostor uvnitř, ale vnější rozměr se nezmění. Krabice se vejde na poličku.</li>
+  </ul>
+  <p><strong>Proto vždy nastavujeme <code>border-box</code></strong> – šířky se chovají intuitivně a předvídatelně.</p>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Praktická ukázka v DevTools</div>
+    <p>Otevřete DevTools (F12), klikněte na jakýkoli element a v záložce „Computed" uvidíte tzv. <strong>box model diagram</strong> – obdélník s vrstvami content, padding, border, margin. Ukažte studentům, jak se rozměry mění, když přepnete box-sizing.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 3 ═══════════════════════════════════ -->
+<section class="step" id="krok3">
+  <span class="step-number">KROK 3</span>
+  <h2>Flexbox na navigační lištu</h2>
+
+  <h3><span class="icon">📦</span> Co je Flexbox a proč ho používáme</h3>
+  <p>Flexbox (Flexible Box Layout) je CSS nástroj pro <strong>rozložení prvků v řadě nebo sloupci</strong>. Před flexboxem bylo zarovnávání prvků vedle sebe noční můrou (používaly se float, inline-block, tabulky…). Flexbox tohle všechno vyřešil jedním řádkem: <code>display: flex</code>.</p>
+
+  <p>Když na element aplikujete <code>display: flex</code>, stane se z něj <strong>flex kontejner</strong>. Jeho přímé děti se automaticky seřadí vedle sebe a získáte mocné nástroje pro jejich zarovnávání.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="keyword">.navbar</span> {
+  <span class="property">display</span>: <span class="value">flex</span>;                    <span class="comment">/* ① aktivuje flexbox */</span>
+  <span class="property">align-items</span>: <span class="value">center</span>;             <span class="comment">/* ② svislé zarovnání */</span>
+  <span class="property">justify-content</span>: <span class="value">space-between</span>;  <span class="comment">/* ③ vodorovné rozložení */</span>
+  <span class="property">background</span>: <span class="value">#1a1a2e</span>;
+  <span class="property">padding</span>: <span class="value">0 2rem</span>;
+  <span class="property">min-height</span>: <span class="value">64px</span>;
+  <span class="property">position</span>: <span class="value">relative</span>;             <span class="comment">/* referenční bod pro mobilní menu */</span>
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>① <code>display: flex</code></h4>
+  <p>Toto je „kouzelný přepínač". Říká: <em>„Tento element je teď flex kontejner. Všechny jeho přímé děti se stanou flex položkami a seřadí se vedle sebe."</em></p>
+  <p>V našem případě je <code>.navbar</code> kontejner a jeho přímé děti jsou:</p>
+  <ul>
+    <li><code>&lt;a class="navbar__logo"&gt;</code> (logo)</li>
+    <li><code>&lt;ul class="navbar__menu"&gt;</code> (seznam odkazů)</li>
+  </ul>
+  <p>Tyto dva prvky se díky flexboxu automaticky seřadí vedle sebe.</p>
+
+  <h4>② <code>align-items: center</code></h4>
+  <p>Zarovná flex položky <strong>svisle</strong> (na tzv. příčné/cross ose) na střed. Bez tohoto by se logo a menu zarovnala k hornímu okraji lišty. S tímto jsou pěkně vycentrované svisle.</p>
+
+  <div class="diagram">
+    <div class="label">Porovnání align-items</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+align-items: flex-start       align-items: center         align-items: flex-end
+┌──────────────────────┐     ┌──────────────────────┐     ┌──────────────────────┐
+│ Logo      Menu       │     │                      │     │                      │
+│                      │     │ Logo      Menu       │     │                      │
+│                      │     │                      │     │ Logo      Menu       │
+└──────────────────────┘     └──────────────────────┘     └──────────────────────┘
+  (nahoře)                     (uprostřed) ✓                (dole)</pre>
+  </div>
+
+  <h4>③ <code>justify-content: space-between</code></h4>
+  <p>Rozloží flex položky <strong>vodorovně</strong> (na hlavní/main ose) tak, že <strong>první jde k levému okraji, poslední k pravému</strong>, a mezera mezi nimi se rozdělí rovnoměrně.</p>
+
+  <div class="diagram">
+    <div class="label">Porovnání justify-content</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+flex-start            center              space-between          space-around
+┌────────────────┐   ┌────────────────┐   ┌────────────────┐   ┌────────────────┐
+│[A][B]          │   │     [A][B]     │   │[A]          [B]│   │  [A]    [B]    │
+└────────────────┘   └────────────────┘   └────────────────┘   └────────────────┘
+ (vše vlevo)          (vše uprostřed)      (krajní k okrajům)✓   (rovnoměrné mezery)</pre>
+  </div>
+
+  <p>V našem případě máme dva flex potomky (logo a menu), takže <code>space-between</code> posune logo doleva a menu doprava – přesně to, co chceme.</p>
+
+  <h4><code>padding: 0 2rem</code></h4>
+  <p>Zkratka pro: <strong>0</strong> nahoře a dole, <strong>2rem</strong> vlevo a vpravo. Vytvoří vnitřní odsazení, aby obsah nebyl nalepený na kraji. Jednotka <code>rem</code> je relativní k velikosti písma na <code>&lt;html&gt;</code> elementu (výchozí 16px, takže 2rem = 32px).</p>
+
+  <h4><code>min-height: 64px</code></h4>
+  <p>Nastaví minimální výšku lišty. Proč <code>min-height</code> a ne <code>height</code>? Protože <code>min-height</code> říká: „Buď alespoň takhle vysoká, ale pokud obsah potřebuje víc místa, klidně narosť." To je bezpečnější.</p>
+
+  <h4><code>position: relative</code></h4>
+  <p>Tento řádek zatím zdánlivě nic nedělá – uvidíme ho v akci až v kroku 10. Říká: <em>„Jsem referenční bod pro svoje potomky s position: absolute."</em> Mobilní menu bude mít <code>position: absolute</code> a díky tomuto řádku se umístí přesně pod navigační lištu, ne někam jinam na stránce. Přidáváme ho už teď, abychom na něj později nezapomněli.</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie s poličkou na knížky:</strong></p>
+  <p>Představte si polici na knihy. Knihy (= dětské elementy) stojí vedle sebe. Flexbox je ta polička – určuje:</p>
+  <ul>
+    <li>Jestli knihy stojí <strong>vedle sebe</strong> (row – výchozí) nebo <strong>na sobě</strong> (column)</li>
+    <li>Jestli jsou <strong>vlevo</strong>, <strong>uprostřed</strong>, nebo <strong>rozmístěné po celé poličce</strong> (justify-content)</li>
+    <li>Jestli jsou zarovnané k <strong>hornímu okraji</strong> poličky, <strong>dolnímu</strong>, nebo <strong>na střed</strong> (align-items)</li>
+  </ul>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Praktická ukázka</div>
+    <p>Po přidání CSS nechte studenty obnovit stránku. Najednou se logo posune doleva a menu doprava na tmavém pozadí. Řekněte: <em>„Tři řádky CSS – display: flex, align-items, justify-content – a máme základ navigační lišty. To je síla flexboxu."</em></p>
+    <p>Pak v DevTools zkuste měnit <code>justify-content</code> na různé hodnoty (center, flex-start, space-around) – studenti v reálném čase uvidí, co která hodnota dělá.</p>
+  </div>
+
+  <h3><span class="icon">📊</span> Přehled flexbox vlastností</h3>
+  <table>
+    <tr><th>Vlastnost</th><th>Aplikuje se na</th><th>Co dělá</th></tr>
+    <tr><td><code>display: flex</code></td><td>kontejner</td><td>Aktivuje flexbox – děti se seřadí vedle sebe</td></tr>
+    <tr><td><code>flex-direction</code></td><td>kontejner</td><td><code>row</code> = vedle sebe (výchozí), <code>column</code> = pod sebe</td></tr>
+    <tr><td><code>justify-content</code></td><td>kontejner</td><td>Rozložení na hlavní ose (vodorovně při row)</td></tr>
+    <tr><td><code>align-items</code></td><td>kontejner</td><td>Zarovnání na příčné ose (svisle při row)</td></tr>
+    <tr><td><code>gap</code></td><td>kontejner</td><td>Mezera mezi položkami</td></tr>
+    <tr><td><code>flex-wrap</code></td><td>kontejner</td><td><code>wrap</code> = povolí zalamování na nový řádek</td></tr>
+  </table>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 4 ═══════════════════════════════════ -->
+<section class="step" id="krok4">
+  <span class="step-number">KROK 4</span>
+  <h2>Seznam odkazů jako flex kontejner</h2>
+
+  <h3><span class="icon">📦</span> Flexbox v flexboxu</h3>
+  <p>V kroku 3 jsme nastavili flexbox na <code>.navbar</code> – to seřadilo logo a menu vedle sebe. Ale samotné menu (<code>&lt;ul&gt;</code>) je zatím normální seznam – položky jdou pod sebe. Potřebujeme <strong>druhý flexbox</strong> – tentokrát na <code>&lt;ul&gt;</code>, aby se jednotlivé odkazy seřadily vedle sebe.</p>
+  <p>To je naprosto normální a běžné – <strong>flexbox vnořený do flexboxu</strong>. Rodič i dítě mohou být současně flex kontejnery.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="keyword">.navbar__menu</span> {
+  <span class="property">display</span>: <span class="value">flex</span>;            <span class="comment">/* položky vedle sebe */</span>
+  <span class="property">list-style</span>: <span class="value">none</span>;         <span class="comment">/* odstraní odrážky • */</span>
+  <span class="property">gap</span>: <span class="value">0.25rem</span>;             <span class="comment">/* malá mezera mezi položkami */</span>
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4><code>list-style: none</code></h4>
+  <p>Ve výchozím stavu <code>&lt;ul&gt;</code> zobrazuje u každé <code>&lt;li&gt;</code> odrážku (•). V navigaci odrážky nechceme – <code>list-style: none</code> je odstraní.</p>
+
+  <h4><code>gap: 0.25rem</code></h4>
+  <p>Nastaví mezeru mezi flex položkami. Je to elegantnější alternativa k <code>margin</code>, protože:</p>
+  <ul>
+    <li><code>gap</code> vytvoří mezeru <strong>jen mezi položkami</strong> – ne před první a za poslední</li>
+    <li>S <code>margin</code> byste museli řešit: „první položka nemá mít margin-left" nebo „poslední nemá margin-right"</li>
+  </ul>
+
+  <div class="diagram">
+    <div class="label">Vizualizace struktury</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+.navbar (display: flex; justify-content: space-between)
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│  [Logo]                                                  │
+│                          .navbar__menu (display: flex)    │
+│                         ┌──────────────────────────────┐ │
+│                         │ [Domů] [O nás] [Služby] [..] │ │
+│                         └──────────────────────────────┘ │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+
+Flex v flexu: navbar rozloží logo a menu. Menu rozloží jednotlivé odkazy.</pre>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 5 ═══════════════════════════════════ -->
+<section class="step" id="krok5">
+  <span class="step-number">KROK 5</span>
+  <h2>Odkazy jako tlačítka (padding)</h2>
+
+  <h3><span class="icon">🖱️</span> Problém: klikací oblast je příliš malá</h3>
+  <p>Ve výchozím stavu je odkaz <code>&lt;a&gt;</code> tzv. <strong>inline element</strong> – zabere jen tolik místa, kolik potřebuje text. Klikací oblast je jen samotná písmena. Uživatel musí trefit přesně text, což je:</p>
+  <ul>
+    <li><strong>Na myši</strong> nepříjemné – cíl je malý</li>
+    <li><strong>Na telefonu</strong> skoro nemožné – prst je mnohem větší než ukazatel myši</li>
+    <li><strong>Nevypadá to jako tlačítko</strong> – uživatel neví, kam má klikat</li>
+  </ul>
+
+  <h3><span class="icon">✅</span> Řešení: padding + display: block</h3>
+  <p>Přidáme <code>padding</code> (vnitřní odsazení), které zvětší klikací oblast kolem textu. A přepneme na <code>display: block</code>, aby odkaz zabral celou buňku.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="keyword">.navbar__link</span> {
+  <span class="property">display</span>: <span class="value">block</span>;              <span class="comment">/* ① zabere celou &lt;li&gt; */</span>
+  <span class="property">color</span>: <span class="value">#c4c8d4</span>;
+  <span class="property">text-decoration</span>: <span class="value">none</span>;      <span class="comment">/* ② bez podtržení */</span>
+  <span class="property">padding</span>: <span class="value">0.6rem 1.2rem</span>;     <span class="comment">/* ③ KLÍČOVÉ – vytváří "tlačítko" */</span>
+  <span class="property">border-radius</span>: <span class="value">8px</span>;         <span class="comment">/* ④ zaoblené rohy */</span>
+  <span class="property">font-size</span>: <span class="value">0.95rem</span>;
+  <span class="property">font-weight</span>: <span class="value">500</span>;
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>① <code>display: block</code> – proč je to potřeba?</h4>
+  <p>Ve výchozím stavu je <code>&lt;a&gt;</code> <strong>inline element</strong>. To znamená:</p>
+  <ul>
+    <li>Zabere jen šířku textu</li>
+    <li>Padding nahoře/dole sice vizuálně funguje, ale <strong>neovlivní rozložení</strong> – sousední elementy ho „nevidí" a mohou se překrývat</li>
+  </ul>
+  <p>S <code>display: block</code> se odkaz chová jako blokový element – zabere celý dostupný prostor v <code>&lt;li&gt;</code> a padding funguje plnohodnotně ve všech směrech.</p>
+
+  <h4>③ <code>padding: 0.6rem 1.2rem</code> – srdce celého tlačítka</h4>
+  <p>Toto je <strong>nejdůležitější řádek</strong> tohoto kroku. Padding je vnitřní odsazení – prostor mezi textem a okrajem elementu. Celá tato plocha je klikací!</p>
+
+  <div class="diagram">
+    <div class="label">Vizualizace padding = klikací oblast</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+BEZ paddingu:                   S padding: 0.6rem 1.2rem:
+┌──────────┐                    ┌────────────────────┐
+│  Kontakt │ ← klikací          │                    │
+└──────────┘   jen text         │     Kontakt        │ ← klikací celý
+                                │                    │   obdélník!
+                                └────────────────────┘
+                                  ↑ 0.6rem nahoře/dole
+                                  ← 1.2rem vlevo/vpravo</pre>
+  </div>
+
+  <p>Zkratka <code>padding: 0.6rem 1.2rem</code> znamená:</p>
+  <ul>
+    <li><strong>0.6rem</strong> nahoře a dole (svislý padding)</li>
+    <li><strong>1.2rem</strong> vlevo a vpravo (vodorovný padding)</li>
+  </ul>
+
+  <h4>④ <code>border-radius: 8px</code></h4>
+  <p>Zaoblí rohy elementu. 0px = ostré rohy (obdélník). Čím vyšší číslo, tím kulatější rohy. 8px je jemné zaoblení, které vypadá moderně. (50% by vytvořilo kruh/elipsu.)</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Nakreslete na tabuli:</strong> Namalujte obdélník se slovem „Kontakt" uprostřed. Zvýrazněte (šrafujte) prostor mezi textem a okrajem obdélníku. Řekněte: <em>„Ta šrafovaná oblast je padding. Bez paddingu je klikací jen slovo. S paddingem je klikací celý obdélník. A přesně proto každé tlačítko na webu, na které klikáte, má padding."</em></p>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Pokus pro studenty</div>
+    <p>Nechte studenty změnit hodnoty paddingu a sledovat v prohlížeči, jak se mění velikost „tlačítka". Zkuste extremní hodnoty: <code>padding: 2rem 4rem</code> (obrovské) nebo <code>padding: 0</code> (žádné – zpět na původní stav). Vizuální změna je okamžitá a velmi přesvědčivá.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 6 ═══════════════════════════════════ -->
+<section class="step" id="krok6">
+  <span class="step-number">KROK 6</span>
+  <h2>Hover efekt s transition</h2>
+
+  <h3><span class="icon">✨</span> Proč potřebujeme hover efekt</h3>
+  <p>Když uživatel najede myší na odkaz, potřebuje <strong>vizuální zpětnou vazbu</strong> – signál, který říká: <em>„Ano, toto je klikací. Jsi na správném místě."</em> Bez hover efektu navigace působí „mrtvě" – uživatel si není jistý, jestli je odkaz vůbec odkaz.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="comment">/* K existujícímu .navbar__link PŘIDEJTE transition: */</span>
+<span class="keyword">.navbar__link</span> {
+  <span class="comment">/* ... předchozí vlastnosti ... */</span>
+  <span class="property">transition</span>: <span class="value">background 0.25s ease, color 0.25s ease</span>;
+}
+
+<span class="comment">/* NOVÉ pravidlo – co se stane při najetí myší: */</span>
+<span class="keyword">.navbar__link:hover</span> {
+  <span class="property">background</span>: <span class="value">rgba(255, 255, 255, 0.12)</span>;
+  <span class="property">color</span>: <span class="value">#ffffff</span>;
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>Pseudo-třída <code>:hover</code></h4>
+  <p>Dvojtečka a slovo <code>hover</code> za selektorem říká: <em>„Tyto styly platí JEN když uživatel najede myší na tento element."</em> Jakmile myš odjede, styly se vrátí zpět. Je to jako podmínka: <em>„Pokud je myš nad tímto prvkem, změň barvu."</em></p>
+  <p>Existují i další pseudo-třídy: <code>:focus</code> (element má fokus z klávesnice), <code>:active</code> (zrovna se na něj kliká), <code>:visited</code> (navštívený odkaz).</p>
+
+  <h4><code>transition</code> – plynulá animace</h4>
+  <p>Bez <code>transition</code> je změna okamžitá – barva „skočí" z jedné na druhou. S <code>transition</code> říkáme prohlížeči: <em>„Nepřepínej barvu okamžitě. Místo toho ji plynule měň po dobu 0.25 sekundy."</em></p>
+
+  <p>Rozklad hodnoty <code>transition: background 0.25s ease, color 0.25s ease</code>:</p>
+  <table>
+    <tr><th>Část</th><th>Význam</th></tr>
+    <tr><td><code>background</code></td><td>Kterou vlastnost animovat (barvu pozadí)</td></tr>
+    <tr><td><code>0.25s</code></td><td>Jak dlouho animace trvá (250 milisekund)</td></tr>
+    <tr><td><code>ease</code></td><td>Průběh animace – začne pomalu, zrychlí, zase zpomalí (přirozené)</td></tr>
+    <tr><td><code>, color 0.25s ease</code></td><td>Totéž pro barvu textu (můžeme animovat víc vlastností najednou)</td></tr>
+  </table>
+
+  <h4><code>rgba(255, 255, 255, 0.12)</code> – barva s průhledností</h4>
+  <p><code>rgba</code> je způsob zápisu barvy se čtyřmi hodnotami:</p>
+  <ul>
+    <li><strong>R</strong> = červená (0–255)</li>
+    <li><strong>G</strong> = zelená (0–255)</li>
+    <li><strong>B</strong> = modrá (0–255)</li>
+    <li><strong>A</strong> = alpha/průhlednost (0 = neviditelná, 1 = plná barva)</li>
+  </ul>
+  <p>Takže <code>rgba(255, 255, 255, 0.12)</code> = bílá barva s 12% viditelností. Proč nepoužijeme normální barvu? Protože poloprůhledné pozadí funguje na jakémkoli podkladu – nemusíme řešit, jakou přesnou barvu zvolit.</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie:</strong> Představte si přepínač světla. Bez transition je to klasický přepínač – klik, a světlo je zapnuté. S transition je to stmívač – světlo plynule zesiluje. Obojí dosáhne cíle (rozsvítit), ale stmívač je příjemnější.</p>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Experiment s časováním</div>
+    <p>Nechte studenty změnit čas transition a sledovat rozdíl:</p>
+    <ul>
+      <li><code>0s</code> – okamžité, bez animace</li>
+      <li><code>0.15s</code> – rychlé, subtilní (profesionální pocit)</li>
+      <li><code>0.5s</code> – pomalé, výrazné</li>
+      <li><code>2s</code> – extrémně pomalé (komicky, ale poučné)</li>
+    </ul>
+    <p>Většina profesionálních webů používá <strong>0.15s–0.3s</strong>. Méně je příliš rychlé (nevšimnete si), více je příliš pomalé (iritující).</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 7 ═══════════════════════════════════ -->
+<section class="step" id="krok7">
+  <span class="step-number">KROK 7</span>
+  <h2>Responzivita a media queries</h2>
+
+  <h3><span class="icon">📱</span> Co je responzivní design a proč ho potřebujeme</h3>
+  <p>Různá zařízení mají různé šířky obrazovky: velký monitor má 1920 px, notebook 1366 px, tablet 768 px, telefon 375 px. Navigace se 6 položkami vedle sebe vypadá na monitoru skvěle, ale na telefonu se položky natlačí, text se ořízne a výsledek je nepoužitelný.</p>
+  <p><strong>Responzivní design</strong> znamená, že stránka se <strong>přizpůsobuje</strong> šířce obrazovky. Na velkém monitoru vypadá jinak než na telefonu – ale na obou vypadá dobře.</p>
+  <p>Nástroj pro to jsou <strong>media queries</strong> – CSS pravidla, která platí jen při určité šířce obrazovky.</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie s termostatem:</strong> Termostat říká: <em>„Když teplota klesne pod 20 °C, zapni topení."</em> Media query říká: <em>„Když šířka okna klesne pod 768 px, změň rozložení."</em> Obojí je podmíněné pravidlo – platí jen za určitých okolností.</p>
+  <p><strong>Analogie s oblečením:</strong> Když je venku teplo, nosíte tričko. Když je zima, přidáte bundu. Neměníte sebe – měníte oblečení podle podmínek. Stejně web nemění obsah – mění rozložení podle šířky obrazovky.</p>
+
+  <h3><span class="icon">💻</span> Kód – střední breakpoint (769–960 px)</h3>
+  <p>Tento mezikrok je volitelný, ale ukazuje přirozený přechod: na středních obrazovkách (malé notebooky, tablety na šířku) se menu přesune pod logo a položky se zalamují do řádků. Hamburger ještě nepotřebujeme.</p>
+
+<pre><code><span class="keyword">@media</span> (<span class="property">min-width</span>: <span class="value">769px</span>) <span class="keyword">and</span> (<span class="property">max-width</span>: <span class="value">960px</span>) {
+  <span class="keyword">.navbar</span> {
+    <span class="property">flex-wrap</span>: <span class="value">wrap</span>;           <span class="comment">/* povolí zalamování */</span>
+  }
+  <span class="keyword">.navbar__menu</span> {
+    <span class="property">flex-basis</span>: <span class="value">100%</span>;          <span class="comment">/* menu zabere celou šířku → nový řádek */</span>
+    <span class="property">flex-wrap</span>: <span class="value">wrap</span>;
+    <span class="property">padding</span>: <span class="value">0.5rem 0</span>;
+    <span class="property">justify-content</span>: <span class="value">center</span>;
+  }
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4><code>@media (min-width: 769px) and (max-width: 960px)</code></h4>
+  <p>Přeloženo do češtiny: <em>„Následující CSS pravidla platí JEN tehdy, když je šířka okna prohlížeče alespoň 769 px a nejvýše 960 px."</em> Mimo tento rozsah se tato pravidla ignorují – jako by neexistovala.</p>
+
+  <h4><code>flex-wrap: wrap</code></h4>
+  <p>Ve výchozím stavu flex položky <strong>nikdy nezalomí</strong>. I když se nevejdou, zůstanou na jednom řádku a zmenší se nebo přetečou. <code>flex-wrap: wrap</code> říká: <em>„Když se to nevejde, přejdi na nový řádek."</em></p>
+
+  <h4><code>flex-basis: 100%</code></h4>
+  <p>Říká menu: <em>„Tvá základní šířka je 100 % rodiče."</em> Protože rodič (<code>.navbar</code>) má <code>flex-wrap: wrap</code>, menu se 100% šířkou se nevejde vedle loga a automaticky „spadne" na nový řádek.</p>
+
+  <div class="diagram">
+    <div class="label">Tři stavy navigace</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+DESKTOP (nad 960px):
+┌──────────────────────────────────────────────────────┐
+│ Logo          [Domů] [O nás] [Služby] [Port.] [Blog]│
+└──────────────────────────────────────────────────────┘
+
+TABLET (769–960px):
+┌──────────────────────────────────────────────────────┐
+│ Logo                                                 │
+│        [Domů] [O nás] [Služby] [Portfolio] [Blog]    │
+└──────────────────────────────────────────────────────┘
+
+MOBIL (pod 768px):
+┌──────────────────────────────────────────────────────┐
+│ Logo                                          [☰]    │
+│  (menu schované, otevře se po kliknutí na ☰)         │
+└──────────────────────────────────────────────────────┘</pre>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Praktická ukázka</div>
+    <p>Otevřete DevTools (F12) → klikněte na ikonu zařízení (Ctrl+Shift+M) nebo přetahujte okraj okna prohlížeče. Studenti v reálném čase uvidí, jak se layout přepíná na breakpointech. Ukažte jim číslo šířky v DevTools – „Vidíte? Jsme na 820 px, platí pravidla pro tablet. Teď zmenším na 760 px – a bum, jsme v mobilním režimu."</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 8 ═══════════════════════════════════ -->
+<section class="step" id="krok8">
+  <span class="step-number">KROK 8</span>
+  <h2>Hamburger tlačítko v HTML</h2>
+
+  <h3><span class="icon">🍔</span> Co je hamburger menu a proč ho potřebujeme</h3>
+  <p>Na mobilních zařízeních nemáme místo na všechny odkazy vedle sebe. Řešení: schováme je za ikonku tří čárek (☰), kterou uživatelé znají z běžných aplikací. Jmenuje se „hamburger" – protože tři čárky připomínají housku-maso-housku.</p>
+  <p>Po kliknutí na hamburger se menu otevře (odkazy se zobrazí pod sebou). Po dalším kliknutí se zavře.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+  <p>Přidejte tento kód do HTML <strong>dovnitř <code>&lt;nav&gt;</code>, mezi logo a <code>&lt;ul&gt;</code></strong>:</p>
+<pre><code><span class="comment">&lt;!-- Hamburger tlačítko --&gt;</span>
+<span class="punctuation">&lt;</span><span class="tag-name">button</span> <span class="attr">class</span>=<span class="string">"navbar__toggle"</span>
+        <span class="attr">aria-expanded</span>=<span class="string">"false"</span>
+        <span class="attr">aria-controls</span>=<span class="string">"main-menu"</span>
+        <span class="attr">aria-label</span>=<span class="string">"Otevřít menu"</span><span class="punctuation">&gt;</span>
+  <span class="punctuation">&lt;</span><span class="tag-name">span</span> <span class="attr">class</span>=<span class="string">"navbar__toggle-icon"</span><span class="punctuation">&gt;&lt;/</span><span class="tag-name">span</span><span class="punctuation">&gt;</span>
+<span class="punctuation">&lt;/</span><span class="tag-name">button</span><span class="punctuation">&gt;</span>
+
+<span class="comment">&lt;!-- Na &lt;ul&gt; přidejte id: --&gt;</span>
+<span class="punctuation">&lt;</span><span class="tag-name">ul</span> <span class="attr">class</span>=<span class="string">"navbar__menu"</span> <span class="attr">id</span>=<span class="string">"main-menu"</span><span class="punctuation">&gt;</span></code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>Proč <code>&lt;button&gt;</code> a ne <code>&lt;div&gt;</code>?</h4>
+  <p>Toto je důležitý princip webové přístupnosti (accessibility):</p>
+  <table>
+    <tr><th>Vlastnost</th><th><code>&lt;button&gt;</code></th><th><code>&lt;div&gt;</code></th></tr>
+    <tr><td>Klikatelný myší</td><td>✅ automaticky</td><td>✅ automaticky</td></tr>
+    <tr><td>Klikatelný klávesnicí (Enter/Space)</td><td>✅ automaticky</td><td>❌ ne</td></tr>
+    <tr><td>Čtečka obrazovky pozná jako tlačítko</td><td>✅ automaticky</td><td>❌ ne</td></tr>
+    <tr><td>Fokus (Tab)</td><td>✅ automaticky</td><td>❌ ne</td></tr>
+  </table>
+  <p><code>&lt;button&gt;</code> má všechno potřebné „zabudované". S <code>&lt;div&gt;</code> bychom museli ručně přidat <code>tabindex</code>, <code>role="button"</code>, obsluhu klávesnice… Je to zbytečná práce a snadné to udělat špatně.</p>
+
+  <h4>Atributy <code>aria-</code></h4>
+  <p>Tyto atributy pomáhají nevidomým uživatelům:</p>
+  <ul>
+    <li><code>aria-expanded="false"</code> – čtečka oznámí: <em>„Tlačítko, sbalené"</em>. Po otevření JavaScriptem změníme na <code>"true"</code> a čtečka oznámí: <em>„Tlačítko, rozbalené"</em></li>
+    <li><code>aria-controls="main-menu"</code> – říká, které element toto tlačítko ovládá (propojení přes id)</li>
+    <li><code>aria-label="Otevřít menu"</code> – protože tlačítko nemá viditelný text, toto poskytne čtečce popis</li>
+  </ul>
+
+  <h4>Prázdný <code>&lt;span&gt;</code></h4>
+  <p>Tento prázdný <code>&lt;span&gt;</code> bude prostřední čárka hamburger ikony. Horní a dolní čárku vytvoříme v CSS pomocí pseudo-elementů <code>::before</code> a <code>::after</code> (viz krok 9).</p>
+
+  <div class="box box-warn">
+    <div class="box-label">⚠️ Pozor</div>
+    <p>Po tomto kroku se v prohlížeči zobrazí prázdné tlačítko – to je normální! Zatím jsme jen přidali HTML strukturu. Vizuální podobu (tři čárky) přidáme v kroku 9 pomocí CSS.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 9 ═══════════════════════════════════ -->
+<section class="step" id="krok9">
+  <span class="step-number">KROK 9</span>
+  <h2>Stylování hamburgeru – pseudo-elementy ::before a ::after</h2>
+
+  <p>Toto je jeden z <strong>koncepčně nejtěžších kroků</strong>. Nevadí, pokud zabere více času. Jde o pochopení pseudo-elementů, position: relative/absolute a jak z jednoho <code>&lt;span&gt;</code> vytvořit tři čárky.</p>
+
+  <h3><span class="icon">🧩</span> Co jsou pseudo-elementy ::before a ::after</h3>
+
+  <p>Pseudo-element je <strong>„virtuální" element</strong>, který v HTML neexistuje, ale CSS ho vytvoří a vykreslí. Každý element může mít dva pseudo-elementy:</p>
+  <ul>
+    <li><code>::before</code> – vloží se <strong>před obsah</strong> elementu</li>
+    <li><code>::after</code> – vloží se <strong>za obsah</strong> elementu</li>
+  </ul>
+
+  <p>Představte si to takto: v HTML máte jeden <code>&lt;span&gt;</code>, ale prohlížeč vidí tři věci:</p>
+
+  <div class="diagram">
+    <div class="label">Jak prohlížeč vidí pseudo-elementy</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+Co napíšete v HTML:          Co prohlížeč ve skutečnosti vykreslí:
+
+&lt;span class="icon"&gt;         &lt;span class="icon"&gt;
+  (nic)                        [::before]    ← virtuální, vytvořený CSS
+&lt;/span&gt;                        (obsah span – prázdný)
+                               [::after]     ← virtuální, vytvořený CSS
+                             &lt;/span&gt;
+
+V DevTools je uvidíte jako:
+  ▶ span.icon
+      ::before
+      ::after</pre>
+  </div>
+
+  <h4>Klíčové pravidlo: <code>content: ''</code></h4>
+  <p>Pseudo-element se vykreslí <strong>jen pokud má nastavenou vlastnost <code>content</code></strong>. Bez <code>content</code> neexistuje. I když chceme prázdný pseudo-element (bez textu), musíme napsat <code>content: ''</code> (prázdný řetězec).</p>
+
+  <div class="box box-warn">
+    <div class="box-label">⚠️ Nejčastější chyba</div>
+    <p>Student napíše CSS pro <code>::before</code>, ale zapomene na <code>content: ''</code>. Výsledek: nic se nezobrazí. Zdá se, že CSS „nefunguje". Řešení: vždy jako první vlastnost napsat <code>content: '';</code></p>
+  </div>
+
+  <h3><span class="icon">📐</span> position: relative a position: absolute</h3>
+
+  <p>Abychom mohli umístit horní a dolní čárku přesně nad a pod prostřední čárku, potřebujeme <code>position</code>. Toto je druhý klíčový koncept v tomto kroku.</p>
+
+  <h4><code>position: relative</code> na rodiči</h4>
+  <p>Říká: <em>„Já jsem referenční bod. Moje děti s position: absolute se budou pozicovat vůči mně."</em> Samotný element se nepohne – jen se stane „kotvou" pro své potomky.</p>
+
+  <h4><code>position: absolute</code> na dítěti</h4>
+  <p>Říká: <em>„Vytáhni mě z normálního toku dokumentu a umísti mě přesně tam, kam řeknou vlastnosti top/right/bottom/left. Pozicuj mě vůči nejbližšímu rodiči s position: relative."</em></p>
+
+  <div class="diagram">
+    <div class="label">Jak position vytvoří tři čárky z jednoho elementu</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+.navbar__toggle-icon (position: relative)
+  │
+  │   ::before (position: absolute; top: -8px)
+  │   ════════════════════  ← horní čárka (posunuta 8px NAHORU)
+  │
+  │   (samotný span)
+  │   ════════════════════  ← prostřední čárka
+  │
+  │   ::after (position: absolute; top: 8px)
+  │   ════════════════════  ← dolní čárka (posunuta 8px DOLŮ)
+  │
+
+Výsledek vypadá jako:  ☰  (hamburger ikona)</pre>
+  </div>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="comment">/* ① Ve výchozím stavu je hamburger SKRYTÝ */</span>
+<span class="keyword">.navbar__toggle</span> {
+  <span class="property">display</span>: <span class="value">none</span>;            <span class="comment">/* neviditelný na desktopu */</span>
+  <span class="property">background</span>: <span class="value">none</span>;         <span class="comment">/* odstraní výchozí pozadí tlačítka */</span>
+  <span class="property">border</span>: <span class="value">none</span>;             <span class="comment">/* odstraní výchozí rámeček */</span>
+  <span class="property">cursor</span>: <span class="value">pointer</span>;          <span class="comment">/* ukazatel ruky při najetí */</span>
+  <span class="property">padding</span>: <span class="value">0.5rem</span>;          <span class="comment">/* zvětší klikací oblast */</span>
+}
+
+<span class="comment">/* ② Společné vlastnosti pro VŠECHNY tři čárky */</span>
+<span class="keyword">.navbar__toggle-icon</span>,
+<span class="keyword">.navbar__toggle-icon::before</span>,
+<span class="keyword">.navbar__toggle-icon::after</span> {
+  <span class="property">display</span>: <span class="value">block</span>;
+  <span class="property">width</span>: <span class="value">26px</span>;             <span class="comment">/* šířka čárky */</span>
+  <span class="property">height</span>: <span class="value">3px</span>;              <span class="comment">/* tloušťka čárky */</span>
+  <span class="property">background</span>: <span class="value">#ffffff</span>;       <span class="comment">/* bílá barva */</span>
+  <span class="property">border-radius</span>: <span class="value">2px</span>;       <span class="comment">/* jemné zaoblení konců */</span>
+  <span class="property">transition</span>: <span class="value">transform 0.3s ease, opacity 0.3s ease</span>;
+}
+
+<span class="comment">/* ③ Prostřední čárka je referenční bod */</span>
+<span class="keyword">.navbar__toggle-icon</span> {
+  <span class="property">position</span>: <span class="value">relative</span>;       <span class="comment">/* kotva pro ::before a ::after */</span>
+}
+
+<span class="comment">/* ④ Horní čárka */</span>
+<span class="keyword">.navbar__toggle-icon::before</span> {
+  <span class="property">content</span>: <span class="value">''</span>;              <span class="comment">/* POVINNÉ – bez tohoto neexistuje */</span>
+  <span class="property">position</span>: <span class="value">absolute</span>;       <span class="comment">/* pozicování vůči rodiči */</span>
+  <span class="property">left</span>: <span class="value">0</span>;                  <span class="comment">/* zarovnat na levý okraj rodiče */</span>
+  <span class="property">top</span>: <span class="value">-8px</span>;               <span class="comment">/* posunout 8px NAHORU */</span>
+}
+
+<span class="comment">/* ⑤ Dolní čárka */</span>
+<span class="keyword">.navbar__toggle-icon::after</span> {
+  <span class="property">content</span>: <span class="value">''</span>;              <span class="comment">/* POVINNÉ */</span>
+  <span class="property">position</span>: <span class="value">absolute</span>;
+  <span class="property">left</span>: <span class="value">0</span>;
+  <span class="property">top</span>: <span class="value">8px</span>;                <span class="comment">/* posunout 8px DOLŮ */</span>
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Vysvětlení krok za krokem</h3>
+
+  <h4>① Proč <code>display: none</code>?</h4>
+  <p>Hamburger je potřeba jen na mobilu. Na desktopu jsou všechny odkazy viditelné, hamburger by byl zbytečný. Proto ho ve výchozím stavu schováme. Zobrazíme ho v kroku 10 pomocí media query.</p>
+
+  <h4>② Společný selektor pro tři prvky najednou</h4>
+  <p>V CSS můžeme napsat víc selektorů oddělených čárkou – pravidla se aplikují na <strong>všechny</strong>. Tím definujeme rozměry a barvu jednou a platí pro prostřední čárku (span), horní čárku (::before) i dolní čárku (::after).</p>
+
+  <h4>③ <code>position: relative</code></h4>
+  <p>Říká: „Jsem referenční bod." Samotný span se nepohne. Ale jeho pseudo-elementy (::before a ::after) s <code>position: absolute</code> se budou pozicovat vůči němu.</p>
+
+  <h4>④⑤ <code>top: -8px</code> a <code>top: 8px</code></h4>
+  <p>Pseudo-element s <code>position: absolute</code> se normálně vykreslí „na sobě" (překryjí prostřední čárku). Pomocí <code>top</code> je posuneme:</p>
+  <ul>
+    <li><code>top: -8px</code> = 8 pixelů NAHORU od výchozí pozice → horní čárka</li>
+    <li><code>top: 8px</code> = 8 pixelů DOLŮ od výchozí pozice → dolní čárka</li>
+  </ul>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+
+  <p><strong>Postupná konstrukce na tabuli:</strong></p>
+  <ol>
+    <li>Nakreslete jednu vodorovnou čárku. „Tohle je náš &lt;span&gt;. Prostřední čárka."</li>
+    <li>„Teď chci horní čárku. Ale nechci přidávat další HTML. CSS umí vytvořit ‚skřítky' – ::before a ::after."</li>
+    <li>Nakreslete druhou čárku přes tu první. „Ve výchozím stavu je ::before na stejném místě – překrývá se."</li>
+    <li>Šipkou posunětě druhou čárku nahoru. „position: absolute + top: -8px ji posune nahoru."</li>
+    <li>Totéž pro ::after dolů.</li>
+    <li>„Výsledek: tři čárky = hamburger. A v HTML máme jen jeden &lt;span&gt;."</li>
+  </ol>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 DevTools kontrola</div>
+    <p>V DevTools v záložce Elements najdou studenti <code>::before</code> a <code>::after</code> jako „děti" elementu span. Můžou na ně kliknout a v Styles panelu měnit <code>top</code> hodnotu v reálném čase – uvidí, jak se čárky pohybují.</p>
+  </div>
+
+  <div class="box box-success">
+    <div class="box-label">✅ Kontrolní bod</div>
+    <p>Po tomto kroku hamburger zatím <strong>není vidět</strong> (má <code>display: none</code>). Můžete v DevTools dočasně odškrtnout <code>display: none</code> a ukázat studentům, že hamburger ikona existuje a vypadá správně. Pak znovu zaškrtněte – v dalším kroku ho zobrazíme přes media query.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 10 ═══════════════════════════════════ -->
+<section class="step" id="krok10">
+  <span class="step-number">KROK 10</span>
+  <h2>Media query pro mobilní zobrazení</h2>
+
+  <h3><span class="icon">📱</span> Co se děje pod 768 px</h3>
+  <p>Když je obrazovka užší než 768 px (typický breakpoint pro tablety/mobily):</p>
+  <ol>
+    <li>Hamburger tlačítko se <strong>zobrazí</strong></li>
+    <li>Seznam odkazů se <strong>schová</strong></li>
+    <li>Po kliknutí na hamburger se menu <strong>vysune pod lištu</strong> jako panel s odkazy pod sebou</li>
+  </ol>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="keyword">@media</span> (<span class="property">max-width</span>: <span class="value">768px</span>) {
+
+  <span class="comment">/* ① Zobrazíme hamburger */</span>
+  <span class="keyword">.navbar__toggle</span> {
+    <span class="property">display</span>: <span class="value">flex</span>;
+    <span class="property">align-items</span>: <span class="value">center</span>;
+  }
+
+  <span class="comment">/* ② Menu schováme a přesuneme pod lištu */</span>
+  <span class="keyword">.navbar__menu</span> {
+    <span class="property">display</span>: <span class="value">none</span>;              <span class="comment">/* ve výchozím stavu neviditelné */</span>
+    <span class="property">flex-direction</span>: <span class="value">column</span>;     <span class="comment">/* položky pod sebe */</span>
+    <span class="property">position</span>: <span class="value">absolute</span>;          <span class="comment">/* "plovoucí" panel */</span>
+    <span class="property">top</span>: <span class="value">100%</span>;                  <span class="comment">/* hned pod navigační lištou */</span>
+    <span class="property">left</span>: <span class="value">0</span>;
+    <span class="property">right</span>: <span class="value">0</span>;
+    <span class="property">background</span>: <span class="value">#16213e</span>;
+    <span class="property">padding</span>: <span class="value">0.5rem 1rem</span>;
+    <span class="property">box-shadow</span>: <span class="value">0 8px 24px rgba(0, 0, 0, 0.25)</span>;
+    <span class="property">border-radius</span>: <span class="value">0 0 12px 12px</span>;
+    <span class="property">z-index</span>: <span class="value">100</span>;
+  }
+
+  <span class="comment">/* ③ Když je menu otevřené (třídu přidá JavaScript) */</span>
+  <span class="keyword">.navbar__menu.is-open</span> {
+    <span class="property">display</span>: <span class="value">flex</span>;              <span class="comment">/* zobrazí se */</span>
+  }
+
+  <span class="comment">/* ④ Odkazy na celou šířku */</span>
+  <span class="keyword">.navbar__link</span> {
+    <span class="property">padding</span>: <span class="value">0.9rem 1rem</span>;
+    <span class="property">width</span>: <span class="value">100%</span>;
+  }
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>② <code>position: absolute</code> + <code>top: 100%</code></h4>
+  <p>Vzpomínáte na position z kroku 9? Tady ho používáme znovu, ale na menu:</p>
+  <ul>
+    <li><code>position: absolute</code> – menu se „vytrhne" z normálního toku. Nezabírá místo v navbaru.</li>
+    <li><code>top: 100%</code> – umístí se přesně pod svůj rodič (<code>.navbar</code>, na který musíme přidat <code>position: relative</code>). 100% = 100 % výšky rodiče → tedy pod ním.</li>
+    <li><code>left: 0; right: 0</code> – rozprostře se na celou šířku rodiče.</li>
+  </ul>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Připomenutí</div>
+    <p>Aby <code>position: absolute</code> + <code>top: 100%</code> fungovalo správně, rodič (<code>.navbar</code>) musí mít <code>position: relative</code>. To jsme nastavili už v kroku 3 – právě proto. Pokud by studenti tento řádek v kroku 3 vynechali, menu by se pozicovalo vůči celé stránce, ne vůči navigační liště.</p>
+  </div>
+
+  <h4>③ Třída <code>.is-open</code> – most mezi CSS a JavaScriptem</h4>
+  <p>Toto je <strong>klíčový vzor</strong> moderního webového vývoje: CSS definuje <em>jak</em> má menu vypadat (otevřené vs. zavřené), JavaScript určuje <em>kdy</em> se stav mění. Propojení je přes CSS třídu:</p>
+  <ul>
+    <li>Bez třídy <code>.is-open</code> → <code>display: none</code> → menu neviditelné</li>
+    <li>S třídou <code>.is-open</code> → <code>display: flex</code> → menu viditelné</li>
+    <li>JavaScript jen přidává/odebírá třídu → CSS dělá vizuální práci</li>
+  </ul>
+
+  <h4><code>flex-direction: column</code></h4>
+  <p>Zatímco na desktopu jsou odkazy vedle sebe (<code>flex-direction: row</code> – výchozí), na mobilu chceme pod sebe. <code>column</code> změní hlavní osu flexboxu z vodorovné na svislou.</p>
+
+  <h4><code>z-index: 100</code></h4>
+  <p>Určuje pořadí vrstev. Čím vyšší číslo, tím „blíž k uživateli" element je. Menu s <code>z-index: 100</code> se vykreslí nad obsahem stránky, který má výchozí <code>z-index: auto</code> (= 0).</p>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Analogie s roletou:</strong> Menu je jako roleta na okně. Ve výchozím stavu je stažená (schovaná). Když zatáhnete za šňůrku (kliknete na hamburger), roleta se vyroluje dolů. CSS říká, jak roleta vypadá. JavaScript je ta šňůrka.</p>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 11 ═══════════════════════════════════ -->
+<section class="step" id="krok11">
+  <span class="step-number">KROK 11</span>
+  <h2>JavaScript – otevírání a zavírání menu</h2>
+
+  <h3><span class="icon">⚡</span> Co JavaScript dělá (a co ne)</h3>
+  <p>JavaScript v tomto případě dělá <strong>jedinou věc</strong>: po kliknutí na hamburger přepíná CSS třídu <code>is-open</code> na menu. Nic víc. Veškerá vizuální změna (zobrazení/skrytí, rozložení, animace) je definovaná v CSS. JavaScript jen říká <em>„kdy"</em>.</p>
+  <p>Toto je důležitý princip: <strong>oddělení odpovědností</strong>. HTML = struktura, CSS = vzhled, JavaScript = chování.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+  <p>Přidejte tento kód <strong>těsně před <code>&lt;/body&gt;</code></strong>:</p>
+<pre><code><span class="punctuation">&lt;</span><span class="tag-name">script</span><span class="punctuation">&gt;</span>
+  <span class="comment">// ① Najdeme elementy na stránce</span>
+  <span class="keyword">const</span> toggle = document.<span class="property">querySelector</span>(<span class="string">'.navbar__toggle'</span>);
+  <span class="keyword">const</span> menu   = document.<span class="property">querySelector</span>(<span class="string">'.navbar__menu'</span>);
+
+  <span class="comment">// ② Když uživatel klikne na hamburger:</span>
+  toggle.<span class="property">addEventListener</span>(<span class="string">'click'</span>, <span class="keyword">function</span> () {
+
+    <span class="comment">// Přepneme třídu "is-open" na menu</span>
+    <span class="keyword">const</span> isOpen = menu.classList.<span class="property">toggle</span>(<span class="string">'is-open'</span>);
+
+    <span class="comment">// Přepneme "is-active" na tlačítko (pro animaci ☰ → ✕)</span>
+    toggle.classList.<span class="property">toggle</span>(<span class="string">'is-active'</span>);
+
+    <span class="comment">// Aktualizujeme aria atribut pro přístupnost</span>
+    toggle.<span class="property">setAttribute</span>(<span class="string">'aria-expanded'</span>, isOpen);
+  });
+
+  <span class="comment">// ③ Zavřít menu po kliknutí na odkaz (lepší UX na mobilu)</span>
+  menu.<span class="property">querySelectorAll</span>(<span class="string">'.navbar__link'</span>).<span class="property">forEach</span>(<span class="keyword">function</span> (link) {
+    link.<span class="property">addEventListener</span>(<span class="string">'click'</span>, <span class="keyword">function</span> () {
+      menu.classList.<span class="property">remove</span>(<span class="string">'is-open'</span>);
+      toggle.classList.<span class="property">remove</span>(<span class="string">'is-active'</span>);
+      toggle.<span class="property">setAttribute</span>(<span class="string">'aria-expanded'</span>, <span class="string">'false'</span>);
+    });
+  });
+<span class="punctuation">&lt;/</span><span class="tag-name">script</span><span class="punctuation">&gt;</span></code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení každého řádku</h3>
+
+  <h4>① <code>document.querySelector('.navbar__toggle')</code></h4>
+  <p><strong>Co to dělá:</strong> Prohledá celou stránku a najde <strong>první element</strong>, který odpovídá zadanému CSS selektoru. Selektor <code>.navbar__toggle</code> je úplně stejný zápis, jaký používáme v CSS – tečka znamená „třída".</p>
+  <p><strong>Co vrací:</strong> Odkaz na element (jako byste na něj ukázali prstem). Uložíme ho do proměnné <code>toggle</code>, abychom s ním mohli dál pracovat.</p>
+  <p><strong>Analogie:</strong> Představte si, že řeknete: <em>„Najdi mi na stránce tlačítko s třídou navbar__toggle."</em> Prohlížeč prohledá HTML a vrátí vám ten správný prvek.</p>
+
+  <h4>② <code>toggle.addEventListener('click', function () { ... })</code></h4>
+  <p>Toto je <strong>srdce interaktivity</strong> na webu. Říká: <em>„Na element toggle naslouchej na událost ‚click'. Když se stane, spusť funkci uvnitř."</em></p>
+  <p>Rozklad:</p>
+  <table>
+    <tr><th>Část</th><th>Význam</th></tr>
+    <tr><td><code>toggle</code></td><td>Na který element nasloucháme</td></tr>
+    <tr><td><code>.addEventListener</code></td><td>„Přidej posluchače události"</td></tr>
+    <tr><td><code>'click'</code></td><td>Jakou událost posloucháme (klik myší, tap na mobilu)</td></tr>
+    <tr><td><code>function () { ... }</code></td><td>Co se má stát, když událost nastane</td></tr>
+  </table>
+  <p>Existují desítky typů událostí: <code>'click'</code>, <code>'mouseover'</code>, <code>'keydown'</code>, <code>'scroll'</code>, <code>'submit'</code>…</p>
+
+  <h4><code>menu.classList.toggle('is-open')</code></h4>
+  <p>Každý element má <code>classList</code> – objekt pro práci s CSS třídami. Metoda <code>.toggle()</code>:</p>
+  <ul>
+    <li>Pokud element třídu <strong>nemá</strong> → <strong>přidá ji</strong> a vrátí <code>true</code></li>
+    <li>Pokud element třídu <strong>má</strong> → <strong>odebere ji</strong> a vrátí <code>false</code></li>
+  </ul>
+  <p>Takže při prvním kliknutí se přidá třída <code>is-open</code> (menu se otevře). Při druhém kliknutí se odebere (menu se zavře). A tak pořád dokola.</p>
+
+  <p>Další užitečné metody <code>classList</code>:</p>
+  <table>
+    <tr><th>Metoda</th><th>Co dělá</th></tr>
+    <tr><td><code>.add('třída')</code></td><td>Přidá třídu (pokud už ji má, nic nedělá)</td></tr>
+    <tr><td><code>.remove('třída')</code></td><td>Odebere třídu</td></tr>
+    <tr><td><code>.toggle('třída')</code></td><td>Přidá/odebere (přepínač)</td></tr>
+    <tr><td><code>.contains('třída')</code></td><td>Vrátí true/false – má element tuto třídu?</td></tr>
+  </table>
+
+  <h3><span class="icon">🎓</span> Jak to vysvětlit studentům</h3>
+  <p><strong>Nejlepší praktická ukázka:</strong> Otevřete DevTools (F12), najděte element <code>&lt;ul class="navbar__menu"&gt;</code> v záložce Elements. Ručně přidejte k atributu class text <code> is-open</code> (s mezerou před ním). Menu se otevře! Odeberte <code>is-open</code> – menu se zavře.</p>
+  <p>Řekněte: <em>„Vidíte? CSS na třídu is-open reaguje a zobrazí menu. My teď jen napíšeme JavaScript, který tohle dělá za nás – automaticky po kliknutí na hamburger."</em></p>
+  <p>Toto je <strong>absolutně klíčové</strong> pro pochopení. Studenti musí vidět, že JavaScript neobsahuje žádnou „magii" – dělá přesně totéž, co oni právě udělali ručně v DevTools.</p>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Proč script před &lt;/body&gt;</div>
+    <p>JavaScript potřebuje, aby HTML elementy, na které se odkazuje, už existovaly. Pokud dáme <code>&lt;script&gt;</code> do <code>&lt;head&gt;</code>, JavaScript se spustí dříve, než prohlížeč vykreslí <code>&lt;nav&gt;</code> – a <code>querySelector</code> nic nenajde. Proto ho dáváme na konec <code>&lt;body&gt;</code>, kdy je celé HTML už načtené.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ KROK 12 ═══════════════════════════════════ -->
+<section class="step" id="krok12">
+  <span class="step-number">KROK 12 – BONUS</span>
+  <h2>Animace hamburgeru na křížek</h2>
+
+  <h3><span class="icon">🎬</span> Co chceme</h3>
+  <p>Když se menu otevře, tři čárky (☰) se plynule animují do křížku (✕). Prostřední čárka zmizí, horní se otočí o 45° a posune do středu, dolní se otočí o -45° a posune do středu – a potkají se uprostřed.</p>
+
+  <h3><span class="icon">💻</span> Kód</h3>
+<pre><code><span class="comment">/* Když má tlačítko třídu .is-active (přidá JavaScript): */</span>
+
+<span class="comment">/* Prostřední čárka zmizí */</span>
+<span class="keyword">.navbar__toggle.is-active .navbar__toggle-icon</span> {
+  <span class="property">background</span>: <span class="value">transparent</span>;
+}
+
+<span class="comment">/* Horní čárka se otočí a posune */</span>
+<span class="keyword">.navbar__toggle.is-active .navbar__toggle-icon::before</span> {
+  <span class="property">transform</span>: <span class="value">rotate(45deg) translate(5.5px, 5.5px)</span>;
+}
+
+<span class="comment">/* Dolní čárka se otočí opačným směrem a posune */</span>
+<span class="keyword">.navbar__toggle.is-active .navbar__toggle-icon::after</span> {
+  <span class="property">transform</span>: <span class="value">rotate(-45deg) translate(5.5px, -5.5px)</span>;
+}</code></pre>
+
+  <h3><span class="icon">🔍</span> Podrobné vysvětlení</h3>
+
+  <h4>Proč animace funguje plynule?</h4>
+  <p>V kroku 9 jsme na všechny tři čárky nastavili <code>transition: transform 0.3s ease</code>. To znamená, že jakákoli změna vlastnosti <code>transform</code> se neprojeví okamžitě, ale plynule po dobu 0.3 sekundy. Nemusíme přidávat nic dalšího – transition už je připravený a čeká.</p>
+
+  <h4><code>background: transparent</code></h4>
+  <p>Prostřední čárka (samotný <code>&lt;span&gt;</code>) se stane průhlednou = neviditelnou. Proč <code>transparent</code> a ne <code>display: none</code>? Protože <code>display: none</code> odebere element z layoutu a rozbije pozicování ::before a ::after.</p>
+
+  <h4><code>transform: rotate(45deg) translate(5.5px, 5.5px)</code></h4>
+  <p>Vlastnost <code>transform</code> umí prvek otáčet, posouvat, zvětšovat – bez ovlivnění ostatních prvků na stránce. Kombinujeme dva transformy:</p>
+  <ol>
+    <li><code>rotate(45deg)</code> – otočí čárku o 45 stupňů po směru hodinových ručiček</li>
+    <li><code>translate(5.5px, 5.5px)</code> – posune čárku tak, aby se potkala s druhou uprostřed. Důležité: translate se aplikuje <strong>po rotaci</strong>, takže posouvá podél otočených os. Hodnoty 5.5 px jsou odvozené z rozestupu čárek (8 px) a geometrie rotace.</li>
+  </ol>
+  <p>Dolní čárka se otáčí opačným směrem (<code>-45deg</code>) a posouvá svisle opačně (<code>-5.5px</code>), aby se obě čárky potkaly v jednom bodě a vytvořily X.</p>
+
+  <div class="diagram">
+    <div class="label">Vizualizace animace</div>
+    <pre style="background:none;color:var(--text);text-align:left;display:inline-block;padding:0;">
+ZAVŘENÉ (☰):              OTEVŘENÉ (✕):
+
+   ══════════ (::before)         ╲
+   ══════════ (span)               ╳  (čárky se protnou)
+   ══════════ (::after)          ╱
+
+   rotate(0deg)              rotate(±45deg) + translate</pre>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">💡 Experimentování</div>
+    <p>Nechte studenty měnit hodnoty <code>rotate</code> a <code>translate</code> v DevTools a sledovat, co se děje. Zkuste <code>rotate(90deg)</code>, <code>rotate(180deg)</code>, nebo úplně jiné hodnoty translate. Je to skvělý způsob, jak pochopit transform – vidíte změny okamžitě.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ SHRNUTÍ ═══════════════════════════════════ -->
+<section class="step" id="shrnuti">
+  <span class="step-number">SHRNUTÍ</span>
+  <h2>Přehled všech kroků a tipy pro výuku</h2>
+
+  <h3><span class="icon">📊</span> Přehledová tabulka</h3>
+  <table>
+    <tr><th>Krok</th><th>Téma</th><th>Klíčové koncepty</th></tr>
+    <tr><td>1</td><td>HTML kostra</td><td><code>&lt;nav&gt;</code>, <code>&lt;ul&gt;</code>/<code>&lt;li&gt;</code>, <code>&lt;a&gt;</code>, sémantika, viewport</td></tr>
+    <tr><td>2</td><td>CSS reset</td><td><code>box-sizing: border-box</code>, <code>margin/padding: 0</code></td></tr>
+    <tr><td>3</td><td>Flexbox na navbar</td><td><code>display: flex</code>, <code>align-items</code>, <code>justify-content</code></td></tr>
+    <tr><td>4</td><td>Flexbox na menu</td><td>Vnořený flex, <code>list-style: none</code>, <code>gap</code></td></tr>
+    <tr><td>5</td><td>Padding = tlačítko</td><td><code>display: block</code>, <code>padding</code>, klikací oblast</td></tr>
+    <tr><td>6</td><td>Hover + transition</td><td><code>:hover</code>, <code>transition</code>, <code>rgba()</code></td></tr>
+    <tr><td>7</td><td>Media queries</td><td><code>@media</code>, <code>flex-wrap</code>, <code>flex-basis</code>, breakpointy</td></tr>
+    <tr><td>8</td><td>Hamburger HTML</td><td><code>&lt;button&gt;</code>, <code>aria-</code> atributy, přístupnost</td></tr>
+    <tr><td>9</td><td>Hamburger CSS</td><td><code>::before</code>/<code>::after</code>, <code>content</code>, <code>position</code></td></tr>
+    <tr><td>10</td><td>Mobilní menu</td><td><code>display: none/flex</code>, <code>position: absolute</code>, <code>z-index</code></td></tr>
+    <tr><td>11</td><td>JavaScript</td><td><code>querySelector</code>, <code>addEventListener</code>, <code>classList.toggle</code></td></tr>
+    <tr><td>12</td><td>Animace ☰ → ✕</td><td><code>transform: rotate + translate</code></td></tr>
+  </table>
+
+  <h3><span class="icon">🎓</span> Obecné tipy pro výuku</h3>
+
+  <h4>1. Nechte studenty psát sami</h4>
+  <p>Odolte pokušení dávat hotový kód ke kopírování. Diktujte nebo promítejte po částech a nechte studenty opisovat. <strong>Chyby, které udělají, jsou nejlepší učitel.</strong> Když student zapomene středník a stráví 3 minuty hledáním chyby, příště na středník nezapomene.</p>
+
+  <h4>2. DevTools jsou druhý učitel</h4>
+  <p>Po každém kroku: F12, zkontrolovat v Elements, zkusit měnit hodnoty přímo v prohlížeči. <strong>Změna paddingu v reálném čase je lepší než stovka slidů.</strong> Studenti vidí okamžitý efekt každé změny.</p>
+
+  <h4>3. Responzivní režim v prohlížeči</h4>
+  <p>Ctrl+Shift+M v DevTools zapne mobilní zobrazení. Studenti mohou přetahovat viewport a vidí breakpointy v akci. Ukazujte jim číslo šířky viewportu – „Teď jsme na 820 px, to je tablet. Zmenšuji na 760 px – a vidíte? Hamburger se objevil!"</p>
+
+  <h4>4. Postupné odzkoušení</h4>
+  <p>Po <strong>každém</strong> kroku uložit a obnovit stránku (F5 nebo Ctrl+R). Student vidí progres a lépe chápe, co která vlastnost dělá. Nikdy nepřidávejte více kroků najednou – pokud něco nefunguje, nevíte, ve kterém kroku je chyba.</p>
+
+  <h4>5. Bonusové úkoly pro rychlé studenty</h4>
+  <ul>
+    <li>Změnit barevné schéma (jiné barvy pozadí, textu, hoveru)</li>
+    <li>Přidat další položky menu a sledovat, jak reagují breakpointy</li>
+    <li>Zkusit jiné hover efekty (podtržení zdola, změna pozadí s gradientem, stín)</li>
+    <li>Přidat aktivní stav – třídu <code>.navbar__link--active</code> na aktuální stránku</li>
+    <li>Animovat rozbalení menu (opacity + transform místo display: none/flex)</li>
+  </ul>
+
+  <div class="box box-success">
+    <div class="box-label">✅ Konečný výsledek</div>
+    <p>Po všech 12 krocích mají studenti plně funkční responzivní navigaci, která se přizpůsobuje třem breakpointům: horizontální menu na desktopu, zalamované menu na tabletu a hamburger menu na mobilu – včetně plynulé animace ikony. Celý kód je v jednom HTML souboru, bez externích knihoven.</p>
+  </div>
+</section>
+
+</div><!-- .container -->
+
+</body>
+</html>

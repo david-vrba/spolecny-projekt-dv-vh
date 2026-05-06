@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responzivní obrázky - Seminář GJŠ Zlín 2026</title>
+    
+    <!-- Moderní "Editorial" Fonty -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"DM Sans"', 'sans-serif'],
+                        serif: ['"Fraunces"', 'serif'],
+                    },
+                    colors: {
+                        paper: {
+                            DEFAULT: '#faf8f5',
+                            dark: '#f2ede6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js pro vizualizaci dat -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Prism.js pro syntaktické zvýraznění kódu -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <style>
+        /* --- ZÁKLADNÍ STYLY A SCROLLBARY --- */
+        body { background-color: #faf8f5; color: #1a1714; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin: 0 auto; height: 350px; }
+        
+        pre[class*="language-"] { margin: 0; border-radius: 0.5rem; max-height: 500px; overflow: auto; }
+        pre[class*="language-"]::-webkit-scrollbar { height: 10px; width: 10px; }
+        pre[class*="language-"]::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        pre[class*="language-"]::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; border: 2px solid #1e293b; }
+        pre[class*="language-"]::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .sidebar-open { transform: translateX(0%); }
+        .sidebar-closed { transform: translateX(-100%); }
+        @media (min-width: 1024px) { .sidebar-closed { transform: translateX(0%); } }
+
+        /* --- STYLY PRO Lektor/Student REŽIM --- */
+        .teacher-only { display: none; }
+        body.teacher-mode .teacher-only { display: block; animation: fadeIn 0.4s ease-out forwards; }
+
+        /* --- STYLY PRO ŽIVÉ UKÁZKY (DEMOS) --- */
+        .demo-box { background-color: #f2ede6; border: 1px solid #e8e1d8; border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; }
+        
+        /* Demo A: Obtékání */
+        .demo-flow-root { display: flow-root; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .demo-float-left { float: left; margin-right: 1.5rem; margin-bottom: 1rem; border-radius: 0.5rem; width: 150px; height: 150px; object-fit: cover; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .demo-center-img { display: block; margin-inline: auto; border-radius: 0.5rem; width: 200px; height: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        /* Demo B: Flexbox */
+        .demo-split-section { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .demo-split-text, .demo-split-image { flex-basis: 300px; flex-grow: 1; }
+        .demo-split-image img { width: 100%; height: auto; border-radius: 0.5rem; object-fit: cover; aspect-ratio: 16/9; }
+        
+        /* Demo C: Grid Auto-fit */
+        .demo-grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+        .demo-card { background: white; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; transition: transform 0.2s; border: 1px solid #f2ede6; }
+        .demo-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); }
+        .demo-card img { width: 100%; height: 180px; object-fit: cover; }
+        .demo-card-content { padding: 1.25rem; flex-grow: 1; }
+        
+        /* Demo D: Aspect Ratio Avatar */
+        .demo-avatar-container { display: flex; justify-content: center; gap: 4rem; background: white; padding: 2rem; border-radius: 0.5rem; align-items: flex-start; flex-wrap: wrap; border: 1px solid #f2ede6; }
+        .demo-avatar { width: 140px; aspect-ratio: 1 / 1; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .demo-bad-avatar { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #fca5a5; } 
+
+        /* Demo E: Pseudo elements */
+        .demo-btn { display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: #c8410a; color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .demo-btn:hover { background: #a63508; }
+        .demo-icon-after::after { content: " \279C"; display: inline-block; margin-left: 0.5rem; transition: transform 0.2s; }
+        .demo-btn:hover .demo-icon-after::after { transform: translateX(4px); }
+
+        /* Demo F: Image-set */
+        .demo-image-set-box { 
+            width: 100%; height: 250px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; 
+            color: white; font-family: 'Fraunces', serif; font-weight: 900; font-size: 2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            background-image: url('https://placehold.co/800x400/1e293b/fff.png?text=Standardni+Rozliseni+(1x)');
+            background-image: -webkit-image-set(url('https://placehold.co/800x400/1e293b/fff.png?text=Standardni+Rozliseni+(1x)') 1x, url('https://placehold.co/1600x800/1a6b4a/fff.png?text=Retina+Rozliseni+(2x)') 2x);
+            background-image: image-set(url('https://placehold.co/800x400/1e293b/fff.png?text=Standardni+Rozliseni+(1x)') 1x, url('https://placehold.co/1600x800/1a6b4a/fff.png?text=Retina+Rozliseni+(2x)') 2x);
+            background-size: cover; background-position: center; 
+        }
+
+        /* Demo G: Container Queries */
+        .demo-cq-resizable {
+            resize: horizontal; overflow: hidden; width: 100%; max-width: 100%; min-width: 280px; padding: 1.5rem; background: #fff; border: 2px dashed #9a948e; border-radius: 0.75rem;
+            container-type: inline-size; container-name: moderncard;
+        }
+        .demo-cq-card { display: flex; flex-direction: column; background: white; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #f2ede6; }
+        .demo-cq-card img { width: 100%; height: 200px; object-fit: cover; }
+        @container moderncard (min-width: 500px) {
+            .demo-cq-card { flex-direction: row; align-items: center; }
+            .demo-cq-card img { width: 40%; height: 100%; }
+            .demo-cq-content { width: 60%; }
+        }
+
+        /* Demo H: Blur-up (LQIP) */
+        .demo-blur-placeholder { filter: blur(15px); transform: scale(1.05); }
+
+        /* Demo I: Inline SVG currentColor */
+        .demo-svg-btn { 
+            display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer;
+            border: 2px solid #1a6b4a; color: #1a6b4a; background: transparent; transition: all 0.2s ease;
+        }
+        .demo-svg-btn:hover { background: #1a6b4a; color: white; }
+        .demo-svg-btn svg { fill: currentColor; transition: fill 0.2s ease; }
+
+        /* Demo J: HTML5 Dialog Lightbox */
+        .demo-lightbox { padding: 0; border: none; border-radius: 0.75rem; max-width: 90vw; width: 800px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .demo-lightbox::backdrop { background-color: rgba(26, 23, 20, 0.9); backdrop-filter: blur(8px); }
+
+        /* Demo K: CSS :has() Galerie */
+        .demo-has-gallery { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #f2ede6; }
+        .demo-has-gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 0.5rem; transition: all 0.4s ease; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .demo-has-gallery:has(img:hover) img:not(:hover) { opacity: 0.3; filter: grayscale(80%) blur(2px); transform: scale(0.95); }
+        .demo-has-gallery img:hover { transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); z-index: 10; position: relative; border: 2px solid #c8410a; }
+
+        /* Demo L: Native Masonry */
+        .demo-masonry-grid { 
+            display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            grid-template-rows: masonry; 
+            align-items: start;
+        }
+        .demo-masonry-item { background: #e8e1d8; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #4a4540; font-size: 1.5rem; font-family: 'Fraunces', serif;}
+        .demo-masonry-item img { width: 100%; border-radius: 0.5rem; display: block; }
+        .h-small { height: 100px; } .h-medium { height: 180px; } .h-tall { height: 250px; }
+
+        /* Demo M: View Transitions API (OPRAVENO) */
+        #vt-hero-img { view-transition-name: hero-img; }
+        ::view-transition-old(hero-img),
+        ::view-transition-new(hero-img) {
+            animation-duration: 0.5s;
+            animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Demo N: Object Position Focal Point */
+        .demo-obj-center { width: 150px; aspect-ratio: 1/1; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .demo-obj-top { width: 150px; aspect-ratio: 1/1; border-radius: 50%; object-fit: cover; object-position: center 20%; border: 4px solid #1a6b4a; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="bg-paper text-slate-800 flex flex-col h-screen overflow-hidden selection:bg-[#e8e1d8] selection:text-black font-sans">
+
+    <!-- Hlavička pro mobilní zařízení -->
+    <header class="lg:hidden bg-[#1a1714] text-white p-4 flex justify-between items-center shadow-md z-30 relative">
+        <div class="font-serif font-bold text-xl tracking-tight">Seminář GJŠ Zlín 2026</div>
+        <button id="mobile-menu-btn" class="text-3xl focus:outline-none p-1 rounded px-2 hover:bg-slate-800 transition">&#9776;</button>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative w-full max-w-[1920px] mx-auto">
+        
+        <!-- Boční navigace -->
+        <nav id="sidebar" class="absolute lg:relative w-5/6 sm:w-80 h-full bg-white shadow-2xl z-30 flex flex-col transition-transform duration-300 sidebar-closed border-r border-paper-dark">
+            <div class="hidden lg:block p-8 bg-[#1a1714] text-white">
+                <h1 class="text-3xl font-serif font-extrabold tracking-tight mb-2 text-[#faf8f5]">Responzivní obrázky</h1>
+                <p class="text-[#9a948e] text-sm font-medium uppercase tracking-widest">Semináře GJŠ Zlín 2026</p>
+            </div>
+            
+            <!-- GLOBAL TOGGLE: STUDENT / LEKTOR -->
+            <div class="p-4 bg-paper border-b border-paper-dark flex justify-center">
+                <div class="bg-paper-dark p-1 rounded-lg inline-flex w-full relative shadow-inner">
+                    <button id="btn-mode-student" onclick="setMode('student')" class="flex-1 py-2 px-3 text-sm font-bold rounded-md bg-white text-[#1a1714] shadow-sm transition-all flex items-center justify-center font-sans">🎓 Student</button>
+                    <button id="btn-mode-teacher" onclick="setMode('teacher')" class="flex-1 py-2 px-3 text-sm font-bold rounded-md text-[#9a948e] hover:text-[#1a1714] transition-all flex items-center justify-center font-sans">👨‍🏫 Lektor</button>
+                </div>
+            </div>
+
+            <div class="p-4 bg-paper border-b border-paper-dark font-bold text-[#4a4540] text-sm flex justify-between items-center uppercase tracking-wider font-sans">
+                <span>Osnova Masterclass</span>
+                <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-[#c8410a] text-2xl transition">&#10005;</button>
+            </div>
+            <div class="overflow-y-auto flex-grow p-4 space-y-2 bg-white" id="nav-container">
+                <!-- Navigační položky generuje JS -->
+            </div>
+            <div class="p-4 bg-paper border-t border-paper-dark text-xs text-[#9a948e] text-center flex flex-col">
+                <span>Studijní materiál pro studenty</span>
+                <span class="mt-1 font-semibold text-[#4a4540]">Gymnázium a Jazyková škola Zlín</span>
+            </div>
+        </nav>
+
+        <!-- Hlavní obsah -->
+        <main class="flex-grow overflow-y-auto w-full bg-paper relative" id="main-content">
+            <!-- Zde se dynamicky renderuje obsah -->
+        </main>
+
+        <!-- Ztmavovací vrstva pro mobil -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-[#1a1714]/70 z-20 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+    </div>
+
+<script>
+    // Globální funkce pro View Transitions API (Bonus Block 7)
+    window.switchHeroImage = function(src, clickedEl) {
+        const heroImg = document.getElementById('vt-hero-img');
+        if (!heroImg || heroImg.src === src) return;
+
+        // Vizuální odezva na náhled (bez deformujícího zmenšení scale, aby nedošlo k matení API)
+        const origClass = clickedEl.className;
+        clickedEl.classList.add('opacity-50');
+
+        // PŘEDNAČTENÍ FOTKY (Fix probliknutí do bíla)
+        const img = new Image();
+        img.src = src;
+        
+        // Použití decode() garantuje plnou přípravu pro grafickou kartu
+        img.decode().then(() => {
+            if (!document.startViewTransition) {
+                heroImg.src = src;
+                clickedEl.className = origClass;
+                return;
+            }
+            
+            // View Transition bez asynchronních prodlev uvnitř
+            // Zaručí dokonalý přechod, protože je fotka v paměti
+            const transition = document.startViewTransition(() => {
+                heroImg.src = src;
+            });
+            
+            transition.finished.finally(() => {
+                clickedEl.className = origClass;
+            });
+        }).catch(() => {
+            // Fallback, pokud decode() selže (např. chyba sítě)
+            heroImg.src = src;
+            clickedEl.className = origClass;
+        });
+    };
+
+    const lessonData = [
+        {
+            id: "block-1",
+            time: "20 min",
+            title: "1. Analýza formátů a datových problémů",
+            intro: "Doba obyčejných JPEGů končí. Abychom pochopili proč, musíme si nejprve definovat problémy moderního webu a podívat se, jak je řeší algoritmy.",
+            teacherTip: `<strong>Didaktický tip pro lektora:</strong> Tento blok slouží k "šoku" a získání pozornosti. Otevřete před studenty libovolný velký e-shop (např. Alza nebo Apple) ve Vývojářských nástrojích (klávesa F12 -> záložka Network -> filtr Img) a ukažte jim v reálném čase, že profesionálové dnes servírují téměř výhradně moderní formáty WebP a AVIF. Srovnání v grafu níže pak dodá této vizuální teorii jasné matematické opodstatnění.`,
+            theory: `
+                <h3 class="text-2xl font-serif font-bold mb-4 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">Mapa problémů: Co vlastně řešíme?</h3>
+                <p class="mb-4 text-lg">V responzivním designu čelíme hned několika výzvám současně. Nelze aplikovat jedno jednoduché řešení na vše:</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+                    <li class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#9a948e] text-sm"><strong class="font-serif text-lg text-[#1a1714] block mb-1">1. Rychlost načítání</strong> Posílat obří obrázek vytvořený pro desktop do mobilu je datová sebevražda.</li>
+                    <li class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#1a6b4a] text-sm"><strong class="font-serif text-lg text-[#1a1714] block mb-1">2. Retina displeje</strong> Displeje s vysokou hustotou hardwarových pixelů potřebují dvojnásobné soubory, jinak jsou rozmazané.</li>
+                    <li class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#1a4a7a] text-sm"><strong class="font-serif text-lg text-[#1a1714] block mb-1">3. Art Direction</strong> Občas chceme poslat diametrálně odlišné výřezy obrazovky (např. celou fotku vs. výřez obličeje na mobil).</li>
+                    <li class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#c8410a] text-sm"><strong class="font-serif text-lg text-[#1a1714] block mb-1">4. Velikost okna</strong> Znalost absolutní velikosti viewportu je nutná pro servírování datově odpovídající varianty obrázku.</li>
+                    <li class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#4a4540] text-sm"><strong class="font-serif text-lg text-[#1a1714] block mb-1">5. CSS Layout</strong> Obrázky by v ideálním světě měly znát kontext svého layoutu (Grid), protože ten se plynule mění.</li>
+                </ul>
+
+                <h3 class="text-2xl font-serif font-bold mb-4 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">Vektor vs. Rastr</h3>
+                <p class="mb-4 text-lg"><strong>Vektorová grafika (SVG)</strong> není obrázek v pravém slova smyslu. Je to validní XML dokument obsahující matematické instrukce (např. <code>&lt;circle cx="50" cy="50" r="40" /&gt;</code>). Prohlížeč tyto instrukce vezme a vykreslí je na grafické kartě (GPU). Jsou dokonale ostré na levném mobilu i na 8K televizi a řeší problémy s Retinou zcela automaticky.</p>
+                <p class="mb-6 text-lg"><strong>Rastrová grafika (JPEG, WebP, AVIF)</strong> je dvourozměrná matice pixelů. Pokud má obrázek 1000x1000 pixelů, obsahuje rovný milion bodů. Výzva spočívá v kompresi – jak uložit milion bodů tak, aby soubor neměl 3 MB, ale jen 100 KB.</p>
+
+                <h3 class="text-2xl font-serif font-bold mt-10 mb-6 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">Evoluce kompresních algoritmů</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <h4 class="font-serif font-bold text-xl text-[#1a1714] mb-3 flex items-center"><span class="bg-[#f2ede6] px-2 py-1 rounded text-sm mr-2 font-sans">1992</span> JPEG</h4>
+                        <p class="text-[#4a4540] mb-3 text-sm">Využívá Diskrétní kosinovou transformaci (DCT). Odstraňuje vysokofrekvenční detaily, které lidské oko špatně vnímá.</p>
+                        <ul class="text-sm list-disc pl-5 text-[#c8410a] font-semibold">
+                            <li>Neumí průhlednost. Vytváří ošklivé "duchy" kolem textu.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <h4 class="font-serif font-bold text-xl text-[#1a1714] mb-3 flex items-center"><span class="bg-[#f2ede6] px-2 py-1 rounded text-sm mr-2 font-sans">1996</span> PNG</h4>
+                        <p class="text-[#4a4540] mb-3 text-sm">Bezztrátový formát. Uloží obraz pixel po pixelu s průhledností.</p>
+                        <ul class="text-sm list-disc pl-5 text-[#c8410a] font-semibold">
+                            <li>Extrémně datově náročný u reálných fotografií (nevhodný).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <h4 class="font-serif font-bold text-xl text-[#1a1714] mb-3 flex items-center"><span class="bg-[#e8f0ec] px-2 py-1 rounded text-sm mr-2 text-[#1a6b4a] font-sans">2010</span> WebP</h4>
+                        <p class="text-[#4a4540] mb-3 text-sm">Vychází z video kodeku VP8 od Googlu. Podporuje ztrátovou kompresi i plnou průhlednost naráz.</p>
+                        <ul class="text-sm list-disc pl-5 text-[#1a6b4a] font-semibold">
+                            <li>O 30 % menší než JPEG. Dnešní absolutní produkční standard.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <h4 class="font-serif font-bold text-xl text-[#1a1714] mb-3 flex items-center"><span class="bg-[#e8ecf0] px-2 py-1 rounded text-sm mr-2 text-[#1a4a7a] font-sans">2019</span> AVIF</h4>
+                        <p class="text-[#4a4540] mb-3 text-sm">Nejmodernější otevřený formát (video kodek AV1). Udržuje ostrost hran bez rozpixelování i při extrémní kompresi.</p>
+                        <ul class="text-sm list-disc pl-5 text-[#1a4a7a] font-semibold">
+                            <li>O 50+ % menší než JPEG. Vyžaduje zálohu pro starší prohlížeče.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-[#e8e1d8] mb-8 max-w-4xl mx-auto">
+                    <h4 class="text-center font-serif font-extrabold text-[#1a1714] mb-6 text-xl">Výsledek komprese 4K fotografie</h4>
+                    <div class="chart-container"><canvas id="formatChart"></canvas></div>
+                </div>
+            `,
+            hasChart: true
+        },
+        {
+            id: "block-2",
+            time: "35 min",
+            title: "2. Detailní Workflow: Hromadné zpracování v praxi",
+            intro: "Nikdo nevytváří WebP a AVIF formáty ručně, fotku po fotce. V produkčním vývoji se nasazují automatizovaná workflow. Jak přesně to dělají profesionálové a ke kterému nástroji byste měli sáhnout?",
+            teacherTip: `<strong>Vysvětlení pro studenty:</strong> Zde se posouváme od "kódování" k "architektuře aplikací". Nejčastější otázka studentů je: <em>Jaký z těch nástrojů mám použít?</em> Pomozte jim to rozřadit: Jsi kodér, co tvoří jednoduchý web? Použij Squoosh CLI nebo Vite. Buduješ velký e-shop, kam uživatelé sami nahrávají profilovky? Musíš použít Sharp.js na backendu. Pracuješ v korporaci s miliony fotek jako Alza? Vaše firma zaplatí za Cloudinary CDN. U každé varianty si ukažte konkrétní kód pro představu.`,
+            theory: `
+                <p class="mb-6 text-lg">Máme 4 hlavní přístupy (Workflow), jak na moderním webu vyřešit kompresi obrázků. Každý je určen pro jiný typ projektu a jinou velikost firmy.</p>
+            `,
+            codes: [
+                {
+                    title: "Metoda 1: Squoosh CLI (Nástroj pro kodéra jednotlivce)",
+                    html: ``,
+                    css: ``,
+                    javascript: ``,
+                    explanation: `
+                    <strong>K čemu to použít:</strong> Tvoříte menší webovku pro klienta (např. restauraci). Od fotografa jste dostali složku s 50 obřími JPEGy (každý má 3 MB).
+                    <br><br>
+                    <strong>Workflow (Postup práce):</strong>
+                    <ol class="list-decimal pl-5 mt-2 space-y-2 mb-4">
+                        <li>Otevřete příkazový řádek (Terminál) ve složce s fotkami.</li>
+                        <li>Spustíte nástroj Squoosh CLI pomocí jednoduchého příkazu.</li>
+                        <li>Nástroj bleskově projde všechny obrázky ve složce a vygeneruje vysoce optimalizované verze ve WebP a AVIF formátu. O nic víc se nestaráte.</li>
+                    </ol>
+                    `,
+                    /* Pro zobrazení ukázky použijeme fiktivní "html" slot, aby Prism zobrazil kód terminálu */
+                    html: `<!-- Zadáte do terminálu: -->\nnpx @squoosh/cli --webp auto --avif auto ./images/*.jpg`
+                },
+                {
+                    title: "Metoda 2: Sharp.js (Pro Backend vývojáře)",
+                    html: ``,
+                    css: ``,
+                    explanation: `
+                    <strong>K čemu to použít:</strong> Budujete vlastní CMS systém nebo e-shop. Každý den do něj uživatelé (nebo vaši klienti) nahrávají obrázky z mobilů a zrcadlovek, vy nad tím nemáte kontrolu a potřebujete to automatizovat na straně serveru.
+                    <br><br>
+                    <strong>Workflow (Postup práce):</strong>
+                    <ol class="list-decimal pl-5 mt-2 space-y-2 mb-4">
+                        <li>Nainstalujete knihovnu <strong>Sharp</strong> (nejrychlejší Node.js modul na zpracování fotek).</li>
+                        <li>V kódu vytvoříte funkci, která se spustí při nahrání (uploadu) každého souboru.</li>
+                        <li>Sharp obrázek vezme z paměti, ořízne ho na požadované rozměry a uloží v optimalizovaném WebP na váš serverový disk.</li>
+                    </ol>
+                    `,
+                    javascript: `// Příklad Sharp.js nasazení v Node.js
+const sharp = require('sharp');
+
+// Jakmile uživatel nahraje fotku, spustíme kompresi
+sharp('uzivatel-upload.jpg')
+  .resize(800, 800, { fit: 'cover' }) // Ořez na čtverec
+  .webp({ quality: 80 })              // Převod na WebP (80% kvalita)
+  .toFile('profilovka-optimalizovana.webp')
+  .then(() => console.log('Obrázek zpracován!'));`
+                },
+                {
+                    title: "Metoda 3: Vite / Next.js Pluginy (Pro Frontend týmy)",
+                    html: ``,
+                    css: ``,
+                    explanation: `
+                    <strong>K čemu to použít:</strong> Vyvíjíte velkou interaktivní aplikaci v Reactu, Vue nebo přes Vite. Chcete, aby se o vše postaral váš kompilátor a vy jste mohli do kódu psát jen základní importy fotek.
+                    <br><br>
+                    <strong>Workflow (Postup práce):</strong>
+                    <ol class="list-decimal pl-5 mt-2 space-y-2 mb-4">
+                        <li>Do zdrojové složky <code>/src/assets</code> vložíte základní těžký JPEG.</li>
+                        <li>V React kódu použijete speciální komponentu <code>&lt;Image /&gt;</code>, nikoliv klasický HTML <code>&lt;img&gt;</code>.</li>
+                        <li>Ve chvíli, kdy spustíte příkaz pro tvorbu produkční aplikace (<code>npm run build</code>), framework složku projde, JPEG si vezme, sám vygeneruje zmenšené varianty a nahradí vaši komponentu plně responzivním tagem <code>&lt;picture&gt;</code>.</li>
+                    </ol>
+                    `,
+                    javascript: `// Ukázka v Next.js (React)
+import Image from 'next/image';
+import heroFoto from '../assets/hero-obri-foto.jpg';
+
+export default function Stranka() {
+  return (
+    // Vývojář vloží tuto komponentu. Next.js na pozadí automaticky 
+    // vygeneruje srcset, vytvoří WebP verzi a postará se o cache.
+    <Image 
+      src={heroFoto} 
+      alt="Hero banner" 
+      sizes="(max-width: 768px) 100vw, 1200px"
+      placeholder="blur" 
+    />
+  );
+}`
+                },
+                {
+                    title: "Metoda 4: Image CDN - např. Cloudinary (Pro gigantické weby)",
+                    html: ``,
+                    css: ``,
+                    explanation: `
+                    <strong>K čemu to použít:</strong> Pracujete na mediálním portálu typu iDNES nebo gigantickém e-shopu. Máte miliony fotografií. Je absolutně nereálné je komprimovat u vás na serveru, nemáte na to výkon.
+                    <br><br>
+                    <strong>Workflow (Postup práce):</strong>
+                    <ol class="list-decimal pl-5 mt-2 space-y-2 mb-4">
+                        <li>Originální (často 10MB) fotografie se automaticky posílají do cloudového úložiště služby jako Cloudinary, Imgix apod.</li>
+                        <li>Do HTML nepíšete žádný tag <code>&lt;picture&gt;</code>. Píšete jen jeden základní <code>&lt;img&gt;</code>, ale do jeho URL adresy zakódujete, co od cloudu chcete (viz kód).</li>
+                        <li>Když prohlížeč tuto URL adresu navštíví, CDN server v milisekundě fotku vezme, ořízne, detekuje prohlížeč uživatele (umí AVIF?) a pošle dokonale optimalizovaný soubor.</li>
+                    </ol>
+                    `,
+                    html: `<!-- V URL adrese si přímo diktujeme parametry transformace:
+     w_800  = Chci šířku 800px
+     c_fill = Chci ořez typu 'cover'
+     f_auto = Formát vyber automaticky (pošli AVIF, pokud to prohlížeč umí) 
+     q_auto = Nastav nejlepší kompresi, ale ať to není rozmazané -->
+
+<img src="https://res.cloudinary.com/moje-firma/image/upload/w_800,c_fill,f_auto,q_auto/moje-obri-fotka.jpg" 
+     alt="Dokonale responzivní CDN obrázek">`
+                }
+            ]
+        },
+        {
+            id: "block-3",
+            time: "30 min",
+            title: "3. Matematika responzivních obrázků",
+            intro: "Vložení <img> tagu se stalo vědou. Jak přesně prohlížeči říci, ať nestahuje 4K fotografii na mobilní telefon? Naučíme se psát dokonalý responzivní tag.",
+            teacherTip: `<strong>Vysvětlení pro studenty:</strong> Toto je nejkomplexnější teoretická část. Použijte analogii: Atribut <code>srcset</code> představuje <em>Jídelní lístek v restauraci</em> (nabídka porcí, co má server na skladě). Atribut <code>sizes</code> představuje <em>Hlad zákazníka</em>. Prohlížeč si sám (podle velikosti okna a Retina displeje) vybere tu správnou "porci". Zdůrazněte, proč v <code>sizes</code> nelze použít klasická procenta (%) – prohlížeč HTML čte tryskovou rychlostí dříve, než má spočítané CSS obalových bloků.`,
+            theory: `
+                <h3 class="text-2xl font-serif font-bold mb-4 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">Jak prohlížeč přemýšlí?</h3>
+                <p class="mb-4 text-lg">Prohlížeč je extrémně rychlý. Jakmile vidí tag <code>&lt;img&gt;</code>, začne ho stahovat. Problém je, že v ten moment ještě <strong>nezná vaše CSS</strong>. Neví tedy, že v CSS máte napsáno <code>width: 30%</code>. Pokud mu nedáte nápovědu přímo v HTML, stáhne originální obrovský soubor.</p>
+                
+                <div class="space-y-6 mt-8">
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <strong class="text-[#1a6b4a] block mb-2 text-xl font-mono">srcset="..." (Jídelní lístek)</strong>
+                        <p class="text-sm">Vypíšeme seznam souborů na serveru a přidáme "w" (fyzická šířka v pixelech). Např.: <code>foto-800.jpg 800w</code>.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-[#e8e1d8]">
+                        <strong class="text-[#1a6b4a] block mb-2 text-xl font-mono">sizes="..." (Nápověda pro design)</strong>
+                        <p class="text-sm">Radíme, jak velkou část obrazovky obrázek zabere (jednotka <code>vw</code> = viewport width). Příklad: <code>(max-width: 800px) 100vw, 50vw</code>.</p>
+                    </div>
+                </div>
+
+                <div class="bg-[#f2ede6] p-6 rounded-xl border-l-4 border-[#c8410a] mt-8 mb-8">
+                    <h4 class="text-[#1a1714] font-serif font-bold text-lg mb-2">Hluboké porozumění: Jak spočítat varianty?</h4>
+                    <p class="text-[#4a4540] mb-4 text-sm">Vycházejte z šířek displejů a tzv. <strong>Device Pixel Ratio (DPR)</strong>. Moderní telefony mají Retina displeje (DPR = 2 nebo 3). Na CSS šířku 400px tak potřebují stáhnout fotku širokou <strong>800px až 1200px</strong>. Typická škála pro server generování je: <strong>320w, 640w, 960w, 1280w, 1920w, 2560w</strong>.</p>
+                </div>
+            `,
+            codes: [
+                {
+                    title: "Kompletní zápis responzivního obrázku",
+                    html: `
+<!-- 1. Nabídka (Seznam vygenerovaných souborů na serveru) -->
+<!-- 2. Nápověda pro layout (Aby prohlížeč nemusel čekat na CSS) -->
+<!-- 3. Záchranná síť pro staré prohlížeče a atributy proti uskakování (CLS) -->
+<img 
+  srcset="
+    https://placehold.co/320x180/1a4a7a/white.png?text=320w 320w,
+    https://placehold.co/640x360/1a4a7a/white.png?text=640w 640w,
+    https://placehold.co/960x540/1a4a7a/white.png?text=960w 960w,
+    https://placehold.co/1280x720/1a4a7a/white.png?text=1280w 1280w,
+    https://placehold.co/1920x1080/1a4a7a/white.png?text=1920w 1920w
+  "
+  sizes="(min-width: 1024px) 800px, 100vw"
+  src="https://placehold.co/960x540/1a4a7a/white.png?text=Trendy+analyza" 
+  alt="Analýza trhu ukazuje rostoucí trend"
+  class="w-full h-auto rounded-lg shadow-md border border-[#e8e1d8]"
+  width="800" 
+  height="450" 
+  loading="lazy"
+>
+`,
+                    css: ``,
+                    explanation: `
+                    <strong>Vyhodnocení krok za krokem:</strong><br>
+                    Uživatel má iPhone (CSS šířka 390px, DPR 3). Prohlížeč přečte <code>sizes</code> (použije 100vw). Spočítá potřebu: 390 × 3 = 1170 pixelů. Podívá se do <code>srcset</code> a stáhne nejbližší větší = <code>1280w</code> zástupný obrázek. Vyzkoušejte si to zmenšením okna na tomto náhledu (s vypnutou cache)!
+                    `
+                },
+                {
+                    title: "Art Direction (Změna ořezu pomocí tagu <picture>)",
+                    html: `
+<!-- Art Direction: Obal <picture> umožňuje definovat logické podmínky -->
+<picture>
+    <!-- Zkontroluj displej: Do 640px ZAHOĎ původní fotku a stáhni jiný ořez -->
+    <source media="(max-width: 639px)" srcset="https://placehold.co/400x600/c8410a/white.png?text=Orez+pro+Mobil">
+    
+    <!-- Výchozí stav: Tag <img> ZDE MUSÍ BÝT! -->
+    <img src="https://placehold.co/1000x400/1a4a7a/white.png?text=Siroka+Fotka+Desktop" 
+         alt="Kompozice Art Direction"
+         class="w-full h-auto rounded-lg shadow-sm border border-[#e8e1d8]">
+</picture>
+`,
+                    css: ``,
+                    explanation: `
+                    <strong>Živá ukázka nad textem:</strong> Zkuste si plynule zmenšovat okno. Modrý obrázek pro desktop <em>okamžitě</em> zmizí a prohlížeč stáhne červený ořez pro mobily. Tomu se říká <strong>Art Direction</strong>. Použijete to tam, kde by pouhé zmenšení fotky zničilo kompozici (např. obličej v krajině by byl malá tečka).
+                    `
+                }
+            ]
+        },
+        {
+            id: "block-4",
+            time: "55 min",
+            title: "4. Krok za Krokem: Vzory pro Layout a Vektory",
+            intro: "Nyní nasadíme kaskádové styly (CSS), abychom obrázky přizpůsobili našemu designu. Zaměříme se na moderní CSS Grid, Container Queries a pokročilou práci se SVG a Focal Points.",
+            teacherTip: `<strong>Skupinová aktivita:</strong> Rozdělte studenty do týmů. Každému přidělte jeden Vzor (např. Vzor M - Focal Point, nebo Vzor J - Nativní Lightbox). Úkolem bude otevřít <strong>CodePen.io</strong>, opsat přidělený vzor, libovolně ho upravit a prezentovat třídě, jak funguje. Je to efektivnější, než monotónní přednáška. U Vzoru M (Focal Point) ukažte studentům, jak častou chybou je 'uříznutá hlava' na fotkách profilů.`,
+            theory: `
+                <p class="mb-4 text-lg">Pro každý vzor najdete <strong>Živý náhled</strong> a detailní rozbor. Zkuste si plynule zmenšovat a zvětšovat okno vašeho prohlížeče a najeďte myší na obrázky!</p>
+                <div class="bg-[#f2ede6] border-l-4 border-[#1a6b4a] p-4 mb-8 text-[#1a1714] rounded-r-lg">
+                    <strong class="block mb-1 font-serif text-lg">💡 Filosofie 'No Queries' a 'Vanilla'</strong>
+                    <p class="text-sm">Moderní webdesign upouští od složitého psaní <code>@media (max-width: 768px)</code>. Píšeme CSS chytře, aby se komponenty zalamovaly samy (Grid auto-fit). Stejně tak se zbavujeme závislosti na knihovnách typu jQuery – využíváme čisté HTML5 (Dialog) a moderní CSS Level 4 (selektor :has).</p>
+                </div>
+            `,
+            codes: [
+                {
+                    title: "VZOR B: Flexbox bez Media Queries (Krkavčí technika)",
+                    html: `
+<section class="demo-split-section">
+    <div class="demo-split-text">
+        <h2 class="text-2xl font-serif font-bold mb-4">No Queries Layout</h2>
+        <p class="text-sm">Nepoužili jsme žádný zlom @media! Zkuste zmenšovat prohlížeč – jakmile jeden z bloků nemá k dispozici alespoň 300px šířky, bloky se automaticky plynule zalomí pod sebe.</p>
+    </div>
+    <div class="demo-split-image">
+        <img src="https://placehold.co/800x600/1a4a7a/white.png?text=Automaticke+Zalomeni" alt="">
+    </div>
+</section>`,
+                    css: `
+.demo-split-section {
+    display: flex;         
+    flex-wrap: wrap;       /* MAGIE 1: Dovolí zalomit se na další řádek */
+    gap: 2rem; align-items: center;
+}
+.demo-split-text, .demo-split-image {
+    /* MAGIE 2: Krkavčí technika */
+    /* Ideálně buď 300px široký, když je místo, spravedlivě se roztáhni. 
+       Pod 600px se zalomí na 100%. */
+    flex-basis: 300px; flex-grow: 1;
+}`,
+                    explanation: `Místo natvrdo psaného <code>@media</code> přenecháme odpovědnost CSS enginu. Dáme mu jen pravidla pro "komfortní šířku". Je to robustnější pro komponenty.`
+                },
+                {
+                    title: "VZOR C: Karty v Gridu (Auto-fit a Object-Fit)",
+                    html: `
+<div class="demo-grid-container p-4 bg-white rounded-xl border border-[#e8e1d8]">
+    <article class="demo-card">
+        <img src="https://placehold.co/400x800/1a6b4a/white.png?text=Nudle" alt="">
+        <div class="demo-card-content"><h3 class="font-bold font-serif mb-1">Lesní tým</h3><p class="text-xs">Oříznutá nudle.</p></div>
+    </article>
+    <article class="demo-card">
+        <img src="https://placehold.co/800x300/c8410a/white.png?text=Panorama" alt="">
+        <div class="demo-card-content"><h3 class="font-bold font-serif mb-1">Výhled</h3><p class="text-xs">Oříznuté panorama.</p></div>
+    </article>
+</div>`,
+                    css: `
+.demo-grid-container {
+    display: grid;
+    /* Auto-resizing Grid bez @media! */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
+}
+.demo-card img {
+    width: 100%; height: 180px; 
+    /* KRITICKÉ: Zabrání splácnutí fotky do obdélníku. */
+    object-fit: cover;     
+}`,
+                    explanation: `<code>object-fit: cover</code> zaručuje, že karty lícují jako vojáci v řadě bez deformace obsahu, i když zdrojová data mají diametrálně odlišný poměr stran.`
+                },
+                {
+                    title: "VZOR M: Inteligentní ořez - Focal Point (object-position)",
+                    html: `
+<div class="demo-avatar-container">
+    <div class="text-center flex flex-col items-center">
+        <h4 class="font-bold mb-4 text-[#c8410a] font-serif text-lg">Výchozí střed (Uříznutá hlava)</h4>
+        <img src="https://placehold.co/400x800/e8e1d8/1a1714.png?text=Postava" class="demo-obj-center" alt="">
+    </div>
+    <div class="text-center flex flex-col items-center">
+        <h4 class="font-bold mb-4 text-[#1a6b4a] font-serif text-lg">S object-position (Focal Point)</h4>
+        <img src="https://placehold.co/400x800/e8e1d8/1a1714.png?text=Postava" class="demo-obj-top" alt="">
+    </div>
+</div>`,
+                    css: `
+.demo-obj-center {
+    width: 150px; aspect-ratio: 1/1; border-radius: 50%;
+    object-fit: cover;
+    /* Výchozí chování prohlížeče je: object-position: 50% 50%; */
+}
+.demo-obj-top {
+    width: 150px; aspect-ratio: 1/1; border-radius: 50%;
+    object-fit: cover;
+    /* MAGIE: Posuneme "kameru" ořezu nahoru (na 20% osy Y),
+       abychom postavě na portrétu neuřízli hlavu! */
+    object-position: center 20%;
+}`,
+                    explanation: `
+                    <p class="mb-3">Když používáte <code>object-fit: cover</code>, prohlížeč logicky ořezává absolutní střed obrázku. Pokud je ale postava nebo důležitý produkt posunutý více nahoru nebo do strany (časté u vysokých portrétních fotografií), dojde k tzv. "dekapitaci".</p>
+                    <p>Moderní a elegantní oprava je vlastnost <strong><code>object-position</code></strong>. Pomocí procent nebo slov (top, bottom, left) s ní posunete "ohniskový bod" (Focal Point) uvnitř rámečku přesně na místo, které má být vždy vidět.</p>
+                    `
+                },
+                {
+                    title: "VZOR H: Síla Inline SVG a CSS stylování (currentColor)",
+                    html: `
+<div class="p-8 text-center bg-white rounded-xl border border-[#e8e1d8]">
+    <!-- Tlačítko se SVG vloženým přímo v kódu -->
+    <button class="demo-svg-btn group">
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="w-6 h-6 mr-2">
+            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        Přidat do košíku
+    </button>
+</div>`,
+                    css: `
+.demo-svg-btn {
+    color: #1a6b4a; border: 2px solid #1a6b4a; transition: all 0.3s ease; 
+}
+.demo-svg-btn:hover { color: white; background-color: #1a6b4a; }
+
+/* MAGIE INLINE SVG: currentColor */
+.demo-svg-btn svg {
+    /* SVG se stává "chameleonem", dědí barvu (color) rodiče. 
+       Když zbělá text při hoveru, zbělá i ikona. */
+    stroke: currentColor;
+}`,
+                    explanation: `
+                    <p class="mb-3">UI ikonky byste neměli vkládat přes tag <code>&lt;img&gt;</code>. Pokud kód vložíte přímo do HTML (Inline SVG), otevírá se vám vektorová CSS zbraň: <code>currentColor</code>. Funguje jako houba, která do SVG nasaje barvu z okolního textu.</p>
+                    <p><em>A11y Tip:</em> Všimněte si u SVG atributu <code>aria-hidden="true"</code>. Ikona košíku je čistě vizuální dekorace tlačítka, čtečkám obrazovek ji skryjeme, aby zbytečně nečetly kód.</p>
+                    `
+                },
+                {
+                    title: "VZOR J: Nativní Lightbox s HTML5 Dialog",
+                    html: `
+<div class="p-8 text-center bg-white rounded-xl border border-[#e8e1d8]">
+    <!-- Po kliknutí zavolá metodu showModal() -->
+    <img src="https://placehold.co/400x250/1a4a7a/white.png?text=Nahled" 
+         class="cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all mx-auto border border-[#e8e1d8]"
+         onclick="document.getElementById('demo-modal').showModal()">
+
+    <!-- NATIVNÍ MODÁLNÍ OKNO -->
+    <dialog id="demo-modal" class="demo-lightbox">
+        <div class="relative bg-white flex flex-col">
+            <button onclick="this.closest('dialog').close()" 
+                    class="absolute top-4 right-4 w-10 h-10 bg-black/60 hover:bg-[#c8410a] text-white rounded-full flex items-center justify-center font-bold text-xl cursor-pointer border-0">
+                &times;
+            </button>
+            <img src="https://placehold.co/1000x600/1a4a7a/white.png?text=Detailní+Fotografie" class="w-full h-auto block">
+            <div class="p-6 text-left border-t border-[#f2ede6]">
+                <h4 class="font-serif font-bold text-xl text-[#1a1714] mb-1">Nativní HTML5 Lightbox</h4>
+                <p class="text-sm text-[#4a4540]">Otevřeno zcela bez jQuery nebo Bootstrapu.</p>
+            </div>
+        </div>
+    </dialog>
+</div>`,
+                    css: `
+.demo-lightbox {
+    padding: 0; border: none; border-radius: 0.75rem; 
+    max-width: 90vw; width: 800px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+}
+/* ::backdrop vytvoří poloprůhledné pozadí za oknem */
+.demo-lightbox::backdrop {
+    background-color: rgba(26, 23, 20, 0.9); 
+    backdrop-filter: blur(8px); 
+}`,
+                    explanation: `Tag <code>&lt;dialog&gt;</code> automaticky řeší <strong>Přístupnost (A11y)</strong>. Po otevření okna se uživatel pohybuje Tabulátorem POUZE uvnitř lightboxu a okno může zavřít přirozeně klávesou ESC.`
+                },
+                {
+                    title: "VZOR K: CSS :has() Selektor (Zvýraznění fotogalerie)",
+                    html: `
+<div class="demo-has-gallery">
+    <img src="https://placehold.co/300/1a4a7a/white.png?text=1" alt="">
+    <img src="https://placehold.co/300/1a6b4a/white.png?text=2" alt="">
+    <img src="https://placehold.co/300/c8410a/white.png?text=3" alt="">
+    <img src="https://placehold.co/300/4a4540/white.png?text=4" alt="">
+</div>
+`,
+                    css: `
+/* 1. Zvýraznění obrázku pod myší */
+.demo-has-gallery img:hover { 
+    transform: scale(1.05); z-index: 10; position: relative; 
+    border: 2px solid #c8410a; 
+}
+
+/* 2. MAGIE :has() - Ztmavení OSTATNÍCH obrázků */
+/* Říká: "Pokud má galerie libovolný obrázek ve stavu :hover, 
+   vyber z ní fotky, které :hover NEMAJÍ a ztmav je." */
+.demo-has-gallery:has(img:hover) img:not(:hover) { 
+    opacity: 0.3; filter: grayscale(80%) blur(2px); transform: scale(0.95); 
+}
+`,
+                    explanation: `Revoluční <strong>CSS selektor <code>:has()</code></strong> umožňuje ovládat sourozenecké prvky kontrolou rodiče. Vytváří neuvěřitelný interaktivní UX zážitek zcela bez JavaScriptu.`
+                },
+                {
+                    title: "VZOR G: Container Queries (CQI Jednotky)",
+                    html: `
+<div class="demo-cq-resizable">
+    <p class="text-xs font-bold text-[#9a948e] uppercase tracking-wide mb-3">↙ Zatáhni myší za pravý okraj boxu!</p>
+    <article class="demo-cq-card">
+        <!-- JEDNOTKY CQI reagují na šířku boxu, ne okna prohlížeče! -->
+        <img src="https://placehold.co/600x400/9a948e/white.png?text=Kontejner" 
+             sizes="(min-width: 500px) 40cqi, 100cqi" alt="">
+        <div class="p-5 demo-cq-content">
+            <h3 class="font-serif font-bold text-xl mb-2 text-[#1a1714]">CQ Karta</h3>
+            <p class="text-sm text-[#4a4540]">Tato komponenta se řídí jen šířkou přímého rodiče (čárkovaného boxu).</p>
+        </div>
+    </article>
+</div>`,
+                    css: `
+.demo-cq-resizable {
+    /* Říkáme "Tento prvek je kontejner pro měření" */
+    container-type: inline-size; container-name: moderncard;
+}
+.demo-cq-card { display: flex; flex-direction: column; }
+
+/* Místo @media používáme @container */
+@container moderncard (min-width: 500px) {
+    .demo-cq-card { flex-direction: row; }
+    .demo-cq-card img { width: 40%; height: 100%; }
+    .demo-cq-content { width: 60%; }
+}`,
+                    explanation: `Až dosud jsme <code>@media</code> řešili responzivitu podle okna. S <code>@container</code> se komponenta řídí dostupným místem v obalu. V HTML <code>sizes</code> pak používáme jednotku <strong>cqi (Container Query Inline)</strong> místo vw.`
+                }
+            ]
+        },
+        {
+            id: "block-5",
+            time: "25 min",
+            title: "5. Vnímaný výkon a Main Thread",
+            intro: "Tento blok čerpá z 'Image Optimization' od experta Addyho Osmaniho. Posuneme se od dat k tomu, jak načítání *fyzicky cítí* uživatel (Perceived Performance).",
+            teacherTip: `<strong>Vysvětlení pro studenty:</strong> Na mobilu má procesor velmi omezené zdroje. Když se načítá web, stejné vlákno procesoru musí vykreslit text i dekódovat fotku. Předveďte jim efekt "zamrznutí", když zkoušíte na pomalém mobilu scrollovat těžkou stránkou. Vysvětlení "Blur-up" efektu (LQIP) jim můžete přiblížit na aplikaci Instagram – když se jim nechce načíst fotka, vidí její rozmazané barevné fleky.`,
+            theory: `
+                <h3 class="text-2xl font-serif font-bold mb-4 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">Hlavní vlákno prohlížeče (Main Thread)</h3>
+                <p class="mb-4 text-lg">Mnoho vývojářů si myslí, že po stažení po síti je hotovo. Omyl! Následuje <strong>dekódování</strong> JPEGu/AVIFu do surových pixelů pro grafickou kartu.</p>
+                <div class="bg-[#f2ede6] p-5 rounded-lg border-l-4 border-[#c8410a] mb-6 shadow-sm">
+                    <h4 class="font-serif font-bold text-[#1a1714] mb-2 text-lg">Problém "Zamrznutí"</h4>
+                    <p class="text-[#4a4540] text-sm">Dekódování velké fotky vytíží procesor telefonu. Prohlížeč má ale často jen jedno hlavní vlákno (Main thread). Pokud dekóduje obrázek, <strong>nemůže reagovat na dotyk</strong>. Web zamrzne a nejde scrollovat.</p>
+                </div>
+                <p class="mb-6"><strong>Řešení:</strong> Přidat atribut <code>decoding="async"</code>. Říká: "Rozkóduj to na pozadí a nezastavuj kvůli tomu scrollování!"</p>
+
+                <h3 class="text-2xl font-serif font-bold mt-10 mb-4 text-[#1a1714] border-b-2 border-[#c8410a] pb-2 inline-block">LQIP (Low Quality Image Placeholder)</h3>
+                <p class="mb-4 text-lg">Uživatelé nenávidí čekání na bílou plochu. Pokud jim ukážete alespoň "obrys", mají pocit rychlosti. Jako první okamžitě načteme mikroskopickou verzi (např. 40x25 px o velikosti 1 KB) a CSS filtrem ji rozmažeme. Na pozadí se stahuje ostrá fotka a pak se plynule prolne.</p>
+            `,
+            codes: [
+                {
+                    title: "Blur-up efekt (Inspirováno Medium.com a Instagramem)",
+                    html: `
+<!-- PŘEHRÁT ANIMACI: Klikněte na obrázek níže pro opakování efektu -->
+<div class="relative w-full max-w-2xl aspect-video overflow-hidden rounded-xl shadow-md cursor-pointer group border border-[#e8e1d8]" onclick="window.replayBlur(this)">
+    
+    <!-- FÁZE 1: Okamžitý Placeholder (Velikost pár KB) -->
+    <img src="https://placehold.co/40x25/1a6b4a/white.png?text=LQIP" 
+         class="absolute inset-0 w-full h-full object-cover demo-blur-placeholder z-0" alt="">
+         
+    <!-- FÁZE 2: Skutečná velká fotografie -->
+    <!-- Zpočátku zcela průhledná (opacity-0). Po stažení (onload) se třída odebere a fotka plynule 'přijede'. -->
+    <img src="https://placehold.co/1200x675/1a6b4a/white.png?text=Ostra+Plne+Nactena+Fotografie" 
+         class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 z-10 demo-blur-sharp" 
+         alt="" onload="this.classList.remove('opacity-0')">
+         
+    <div class="absolute bottom-3 right-3 z-20 bg-[#1a1714]/80 text-white text-xs px-3 py-1.5 rounded-full font-bold group-hover:bg-[#c8410a] transition-colors">
+        Klikni pro opakování
+    </div>
+</div>
+`,
+                    css: `
+.demo-blur-placeholder {
+    filter: blur(15px); /* Extrémní rozmazání LQIP náhledu */
+    
+    /* Rozmazání dělá bílé stíny (krvácení) na okrajích. 
+       Obraz mírně zvětšíme (scale), abychom okraje skryli. */
+    transform: scale(1.05);
+}`,
+                    explanation: `Psychologicky tímto uživatele "zabavíme" na ty dvě sekundy, co stahování trvá. Prohlížeč miniaturní soubor vykreslí v první milisekundě a ihned ukazuje barvy.`
+                }
+            ]
+        },
+        {
+            id: "block-6",
+            time: "15 min",
+            title: "6. Studijní podklad: Průvodce pro studenty",
+            intro: "Ucelený studijní materiál z této konzultace, pokrývající vše od teorie až po praktické úkoly a audit v prohlížeči.",
+            teacherTip: `<strong>Tip pro hodnocení:</strong> Tento celý blok můžete využít jako zadání pro domácí projekt nebo písemnou prověrku. Úkol č. 4 (Audit výkonu v Google Lighthouse) je skvělou příležitostí, jak studentům udělit známku z praktické aplikace – nechte je vypracovat krátký report (2-3 screenshoty a zhodnocení), kde zanalyzují výkonnostní skóre jejich oblíbeného e-shopu před a po teoretické optimalizaci.`,
+            theory: `
+                <div class="bg-white p-8 border border-[#e8e1d8] rounded-xl shadow-sm prose prose-slate max-w-none font-sans">
+                    <h3 class="font-serif text-[#1a1714]">A. Zlatý Workflow 2026</h3>
+                    <p>Moderní webová architektura se skládá z těchto 5 pevných bodů:</p>
+                    <ol>
+                        <li><strong>Backend:</strong> Hromadné generování přes Sharp.js do moderních formátů (AVIF/WebP).</li>
+                        <li><strong>HTML:</strong> Struktura přes <code>&lt;picture&gt;</code> s attributy <code>srcset</code> a <code>sizes</code> pro responzivitu.</li>
+                        <li><strong>Layout:</strong> Flexibilní kódování přes CSS Grid (auto-fit a Masonry) bez Media Queries.</li>
+                        <li><strong>Stabilita:</strong> Vždy definovat <code>width</code> a <code>height</code> u každého <code>&lt;img&gt;</code> proti CLS.</li>
+                        <li><strong>Výkon:</strong> Hlavní (LCP) obrázek má vždy <code>fetchpriority="high"</code> a <code>loading="eager"</code>. Ostatní dole na stránce pak <code>loading="lazy"</code>.</li>
+                    </ol>
+
+                    <h3 class="font-serif text-[#1a1714]">B. Formáty zblízka</h3>
+                    <ul>
+                        <li><strong>JPEG:</strong> Zastaralý standard pro fotky (nevhodný pro UI, chybí průhlednost).</li>
+                        <li><strong>WebP:</strong> Dnešní standard, o 30 % menší než JPG, umí průhlednost.</li>
+                        <li><strong>AVIF:</strong> Budoucnost z videa, extrémně úsporný formát.</li>
+                        <li><strong>SVG:</strong> Vektory a ikony. Měly by být vkládány inline pro umožnění CSS úprav.</li>
+                    </ul>
+
+                    <div class="bg-[#faf8f5] p-6 rounded-lg mt-8 border-l-4 border-[#1a4a7a]">
+                        <h4 class="font-serif text-[#1a4a7a] mt-0">Praktické úkoly k obhajobě</h4>
+                        <p><strong>1. Detektiv:</strong> Otevřete web, stiskněte F12 (Network -> Img). Sledujte změny stahování při zmenšování okna.</p>
+                        <p><strong>2. Výpočet:</strong> iPhone má DPR 3. V CSS má fotka 300px. Jakou šířku "w" musí mít v srcset? (Odpověď: 900px).</p>
+                        <p><strong>3. Audit s Lighthouse:</strong> Spusťte v prohlížeči (F12) Lighthouse test a prozkoumejte sekci "Opportunities".</p>
+                    </div>
+                </div>
+            `,
+            hasChart: false
+        },
+        {
+            id: "block-7",
+            time: "Bonus",
+            title: "7. Bonus: View Transitions API",
+            intro: "Věnujete se vývoji pro nejmodernější prohlížeče? Animujte plynule přechody fotek bez JS knihoven pomocí View Transitions API.",
+            teacherTip: `Tato ukázka teď demonstruje absolutně špičkový <strong>Async Transition Pattern</strong>. Vysvětlete studentům ten největší chyták: Změna URL obrázku sice trvá milisekundu, ale prohlížeč potřebuje čas na to, aby novou fotku stáhl z internetu a vykreslil. Pokud animaci nezabrzdíme přes Slib (<code>Promise</code>), prohlížeč se pokusí animovat něco, co na obrazovce ještě není (a web nepříjemně blikne do bíla).`,
+            theory: `
+                <p class="mb-6 text-lg">Představte si galerii, kde kliknete na náhled a hlavní fotografie se plynule prolne (crossfade). Dnes to kódově řeší sám prohlížeč. Vyfotí starý stav obrazovky, nechá JS změnit fotku, vyfotí nový stav a sám je prolne.</p>
+                <div class="bg-indigo-50 border-l-4 border-[#1a4a7a] p-5 rounded-r-lg mb-6 shadow-sm">
+                    <h4 class="font-serif font-bold text-[#1a4a7a] mb-2">Technická past: Probliknutí sítě</h4>
+                    <p class="text-[#4a4540] text-sm">Na internetu padají data tryskovou rychlostí, ale nejsou k dispozici "okamžitě". Pokud spustíme plynulou animaci dříve, než se nová fotka fyzicky stáhne a vykreslí na monitoru, dojde k tzv. animaci do prázdného místa (obrazovka ošklivě problikne). Profesionální řešení? Fotku si nejprve stáhneme a rozkódujeme do paměti prohlížeče pomocí metody <code>decode()</code> a funkce <code>Promise</code>. Animaci pustíme až poté!</p>
+                </div>
+            `,
+            codes: [
+                {
+                    title: "Interaktivní ukázka (S garancí plynulosti)",
+                    html: `
+<div class="p-6 bg-white border border-[#e8e1d8] rounded-xl text-center">
+    <div class="mb-4 bg-[#f2ede6] rounded-xl overflow-hidden shadow-md max-w-xl mx-auto border-2 border-[#e8e1d8]">
+        <!-- Image rovnou nese třídu view-transition-name -->
+        <img id="vt-hero-img" src="https://images.unsplash.com/photo-1506744626753-1fa7673e022b?w=800&auto=format&fit=crop&q=80" class="w-full h-[300px] object-cover block bg-white vt-hero-image">
+    </div>
+
+    <p class="text-xs font-bold uppercase text-[#9a948e] mb-3">Klikni a sleduj filmový crossfade:</p>
+    <div class="flex gap-4 justify-center">
+        <!-- Reálné Unsplash obrázky s pevnými Cache hlavičkami zaručí perfektní stabilitu animace -->
+        <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=80" onclick="switchHeroImage(this.src, this)" class="w-20 h-20 object-cover rounded-lg cursor-pointer transition-opacity border-2 border-transparent hover:border-[#1a1714]">
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80" onclick="switchHeroImage(this.src, this)" class="w-20 h-20 object-cover rounded-lg cursor-pointer transition-opacity border-2 border-transparent hover:border-[#1a1714]">
+    </div>
+</div>
+`,
+                    css: `
+/* 1. Označíme obrázek unikátním názvem. */
+.vt-hero-image { 
+    view-transition-name: main-gallery-hero; 
+}
+
+/* 2. Rychlost prolínání (crossfade) */
+::view-transition-old(main-gallery-hero),
+::view-transition-new(main-gallery-hero) {
+    animation-duration: 0.6s;
+    animation-timing-function: ease-in-out;
+}`,
+                    javascript: `
+window.switchHeroImage = function(src, clickedEl) {
+    const heroImg = document.getElementById('vt-hero-img');
+    if (!document.startViewTransition || heroImg.src === src) return;
+    
+    // Okamžitá vizuální odezva na kliknutí - náhled lehce vybledne
+    const origClass = clickedEl.className;
+    clickedEl.classList.add('opacity-50');
+    
+    // ZÁSADNÍ TRIK (Fix probliknutí):
+    // Obrázek si potichu stáhneme do paměti a připravíme (decode)
+    const preloader = new Image();
+    preloader.src = src;
+    
+    preloader.decode().then(() => {
+        // Pomocí Slibu (Promise) donutíme prohlížeč s animací 
+        // počkat přesně do momentu, kdy <img> obrázek plně vykreslí!
+        const transition = document.startViewTransition(() => {
+            return new Promise((resolve) => {
+                heroImg.onload = resolve;
+                heroImg.onerror = resolve; // Ochrana
+                heroImg.src = src;
+            });
+        });
+
+        // Návrat náhledu do normálu
+        transition.finished.finally(() => {
+            clickedEl.className = origClass;
+        });
+    });
+};`,
+                    explanation: `Tato ukázka řeší absolutně všechny nástrahy View Transitions na webu. Kdybychom jen změnili <code>src</code>, prohlížeč by občas zachytil "nový" stav v momentě stahování nebo vykreslování, což by vedlo k probliknutí. Tím, že obrázek přednačteme do grafické paměti (<code>decode()</code>) a navíc zevnitř asynchronní funkce vrátíme <code>Promise</code>, garantujeme dokonalý filmový střih za každých okolností.`
+                }
+            ]
+        }
+    ];
+
+    // Globální stav a instance
+    let currentBlockIndex = 0;
+    let formatChartInstance = null;
+    let isTeacherMode = false;
+
+    // Prvky DOMu
+    const navContainer = document.getElementById('nav-container');
+    const mainContent = document.getElementById('main-content');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const btnStudent = document.getElementById('btn-mode-student');
+    const btnTeacher = document.getElementById('btn-mode-teacher');
+
+    function init() {
+        buildNavigation();
+        setupMobileMenu();
+        setMode('student'); 
+        renderBlock(0);
+    }
+
+    // Přepínání Lektor/Student
+    window.setMode = function(mode) {
+        isTeacherMode = (mode === 'teacher');
+        
+        if (isTeacherMode) {
+            document.body.classList.add('teacher-mode');
+            btnTeacher.classList.replace('text-[#9a948e]', 'text-[#1a1714]');
+            btnTeacher.classList.replace('bg-transparent', 'bg-white');
+            btnTeacher.classList.add('shadow-sm');
+            
+            btnStudent.classList.replace('text-[#1a1714]', 'text-[#9a948e]');
+            btnStudent.classList.replace('bg-white', 'bg-transparent');
+            btnStudent.classList.remove('shadow-sm');
+        } else {
+            document.body.classList.remove('teacher-mode');
+            btnStudent.classList.replace('text-[#9a948e]', 'text-[#1a1714]');
+            btnStudent.classList.replace('bg-transparent', 'bg-white');
+            btnStudent.classList.add('shadow-sm');
+            
+            btnTeacher.classList.replace('text-[#1a1714]', 'text-[#9a948e]');
+            btnTeacher.classList.replace('bg-white', 'bg-transparent');
+            btnTeacher.classList.remove('shadow-sm');
+        }
+    };
+
+    function setupMobileMenu() {
+        const toggleMenu = () => {
+            const isClosed = sidebar.classList.contains('sidebar-closed');
+            if (isClosed) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
+        document.getElementById('close-sidebar-btn').addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+    }
+
+    function buildNavigation() {
+        lessonData.forEach((block, index) => {
+            const btn = document.createElement('button');
+            const isActive = index === currentBlockIndex;
+            
+            const isBonus = block.id === 'block-7';
+            const activeClass = isBonus ? 'bg-[#f2ede6] border-[#c8410a] text-[#1a1714] shadow-sm translate-x-1' : 'bg-[#f2ede6] border-[#1a6b4a] text-[#1a1714] shadow-sm translate-x-1';
+            const inactiveClass = 'border-transparent text-[#4a4540] hover:bg-[#faf8f5] hover:text-[#1a1714]';
+            
+            btn.className = `w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-200 border-l-4 font-sans ${isActive ? activeClass : inactiveClass}`;
+            
+            btn.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="truncate pr-2 font-serif text-base ${isActive ? 'text-[#1a1714]' : ''}">${block.title}</span>
+                    <span class="text-xs ${isActive ? (isBonus ? 'text-[#c8410a]' : 'text-[#1a6b4a]') : 'text-[#9a948e]'} mt-1 font-semibold flex items-center">
+                        ${block.time}
+                    </span>
+                </div>
+            `;
+            btn.onclick = () => {
+                currentBlockIndex = index;
+                updateNavigationUI();
+                renderBlock(index);
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('sidebar-closed');
+                    sidebar.classList.remove('sidebar-open');
+                    overlay.classList.add('hidden');
+                }
+            };
+            navContainer.appendChild(btn);
+        });
+    }
+
+    function updateNavigationUI() {
+        Array.from(navContainer.children).forEach((btn, index) => {
+            const block = lessonData[index];
+            const isActive = index === currentBlockIndex;
+            const isBonus = block.id === 'block-7';
+            
+            const activeClass = isBonus ? 'bg-[#f2ede6] border-[#c8410a] text-[#1a1714] shadow-sm translate-x-1' : 'bg-[#f2ede6] border-[#1a6b4a] text-[#1a1714] shadow-sm translate-x-1';
+            const inactiveClass = 'border-transparent text-[#4a4540] hover:bg-[#faf8f5] hover:text-[#1a1714]';
+            
+            btn.className = `w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-200 border-l-4 font-sans ${isActive ? activeClass : inactiveClass}`;
+            const spans = btn.querySelectorAll('span');
+            if (spans.length === 2) {
+                spans[0].className = `truncate pr-2 font-serif text-base ${isActive ? 'text-[#1a1714]' : ''}`;
+                spans[1].className = `text-xs ${isActive ? (isBonus ? 'text-[#c8410a]' : 'text-[#1a6b4a]') : 'text-[#9a948e]'} mt-1 font-semibold flex items-center`;
+            }
+        });
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    window.navigate = function(direction) {
+        const newIndex = currentBlockIndex + direction;
+        if (newIndex >= 0 && newIndex < lessonData.length) {
+            currentBlockIndex = newIndex;
+            updateNavigationUI();
+            renderBlock(currentBlockIndex);
+            document.getElementById('main-content').scrollTop = 0;
+        }
+    };
+
+    window.replayBlur = function(container) {
+        const sharpImg = container.querySelector('.demo-blur-sharp');
+        if (sharpImg) {
+            sharpImg.classList.add('opacity-0');
+            setTimeout(() => {
+                sharpImg.classList.remove('opacity-0');
+            }, 600); 
+        }
+    };
+
+    function renderBlock(index) {
+        const block = lessonData[index];
+        const isBonus = block.id === 'block-7';
+        const pColor = isBonus ? '#c8410a' : '#1a6b4a';
+        
+        let teacherSection = '';
+        if (block.teacherTip) {
+            teacherSection = `
+                <div class="teacher-only bg-white border border-[#e8e1d8] border-l-4 border-l-[#c8410a] p-6 rounded-xl shadow-sm mb-10">
+                    <h4 class="font-serif font-bold text-[#c8410a] mb-2 text-xl">Lektorská metodika</h4>
+                    <p class="text-[#4a4540] text-sm md:text-base leading-relaxed">${block.teacherTip}</p>
+                </div>
+            `;
+        }
+
+        let codesSection = '';
+        if (block.codes && block.codes.length > 0) {
+            codesSection = block.codes.map((c, i) => {
+                let htmlBlock = c.html ? `
+                    <div class="mb-4">
+                        <span class="inline-block bg-[#1a1714] text-white text-xs font-bold px-3 py-1 rounded-t-md uppercase tracking-wider ml-2">HTML</span>
+                        <pre><code class="language-html">${escapeHtml(c.html.trim())}</code></pre>
+                    </div>
+                ` : '';
+                let cssBlock = c.css ? `
+                    <div class="mb-4">
+                        <span class="inline-block bg-[#1a4a7a] text-white text-xs font-bold px-3 py-1 rounded-t-md uppercase tracking-wider ml-2">CSS</span>
+                        <pre><code class="language-css">${escapeHtml(c.css.trim())}</code></pre>
+                    </div>
+                ` : '';
+                let jsBlock = c.javascript ? `
+                    <div class="mb-4">
+                        <span class="inline-block bg-[#c8410a] text-white text-xs font-bold px-3 py-1 rounded-t-md uppercase tracking-wider ml-2">JS</span>
+                        <pre><code class="language-javascript">${escapeHtml(c.javascript.trim())}</code></pre>
+                    </div>
+                ` : '';
+
+                return `
+                <div class="mt-16 bg-white rounded-2xl shadow-sm border border-[#e8e1d8] overflow-hidden">
+                    <div class="px-6 py-5 border-b border-[#e8e1d8] flex items-center bg-[#faf8f5]">
+                        <span class="bg-[#1a1714] text-white w-8 h-8 flex items-center justify-center rounded-full text-sm font-extrabold mr-4 shadow-sm">${i + 1}</span>
+                        <h4 class="text-xl font-serif font-bold text-[#1a1714]">${c.title}</h4>
+                    </div>
+                    
+                    <div class="p-6 md:p-8">
+                        <div class="mb-10">
+                            <h5 class="text-xs font-extrabold uppercase text-[#9a948e] mb-4 tracking-widest">Živý náhled</h5>
+                            <div class="relative w-full overflow-hidden">
+                                ${c.html}
+                                ${c.css ? '<style>' + c.css + '</style>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[#faf8f5] border border-[#e8e1d8] rounded-xl p-6 shadow-inner">
+                            <h5 class="text-xs font-extrabold uppercase text-[#9a948e] mb-6 tracking-widest">Zdrojové kódy</h5>
+                            ${htmlBlock}
+                            ${cssBlock}
+                            ${jsBlock}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-[#faf8f5] border-t border-[#e8e1d8] px-6 md:px-8 py-8">
+                        <h5 class="text-sm font-extrabold uppercase text-[#c8410a] mb-4 tracking-widest">Rozbor logiky</h5>
+                        <div class="text-[#4a4540] leading-relaxed text-lg font-sans">
+                            ${c.explanation}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        const prevBtn = index > 0 ? `<button onclick="navigate(-1)" class="px-6 py-3 bg-white border border-[#9a948e] text-[#1a1714] rounded-xl hover:bg-[#f2ede6] transition shadow-sm font-bold flex items-center">← Předchozí</button>` : '<div></div>';
+        const nextBtn = index < lessonData.length - 1 ? `<button onclick="navigate(1)" class="px-6 py-3 bg-[#1a1714] text-white rounded-xl hover:bg-[#4a4540] transition shadow-md font-bold flex items-center">Následující →</button>` : '<div></div>';
+
+        mainContent.innerHTML = `
+            <div class="fade-in max-w-5xl mx-auto p-6 md:p-10 lg:p-14 pb-24">
+                
+                <div class="mb-10">
+                    <span class="inline-flex items-center px-3 py-1 mb-6 bg-[#f2ede6] text-[#4a4540] text-sm font-bold uppercase tracking-widest rounded-md border border-[#e8e1d8]">
+                        Čas: ${block.time}
+                    </span>
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold text-[#1a1714] mb-8 leading-tight">${block.title}</h2>
+                    <div class="text-xl md:text-2xl text-[#4a4540] leading-relaxed font-medium">
+                        ${block.intro}
+                    </div>
+                </div>
+                
+                ${teacherSection}
+
+                <div class="prose prose-slate prose-lg md:prose-xl max-w-none text-[#1a1714] mt-10 font-sans">
+                    ${block.theory}
+                </div>
+
+                ${codesSection}
+
+                <div class="mt-20 pt-10 border-t border-[#e8e1d8] flex flex-col sm:flex-row justify-between items-center gap-4">
+                    ${prevBtn}
+                    ${nextBtn}
+                </div>
+            </div>
+        `;
+
+        // Injektujeme JS z kódových bloků do stránky, aby živé ukázky fungovaly
+        if (block.codes) {
+            block.codes.forEach(c => {
+                if (c.javascript && c.javascript.trim()) {
+                    try { new Function(c.javascript)(); } catch(e) { console.warn('Demo JS error:', e); }
+                }
+            });
+        }
+
+        if (window.Prism) Prism.highlightAll();
+
+        if (block.hasChart) {
+            setTimeout(initChart, 100);
+        } else if (formatChartInstance) {
+            formatChartInstance.destroy();
+            formatChartInstance = null;
+        }
+    }
+
+    function initChart() {
+        const ctx = document.getElementById('formatChart');
+        if (!ctx) return;
+        if (formatChartInstance) formatChartInstance.destroy();
+
+        const data = {
+            labels: ['JPEG (Zastaralé)', 'WebP (Standard)', 'AVIF (Budoucnost)'],
+            datasets: [{
+                label: 'Datová velikost (Kilobytes)',
+                data: [3150, 1850, 1050], 
+                backgroundColor: ['#9a948e', '#1a6b4a', '#1a4a7a'],
+                borderWidth: 0,
+                borderRadius: 4
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#1a1714', padding: 16, titleFont: { size: 16 }, bodyFont: { size: 16 } }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#e8e1d8' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        };
+        formatChartInstance = new Chart(ctx, config);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

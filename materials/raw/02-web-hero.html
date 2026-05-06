@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Výukový materiál: Tvorba Hero Sekcí</title>
+    <!-- Tailwind CSS pro stylování samotné učebnice (rychlost a čistota) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Základní styly pro ukázky kódu v učebnici */
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        .code-comment { color: #6a9955; }
+        .code-tag { color: #569cd6; }
+        .code-attr { color: #9cdcfe; }
+        .code-string { color: #ce9178; }
+        .code-css-prop { color: #9cdcfe; }
+        .code-css-val { color: #ce9178; }
+        
+        /* Styly pro skládací obsah (details) */
+        details {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+            margin-bottom: 1.5rem;
+        }
+        details summary {
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #2563eb;
+            outline: none;
+        }
+        details summary:hover { background: #f3f4f6; }
+        details > div { padding: 0 1rem 1rem 1rem; }
+
+        /* * ==========================================
+         * ZDE ZAČÍNAJÍ STYLY PRO SAMOTNÉ HERO SEKCE
+         * Tyto styly jsou psané v čistém (Vanilla) CSS, 
+         * aby se z nich studenti mohli učit.
+         * ==========================================
+         */
+
+        /* Reset pro dema */
+        .demo-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+            background: #fff;
+        }
+
+        /* --- Varianta 1: Rozdělený design --- */
+        .hero-v1 {
+            display: flex;
+            flex-direction: column; /* Na mobilech pod sebou */
+            min-height: 500px;
+            background-color: #f8fafc;
+            font-family: sans-serif;
+        }
+        .hero-v1-text {
+            flex: 1; /* Zabere polovinu místa */
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero-v1-text h1 {
+            font-size: 2.5rem;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero-v1-text p {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-bottom: 2rem;
+        }
+        .hero-v1-btn {
+            align-self: flex-start;
+            padding: 1rem 2rem;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .hero-v1-btn:hover { background-color: #1d4ed8; }
+        .hero-v1-image {
+            flex: 1; /* Zabere druhou polovinu místa */
+            background-image: url('https://picsum.photos/800/600?random=1');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px; /* Důležité pro mobily */
+        }
+        /* Responzivita pro tablety a PC */
+        @media (min-width: 768px) {
+            .hero-v1 { flex-direction: row; /* Na PC vedle sebe */ }
+            .hero-v1-text h1 { font-size: 3.5rem; }
+        }
+
+        /* --- Varianta 2: Vycentrovaný obrázek na pozadí --- */
+        .hero-v2 {
+            position: relative; /* Nutné pro absolutní pozicování překryvu */
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-image: url('https://picsum.photos/1200/800?random=2');
+            background-size: cover;
+            background-position: center;
+            font-family: sans-serif;
+            color: white;
+            padding: 2rem;
+        }
+        /* Ztmavení pozadí pro lepší čitelnost textu */
+        .hero-v2-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* 60% černá */
+            z-index: 1;
+        }
+        .hero-v2-content {
+            position: relative;
+            z-index: 2; /* Musí být nad overlayem */
+            max-width: 800px;
+        }
+        .hero-v2 h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero-v2 p { font-size: 1.2rem; margin-bottom: 2rem; color: #e2e8f0; }
+        @media (min-width: 768px) {
+            .hero-v2 h1 { font-size: 4rem; }
+        }
+
+        /* --- Varianta 3: Video v pozadí --- */
+        .hero-v3 {
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden; /* Důležité, aby video nepřetékalo */
+            color: white;
+            font-family: sans-serif;
+        }
+        .hero-v3-video {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%); /* Vycentrování videa */
+            z-index: 0;
+            object-fit: cover;
+        }
+        .hero-v3-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); /* Tmavě modrý filtr */
+            z-index: 1;
+        }
+        .hero-v3-content {
+            position: relative; z-index: 2; padding: 2rem;
+        }
+
+        /* --- Varianta 4: Minimalistická --- */
+        .hero-v4 {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            font-family: sans-serif;
+            padding: 2rem;
+            text-align: center;
+        }
+        .hero-v4-content { max-width: 900px; }
+        .hero-v4-tag {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: block; margin-bottom: 1rem;
+        }
+        /* Použití clamp pro plynulou změnu velikosti písma podle okna */
+        .hero-v4 h1 {
+            font-size: clamp(2.5rem, 5vw + 1rem, 6rem);
+            color: #020617;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+        .hero-v4 p { font-size: 1.25rem; color: #64748b; margin-bottom: 2.5rem; }
+
+        /* --- Varianta 5: Formulář (Lead capture) --- */
+        .hero-v5 {
+            display: grid; /* Zde učíme Grid! */
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 3rem 2rem;
+            background-color: #1e293b;
+            color: white;
+            font-family: sans-serif;
+            align-items: center;
+        }
+        .hero-v5-form-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            color: #0f172a;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .hero-v5-form input {
+            width: 100%; padding: 0.75rem; margin-bottom: 1rem;
+            border: 1px solid #cbd5e1; border-radius: 0.5rem;
+            box-sizing: border-box; /* Důležité pro šířku 100% s paddingem */
+        }
+        .hero-v5-form button {
+            width: 100%; padding: 1rem; background-color: #10b981;
+            color: white; border: none; border-radius: 0.5rem;
+            font-weight: bold; cursor: pointer;
+        }
+        @media (min-width: 992px) {
+            /* Na PC rozdělíme mřížku na dvě stejné části */
+            .hero-v5 { grid-template-columns: 1fr 1fr; padding: 5rem; }
+        }
+
+        /* --- Varianta 7: Jednoduchý Slider --- */
+        .hero-v7 {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 500px;
+            font-family: sans-serif;
+        }
+        .hero-v7-slides {
+            display: flex;
+            width: 300%; /* 3 slidy = 300% */
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        .hero-v7-slide {
+            width: 33.333%; /* 100% / 3 */
+            height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: white; text-align: center;
+        }
+        .hero-v7-controls {
+            position: absolute; bottom: 20px; left: 50%;
+            transform: translateX(-50%); display: flex; gap: 10px;
+        }
+        .hero-v7-dot {
+            width: 15px; height: 15px; border-radius: 50%;
+            background: rgba(255,255,255,0.5); border: none; cursor: pointer;
+        }
+        .hero-v7-dot.active { background: white; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased selection:bg-blue-200">
+
+    <!-- Navigace -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center font-bold text-xl text-blue-600">
+                    Kódování Webu: Hero Sekce
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="#uvod" class="text-gray-600 hover:text-blue-600">Úvod</a>
+                    <a href="#v1" class="text-gray-600 hover:text-blue-600">1. Split</a>
+                    <a href="#v2" class="text-gray-600 hover:text-blue-600">2. Pozadí</a>
+                    <a href="#v3" class="text-gray-600 hover:text-blue-600">3. Video</a>
+                    <a href="#v4" class="text-gray-600 hover:text-blue-600">4. Minimal</a>
+                    <a href="#v5" class="text-gray-600 hover:text-blue-600">5. Formulář</a>
+                    <a href="#obrazky" class="text-gray-600 hover:text-blue-600 font-bold">Obrázky (Nové)</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <header id="uvod" class="mb-12 text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Anatomie Hero Sekce</h1>
+            <p class="text-lg text-gray-600">
+                Ahoj! Vítejte v interaktivní učebnici. Naučíme se kódovat nejkritičtější část každého webu – Hero sekci (tu, kterou vidí uživatel jako první). Kód je psaný v <strong>čistém HTML a CSS</strong>, abyste pochopili absolutní základy fungování webu.
+            </p>
+        </header>
+
+        <!-- VARIANTA 1 -->
+        <section id="v1" class="mb-20">
+            <h2 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 mb-6">1. Rozdělený design (Split Layout / Flexbox)</h2>
+            <div class="prose max-w-none mb-6">
+                <p><strong>Cíl:</strong> Vlevo text, vpravo obrázek. Klasický, vysoce funkční design, který vede oči zleva doprava.</p>
+                <p><strong>Didaktický cíl:</strong> Pochopit CSS <code>display: flex</code> a změnu směru rozložení <code>flex-direction</code> z mobilu (pod sebou) na PC (vedle sebe).</p>
+            </div>
+
+            <h3 class="font-bold text-gray-700 mb-2 uppercase text-sm tracking-wider">Živá ukázka (Live Preview)</h3>
+            <div class="demo-box">
+                <div class="hero-v1">
+                    <div class="hero-v1-text">
+                        <h1>Tvoříme weby budoucnosti</h1>
+                        <p>Naučte se programovat moderní aplikace krok za krokem s našimi interaktivními kurzy pro středoškoláky.</p>
+                        <a href="#" class="hero-v1-btn">Začít zdarma</a>
+                    </div>
+                    <div class="hero-v1-image"></div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Zobrazit kompletní kód stránky (HTML + CSS ke zkopírování)</summary>
+                <div>
+<pre><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang=</span><span class="code-string">"cs"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">charset=</span><span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">name=</span><span class="code-string">"viewport"</span> <span class="code-attr">content=</span><span class="code-string">"width=device-width, initial-scale=1.0"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;title&gt;</span>Rozdělený design - Hero<span class="code-tag">&lt;/title&gt;</span>
+    <span class="code-tag">&lt;style&gt;</span>
+        <span class="code-comment">/* Základní reset stránky */</span>
+        body, html { margin: 0; padding: 0; font-family: sans-serif; }
+
+        <span class="code-comment">/* Styly pro Hero sekci */</span>
+        .hero-v1 {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; <span class="code-comment">/* Zabere 100% výšky obrazovky */</span>
+            background-color: #f8fafc;
+        }
+        .hero-v1-text {
+            flex: 1; padding: 3rem; display: flex;
+            flex-direction: column; justify-content: center;
+        }
+        .hero-v1-text h1 { font-size: 2.5rem; color: #0f172a; margin-bottom: 1rem; line-height: 1.2; }
+        .hero-v1-text p { font-size: 1.1rem; color: #475569; margin-bottom: 2rem; }
+        .hero-v1-btn {
+            align-self: flex-start; padding: 1rem 2rem; background-color: #2563eb;
+            color: white; text-decoration: none; border-radius: 0.5rem; font-weight: bold;
+        }
+        .hero-v1-image {
+            flex: 1; min-height: 300px;
+            background-image: url('https://picsum.photos/1000/800?random=1');
+            background-size: cover; background-position: center;
+        }
+
+        <span class="code-comment">/* Responzivita pro PC */</span>
+        @media (min-width: 768px) {
+            .hero-v1 { flex-direction: row; }
+            .hero-v1-text h1 { font-size: 3.5rem; }
+        }
+    <span class="code-tag">&lt;/style&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+    <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v1"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v1-text"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;h1&gt;</span>Tvoříme weby budoucnosti<span class="code-tag">&lt;/h1&gt;</span>
+            <span class="code-tag">&lt;p&gt;</span>Naučte se programovat moderní aplikace krok za krokem.<span class="code-tag">&lt;/p&gt;</span>
+            <span class="code-tag">&lt;a</span> <span class="code-attr">href=</span><span class="code-string">"#"</span> <span class="code-attr">class=</span><span class="code-string">"hero-v1-btn"</span><span class="code-tag">&gt;</span>Začít zdarma<span class="code-tag">&lt;/a&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v1-image"</span><span class="code-tag">&gt;&lt;/div&gt;</span>
+    <span class="code-tag">&lt;/div&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- VARIANTA 2 -->
+        <section id="v2" class="mb-20">
+            <h2 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 mb-6">2. Obrázek v pozadí (Centered + Background)</h2>
+            <div class="prose max-w-none mb-6">
+                <p><strong>Cíl:</strong> Emotivní a pohlcující sekce. Fotka je přes celou šířku.</p>
+                <p><strong>Didaktický cíl:</strong> Naučit se pracovat s absolutním pozicováním (<code>position: absolute</code>) pro vytvoření tmavého překryvu (overlay), aby byl bílý text na fotce čitelný.</p>
+            </div>
+
+            <div class="demo-box">
+                <div class="hero-v2">
+                    <div class="hero-v2-overlay"></div>
+                    <div class="hero-v2-content">
+                        <h1>Objevte krásy Norska</h1>
+                        <p>Zajistíme vám nezapomenutelné zážitky. Nejlepší cestovní kancelář pro dobrodruhy a milovníky chladného severu.</p>
+                        <a href="#" class="hero-v1-btn" style="background-color: #ef4444;">Prozkoumat zájezdy</a>
+                    </div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Zobrazit kompletní kód stránky (HTML + CSS ke zkopírování)</summary>
+                <div>
+<pre><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang=</span><span class="code-string">"cs"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">charset=</span><span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">name=</span><span class="code-string">"viewport"</span> <span class="code-attr">content=</span><span class="code-string">"width=device-width, initial-scale=1.0"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;title&gt;</span>Hero - Obrázek v pozadí<span class="code-tag">&lt;/title&gt;</span>
+    <span class="code-tag">&lt;style&gt;</span>
+        body, html { margin: 0; padding: 0; font-family: sans-serif; }
+
+        .hero-v2 {
+            position: relative;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; padding: 2rem;
+            background-image: url('https://picsum.photos/1920/1080?random=2');
+            background-size: cover; background-position: center;
+        }
+        .hero-v2-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); z-index: 1;
+        }
+        .hero-v2-content { position: relative; z-index: 2; max-width: 800px; }
+        .hero-v2 h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero-v2 p { font-size: 1.2rem; margin-bottom: 2rem; color: #e2e8f0; }
+        .hero-btn { 
+            padding: 1rem 2rem; background-color: #ef4444; color: white; 
+            text-decoration: none; border-radius: 0.5rem; font-weight: bold; 
+        }
+
+        @media (min-width: 768px) { .hero-v2 h1 { font-size: 4rem; } }
+    <span class="code-tag">&lt;/style&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+    <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v2"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v2-overlay"</span><span class="code-tag">&gt;&lt;/div&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v2-content"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;h1&gt;</span>Objevte krásy Norska<span class="code-tag">&lt;/h1&gt;</span>
+            <span class="code-tag">&lt;p&gt;</span>Zajistíme vám nezapomenutelné zážitky. Nejlepší cestovní kancelář.<span class="code-tag">&lt;/p&gt;</span>
+            <span class="code-tag">&lt;a</span> <span class="code-attr">href=</span><span class="code-string">"#"</span> <span class="code-attr">class=</span><span class="code-string">"hero-btn"</span><span class="code-tag">&gt;</span>Prozkoumat zájezdy<span class="code-tag">&lt;/a&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+    <span class="code-tag">&lt;/div&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- VARIANTA 3 -->
+        <section id="v3" class="mb-20">
+            <h2 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 mb-6">3. Video v pozadí</h2>
+            <div class="prose max-w-none mb-6">
+                <p><strong>Cíl:</strong> Extrémně dynamický web. Ukazuje "život" firmy nebo produktu.</p>
+                <p><strong>Didaktický cíl:</strong> Práce s HTML5 tagem <code>&lt;video&gt;</code> a jeho atributy (autoplay, loop, muted). Dále použití CSS vlastnosti <code>object-fit: cover</code>.</p>
+            </div>
+
+            <div class="demo-box">
+                <div class="hero-v3">
+                    <video class="hero-v3-video" autoplay loop muted playsinline>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                    <div class="hero-v3-overlay"></div>
+                    <div class="hero-v3-content">
+                        <h1>Inovace v pohybu</h1>
+                        <p>Moderní technologie pro váš byznys. Animace a video přitahují pozornost.</p>
+                        <a href="#" class="hero-v1-btn" style="background-color: transparent; border: 2px solid white;">Spustit ukázku</a>
+                    </div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Zobrazit kompletní kód stránky (HTML + CSS ke zkopírování)</summary>
+                <div>
+<pre><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang=</span><span class="code-string">"cs"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">charset=</span><span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">name=</span><span class="code-string">"viewport"</span> <span class="code-attr">content=</span><span class="code-string">"width=device-width, initial-scale=1.0"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;title&gt;</span>Hero - Video v pozadí<span class="code-tag">&lt;/title&gt;</span>
+    <span class="code-tag">&lt;style&gt;</span>
+        body, html { margin: 0; padding: 0; font-family: sans-serif; }
+
+        .hero-v3 {
+            position: relative; min-height: 100vh; display: flex;
+            align-items: center; justify-content: center; text-align: center;
+            overflow: hidden; color: white;
+        }
+        .hero-v3-video {
+            position: absolute; top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%; width: auto; height: auto;
+            transform: translate(-50%, -50%); z-index: 0; object-fit: cover;
+        }
+        .hero-v3-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); z-index: 1;
+        }
+        .hero-v3-content { position: relative; z-index: 2; padding: 2rem; max-width: 800px; }
+        .hero-v3 h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .hero-btn { 
+            padding: 1rem 2rem; background: transparent; color: white; 
+            border: 2px solid white; text-decoration: none; border-radius: 0.5rem; font-weight: bold; 
+        }
+    <span class="code-tag">&lt;/style&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+    <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v3"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;video</span> <span class="code-attr">class=</span><span class="code-string">"hero-v3-video"</span> <span class="code-attr">autoplay loop muted playsinline</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;source</span> <span class="code-attr">src=</span><span class="code-string">"https://www.w3schools.com/html/mov_bbb.mp4"</span> <span class="code-attr">type=</span><span class="code-string">"video/mp4"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;/video&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v3-overlay"</span><span class="code-tag">&gt;&lt;/div&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v3-content"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;h1&gt;</span>Inovace v pohybu<span class="code-tag">&lt;/h1&gt;</span>
+            <span class="code-tag">&lt;p&gt;</span>Animace a video přitahují pozornost více než cokoliv jiného.<span class="code-tag">&lt;/p&gt;</span>
+            <span class="code-tag">&lt;a</span> <span class="code-attr">href=</span><span class="code-string">"#"</span> <span class="code-attr">class=</span><span class="code-string">"hero-btn"</span><span class="code-tag">&gt;</span>Spustit ukázku<span class="code-tag">&lt;/a&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+    <span class="code-tag">&lt;/div&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- VARIANTA 4 -->
+        <section id="v4" class="mb-20">
+            <h2 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 mb-6">4. Minimalistická (Typografická)</h2>
+            <div class="prose max-w-none mb-6">
+                <p><strong>Cíl:</strong> Sebevědomý design, který těží jen z písma a prázdného prostoru. Zvládne ho načíst i nejpomalejší internet.</p>
+                <p><strong>Didaktický cíl:</strong> Zvládnutí moderní CSS vlastnosti <code>clamp()</code> pro tzv. fluidní typografii.</p>
+            </div>
+
+            <div class="demo-box">
+                <div class="hero-v4">
+                    <div class="hero-v4-content">
+                        <span class="hero-v4-tag">Design & Kódování</span>
+                        <h1>Tvořte weby, které dávají smysl.</h1>
+                        <p>Zaměřeno na obsah. Žádné zbytečnosti. Čistý minimalismus, který prodává myšlenku.</p>
+                        <a href="#" class="hero-v1-btn" style="background-color: #000; color: #fff;">Pojďme na to</a>
+                    </div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Zobrazit kompletní kód stránky (HTML + CSS ke zkopírování)</summary>
+                <div>
+<pre><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang=</span><span class="code-string">"cs"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">charset=</span><span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">name=</span><span class="code-string">"viewport"</span> <span class="code-attr">content=</span><span class="code-string">"width=device-width, initial-scale=1.0"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;title&gt;</span>Hero - Minimalistická<span class="code-tag">&lt;/title&gt;</span>
+    <span class="code-tag">&lt;style&gt;</span>
+        body, html { margin: 0; padding: 0; font-family: sans-serif; }
+
+        .hero-v4 {
+            min-height: 100vh; display: flex; align-items: center;
+            justify-content: center; background-color: #ffffff;
+            padding: 2rem; text-align: center;
+        }
+        .hero-v4-content { max-width: 900px; }
+        .hero-v4-tag {
+            text-transform: uppercase; letter-spacing: 0.1em; color: #64748b;
+            font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 1rem;
+        }
+        .hero-v4 h1 {
+            font-size: clamp(2.5rem, 5vw + 1rem, 6rem);
+            color: #020617; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.5rem;
+        }
+        .hero-v4 p { font-size: 1.25rem; color: #64748b; margin-bottom: 2.5rem; }
+        .hero-btn {
+            padding: 1rem 2rem; background-color: #000; color: #fff;
+            text-decoration: none; border-radius: 0.5rem; font-weight: bold;
+        }
+    <span class="code-tag">&lt;/style&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+    <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v4"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v4-content"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;span</span> <span class="code-attr">class=</span><span class="code-string">"hero-v4-tag"</span><span class="code-tag">&gt;</span>Design & Kódování<span class="code-tag">&lt;/span&gt;</span>
+            <span class="code-tag">&lt;h1&gt;</span>Tvořte weby, které dávají smysl.<span class="code-tag">&lt;/h1&gt;</span>
+            <span class="code-tag">&lt;p&gt;</span>Zaměřeno na obsah. Žádné zbytečnosti. Čistý minimalismus.<span class="code-tag">&lt;/p&gt;</span>
+            <span class="code-tag">&lt;a</span> <span class="code-attr">href=</span><span class="code-string">"#"</span> <span class="code-attr">class=</span><span class="code-string">"hero-btn"</span><span class="code-tag">&gt;</span>Pojďme na to<span class="code-tag">&lt;/a&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+    <span class="code-tag">&lt;/div&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- VARIANTA 5 -->
+        <section id="v5" class="mb-20">
+            <h2 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 mb-6">5. Formulář (CSS Grid)</h2>
+            <div class="prose max-w-none mb-6">
+                <p><strong>Cíl:</strong> Okamžitý zisk kontaktu uživatele.</p>
+                <p><strong>Didaktický cíl:</strong> Úvod do <strong>CSS Grid</strong> pro tvorbu mřížkových layoutů.</p>
+            </div>
+
+            <div class="demo-box">
+                <div class="hero-v5">
+                    <div class="hero-v5-text">
+                        <h1 class="text-4xl font-bold mb-4">Získejte 14 dní zdarma</h1>
+                        <p class="text-xl text-gray-300 mb-4">Nevyžadujeme platební kartu.</p>
+                    </div>
+                    <div class="hero-v5-form-box">
+                        <h3 class="text-2xl font-bold mb-4">Začněte hned</h3>
+                        <form class="hero-v5-form" onsubmit="event.preventDefault();">
+                            <input type="text" placeholder="Vaše jméno" required>
+                            <input type="email" placeholder="Váš e-mail" required>
+                            <button type="submit">Vytvořit účet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Zobrazit kompletní kód stránky (HTML + CSS ke zkopírování)</summary>
+                <div>
+<pre><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang=</span><span class="code-string">"cs"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">charset=</span><span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;meta</span> <span class="code-attr">name=</span><span class="code-string">"viewport"</span> <span class="code-attr">content=</span><span class="code-string">"width=device-width, initial-scale=1.0"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;title&gt;</span>Hero - S Formulářem (Grid)<span class="code-tag">&lt;/title&gt;</span>
+    <span class="code-tag">&lt;style&gt;</span>
+        body, html { margin: 0; padding: 0; font-family: sans-serif; }
+
+        .hero-v5 {
+            display: grid; grid-template-columns: 1fr; gap: 2rem;
+            padding: 3rem 2rem; background-color: #1e293b; color: white;
+            min-height: 100vh; align-items: center;
+        }
+        .hero-v5-text h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero-v5-form-box {
+            background: white; padding: 2rem; border-radius: 1rem;
+            color: #0f172a; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .hero-v5-form input {
+            width: 100%; padding: 0.75rem; margin-bottom: 1rem;
+            border: 1px solid #cbd5e1; border-radius: 0.5rem; box-sizing: border-box;
+        }
+        .hero-v5-form button {
+            width: 100%; padding: 1rem; background-color: #10b981;
+            color: white; border: none; border-radius: 0.5rem;
+            font-weight: bold; cursor: pointer;
+        }
+
+        @media (min-width: 992px) {
+            .hero-v5 { grid-template-columns: 1fr 1fr; padding: 5rem; }
+        }
+    <span class="code-tag">&lt;/style&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+    <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v5"</span><span class="code-tag">&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v5-text"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;h1&gt;</span>Získejte 14 dní zdarma<span class="code-tag">&lt;/h1&gt;</span>
+            <span class="code-tag">&lt;p&gt;</span>Nevyžadujeme platební kartu. Zkuste naši aplikaci ještě dnes.<span class="code-tag">&lt;/p&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+        <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"hero-v5-form-box"</span><span class="code-tag">&gt;</span>
+            <span class="code-tag">&lt;h3</span> <span class="code-attr">style=</span><span class="code-string">"margin-top:0;"</span><span class="code-tag">&gt;</span>Začněte hned<span class="code-tag">&lt;/h3&gt;</span>
+            <span class="code-tag">&lt;form</span> <span class="code-attr">class=</span><span class="code-string">"hero-v5-form"</span><span class="code-tag">&gt;</span>
+                <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Vaše jméno"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+                <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Váš e-mail"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+                <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span><span class="code-tag">&gt;</span>Vytvořit účet<span class="code-tag">&lt;/button&gt;</span>
+            <span class="code-tag">&lt;/form&gt;</span>
+        <span class="code-tag">&lt;/div&gt;</span>
+    <span class="code-tag">&lt;/div&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- SEKCE O OBRÁZCÍCH (NOVÁ) -->
+        <section id="obrazky" class="mb-20 pt-8 border-t-2 border-gray-200">
+            <h2 class="text-3xl font-bold border-b-2 border-green-500 pb-2 mb-6">📸 Zpracování a optimalizace obrázků v Hero sekci</h2>
+            <div class="prose max-w-none mb-6">
+                <p class="text-lg">
+                    Největší chybou začátečníků je stažení 5MB fotografie rovnou ze zrcadlovky nebo fotobanky a její nahrání do pozadí Hero sekce. 
+                    Jelikož je Hero sekce to první, co uživatel (a vyhledávač Google) vidí, načítání tohoto obrázku přímo určuje metriku <strong>LCP (Largest Contentful Paint)</strong>. Pokud se web načítá pomalu, uživatel odchází.
+                </p>
+
+                <div class="bg-blue-50 p-6 rounded-lg my-6">
+                    <h3 class="text-xl font-bold text-blue-800 mb-4">5 pravidel pro dokonalé Hero obrázky:</h3>
+                    
+                    <h4 class="font-bold mt-4">1. Moderní formáty (WebP / AVIF místo JPG/PNG)</h4>
+                    <p class="mb-2">Nikdy nepoužívejte čistý PNG pro fotografie. Převeďte své obrázky do formátu <code>.webp</code> nebo <code>.avif</code>. Zmenšíte velikost souboru o 30 % až 70 % při zachování stejné vizuální kvality. Ideální velikost Hero obrázku je <strong>pod 200 KB</strong>.</p>
+                    
+                    <h4 class="font-bold mt-4">2. Správné rozlišení</h4>
+                    <p class="mb-2">Na webu nepotřebujete rozlišení 4000x3000px. Pro Hero obrázky, které zabírají celou obrazovku, stačí šířka <strong>1920px</strong>. Pro rozdělený design (Split layout) stačí dokonce jen šířka <strong>800px až 1000px</strong>.</p>
+                    
+                    <h4 class="font-bold mt-4">3. Prioritní načítání (Zakázaný Lazy Loading!)</h4>
+                    <p class="mb-2">Zatímco obrázky níže na stránce by měly mít atribut <code>loading="lazy"</code> (načtou se, až když k nim uživatel doscrolluje), obrázek v Hero sekci se musí načíst IHNED. Používejte atribut <code>fetchpriority="high"</code> a <code>loading="eager"</code>.</p>
+<pre><code><span class="code-tag">&lt;img</span> <span class="code-attr">src=</span><span class="code-string">"hero-obrazek.webp"</span> <span class="code-attr">alt=</span><span class="code-string">"Tým v kanceláři"</span> <span class="code-attr">fetchpriority=</span><span class="code-string">"high"</span> <span class="code-attr">loading=</span><span class="code-string">"eager"</span><span class="code-tag">&gt;</span></code></pre>
+
+                    <h4 class="font-bold mt-4">4. CSS vlastnost `object-fit: cover`</h4>
+                    <p class="mb-2">Pokud vkládáte obrázek pomocí HTML tagu <code>&lt;img&gt;</code> (místo CSS background-image), použijte v CSS vlastnost <code>object-fit: cover</code>. Ta zajistí, že obrázek vyplní vyhrazený prostor a nedeformuje se (nestane se z něj "placka"), pouze se ořízne.</p>
+
+                    <h4 class="font-bold mt-4">5. Responzivní obrázky (Art Direction s tagem &lt;picture&gt;)</h4>
+                    <p class="mb-2">Na počítači máte širokou fotku, ale na mobilu je obrazovka úzká a vysoká. Často je lepší nechat prohlížeč stáhnout pro mobil úplně jinou fotku (oříznutou na výšku), čímž navíc ušetříte data z mobilního tarifu uživatele.</p>
+<pre><code><span class="code-comment">&lt;!-- Tag picture umožní nahrát různý soubor podle šířky okna prohlížeče --&gt;</span>
+<span class="code-tag">&lt;picture&gt;</span>
+    <span class="code-comment">&lt;!-- Pokud je displej širší než 768px, načti širokou verzi --&gt;</span>
+    <span class="code-tag">&lt;source</span> <span class="code-attr">media=</span><span class="code-string">"(min-width: 768px)"</span> <span class="code-attr">srcset=</span><span class="code-string">"hero-desktop.webp"</span><span class="code-tag">&gt;</span>
+    
+    <span class="code-comment">&lt;!-- Výchozí obrázek (pro mobily), který se načte, pokud předchozí pravidla neplatí --&gt;</span>
+    <span class="code-tag">&lt;img</span> <span class="code-attr">src=</span><span class="code-string">"hero-mobile.webp"</span> <span class="code-attr">alt=</span><span class="code-string">"Popis obrázku pro nevidomé"</span> <span class="code-attr">fetchpriority=</span><span class="code-string">"high"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;/picture&gt;</span></code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-white py-8 text-center mt-12">
+        <p>Vytvořeno jako výukový materiál pro výuku tvorby webových stránek.</p>
+    </footer>
+
+    <script>
+        function goToSlide(index) {
+            const slides = document.getElementById('slides');
+            const dots = document.querySelectorAll('.hero-v7-dot');
+            if(slides) slides.style.transform = `translateX(-${index * 33.333}%)`;
+            dots.forEach(dot => dot.classList.remove('active'));
+            if(dots[index]) dots[index].classList.add('active');
+        }
+    </script>
+</body>
+</html>
