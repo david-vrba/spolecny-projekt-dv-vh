@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bohuslav Cement — architekt brutalismu</title>
+  <meta name="description" content="Brutalistická architektura na míru. Beton, geometrie, žádný marketing. Bohuslav Cement, Brno — bytové domy, veřejné stavby a rekonstrukce.">
+  <meta name="theme-color" content="#B30000">
+
+  <meta property="og:title" content="Bohuslav Cement — architekt brutalismu">
+  <meta property="og:description" content="Beton, geometrie, žádný marketing. Brutalistický architekt z Brna.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/images/out/00-hero-brutal-1280w.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="preload" as="image" type="image/avif"
+        href="assets/images/out/00-hero-brutal-1280w.avif"
+        imagesrcset="assets/images/out/00-hero-brutal-640w.avif 640w, assets/images/out/00-hero-brutal-1280w.avif 1280w, assets/images/out/00-hero-brutal-1920w.avif 1920w"
+        imagesizes="100vw">
+
+  <style>
+    :root {
+      --clr-cervena: #B30000;
+      --clr-bila: #FFFFFF;
+      --clr-cerna: #000000;
+      --clr-overlay: rgba(0, 0, 0, 0.6);
+      --max-sirka: 1200px;
+      --mezera: 1.5rem;
+      --font-nadpis: Impact, "Anton", "Arial Black", sans-serif;
+      --font-text: "Inter", system-ui, -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-text);
+      color: var(--clr-cerna);
+      background: var(--clr-bila);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: var(--clr-cervena); }
+
+    .skip-link {
+      position: absolute; top: -100px; left: 0;
+      background: var(--clr-cervena); color: var(--clr-bila);
+      padding: 0.75rem 1rem; z-index: 200; text-decoration: none;
+      font-weight: 700;
+    }
+    .skip-link:focus { top: 0; }
+
+    .kontejner {
+      max-width: var(--max-sirka);
+      margin: 0 auto;
+      padding: 0 var(--mezera);
+    }
+
+    /* === NAVBAR === */
+    .navbar { background: var(--clr-cerna); color: var(--clr-bila); border-bottom: 4px solid var(--clr-cervena); position: relative; }
+    .navbar__inner {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: var(--max-sirka); margin: 0 auto;
+      padding: 1rem var(--mezera);
+    }
+    .navbar__logo {
+      font-family: var(--font-nadpis);
+      font-size: 1.5rem; letter-spacing: 0.05em;
+      color: var(--clr-bila); text-decoration: none;
+    }
+    .navbar__logo:hover { color: var(--clr-cervena); }
+    .navbar__menu { display: flex; list-style: none; gap: 0.25rem; }
+    .navbar__link {
+      display: block; padding: 0.6rem 1rem;
+      color: var(--clr-bila); text-decoration: none;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .navbar__link:hover, .navbar__link:focus-visible {
+      background: var(--clr-cervena); color: var(--clr-bila);
+      outline: 2px solid var(--clr-bila); outline-offset: -2px;
+    }
+
+    .navbar__toggle {
+      display: none;
+      width: 44px; height: 44px;
+      background: transparent; border: 2px solid var(--clr-bila);
+      cursor: pointer; position: relative;
+    }
+    .navbar__toggle:focus-visible { outline: 2px solid var(--clr-cervena); outline-offset: 2px; }
+    .navbar__toggle-icon,
+    .navbar__toggle-icon::before,
+    .navbar__toggle-icon::after {
+      display: block; position: absolute;
+      width: 22px; height: 3px; background: var(--clr-bila);
+      left: 50%; transform: translateX(-50%);
+    }
+    .navbar__toggle-icon { top: 50%; margin-top: -1.5px; }
+    .navbar__toggle-icon::before { content: ''; top: -7px; }
+    .navbar__toggle-icon::after  { content: ''; top:  7px; }
+
+    /* === HERO === */
+    .hero { position: relative; min-height: 100svh; display: flex; align-items: center; color: var(--clr-bila); overflow: hidden; }
+    .hero__obrazek { position: absolute; inset: 0; z-index: 0; }
+    .hero__obrazek img { width: 100%; height: 100%; object-fit: cover; }
+    .hero__overlay { position: absolute; inset: 0; background: var(--clr-overlay); z-index: 1; }
+    .hero__obsah {
+      position: relative; z-index: 2; width: 100%;
+      max-width: var(--max-sirka); margin: 0 auto;
+      padding: 5rem var(--mezera);
+    }
+    .hero__titulek {
+      font-family: var(--font-nadpis);
+      font-size: clamp(3rem, 9vw + 1rem, 8.5rem);
+      line-height: 0.95; text-wrap: balance;
+      text-transform: uppercase; letter-spacing: -0.02em;
+    }
+    .hero__titulek span { color: var(--clr-cervena); }
+    .hero__podtitulek { font-size: clamp(1.05rem, 1.5vw + 0.5rem, 1.4rem); margin-top: 1.5rem; max-width: 45ch; }
+    .hero__tlacitka { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+
+    /* === TLAČÍTKA === */
+    .tlacitko {
+      display: inline-block; padding: 1rem 2rem;
+      font-family: var(--font-nadpis); font-size: 1.1rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; border: 3px solid var(--clr-cervena);
+      cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
+    }
+    .tlacitko--hlavni { background: var(--clr-cervena); color: var(--clr-bila); }
+    .tlacitko--hlavni:hover, .tlacitko--hlavni:focus-visible { background: var(--clr-bila); color: var(--clr-cervena); outline: none; }
+    .tlacitko--vedlejsi { background: transparent; color: var(--clr-bila); border-color: var(--clr-bila); }
+    .tlacitko--vedlejsi:hover, .tlacitko--vedlejsi:focus-visible { background: var(--clr-bila); color: var(--clr-cerna); outline: none; }
+
+    /* === DVOJICE (TWO PICTURES) === */
+    .dvojice { padding: 5rem 0; background: var(--clr-bila); }
+    .dvojice__mrizka {
+      display: grid; gap: 1.5rem; grid-template-columns: 1fr;
+      max-width: var(--max-sirka); margin: 0 auto;
+      padding: 0 var(--mezera);
+    }
+    .dvojice figure { margin: 0; }
+    .dvojice img { width: 100%; height: auto; aspect-ratio: 3/2; object-fit: cover; }
+    .dvojice figcaption {
+      font-family: var(--font-nadpis); text-transform: uppercase;
+      font-size: 1rem; letter-spacing: 0.05em;
+      margin-top: 0.75rem;
+      border-left: 4px solid var(--clr-cervena); padding-left: 0.75rem;
+    }
+
+    /* === O MNĚ === */
+    .o-mne { background: var(--clr-cerna); color: var(--clr-bila); padding: 5rem 0; }
+    .o-mne__obsah { max-width: var(--max-sirka); margin: 0 auto; padding: 0 var(--mezera); }
+    .o-mne__nadpis {
+      font-family: var(--font-nadpis);
+      font-size: clamp(2rem, 4vw + 1rem, 4rem);
+      text-transform: uppercase; line-height: 1;
+      margin-bottom: 1.5rem; text-wrap: balance;
+    }
+    .o-mne__nadpis span { color: var(--clr-cervena); }
+    .o-mne p { max-width: 55ch; font-size: 1.1rem; margin-bottom: 1rem; }
+    .o-mne__statistiky {
+      display: flex; flex-wrap: wrap; gap: 2.5rem;
+      margin-top: 3rem;
+      border-top: 4px solid var(--clr-cervena); padding-top: 2rem;
+    }
+    .o-mne__statistika strong {
+      display: block; font-family: var(--font-nadpis);
+      font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1;
+      color: var(--clr-cervena);
+    }
+    .o-mne__statistika span { display: block; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; margin-top: 0.25rem; }
+
+    /* === CTA PRUH === */
+    .cta-pruh { background: var(--clr-cervena); color: var(--clr-bila); padding: 4rem 0; text-align: center; }
+    .cta-pruh__obsah { max-width: var(--max-sirka); margin: 0 auto; padding: 0 var(--mezera); }
+    .cta-pruh__nadpis {
+      font-family: var(--font-nadpis);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      text-transform: uppercase; margin-bottom: 1.5rem; text-wrap: balance;
+    }
+    .cta-pruh__tlacitka { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+    .cta-pruh .tlacitko { background: var(--clr-bila); color: var(--clr-cervena); border-color: var(--clr-bila); }
+    .cta-pruh .tlacitko:hover, .cta-pruh .tlacitko:focus-visible { background: var(--clr-cerna); color: var(--clr-bila); border-color: var(--clr-cerna); outline: none; }
+
+    /* === SLUŽBY === */
+    .sluzby { padding: 5rem 0; background: var(--clr-bila); }
+    .sluzby__nadpis {
+      font-family: var(--font-nadpis);
+      font-size: clamp(2rem, 4vw + 1rem, 4rem);
+      text-transform: uppercase; text-align: center;
+      margin-bottom: 3rem; text-wrap: balance;
+    }
+    .sluzby__mrizka {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      max-width: var(--max-sirka); margin: 0 auto;
+      padding: 0 var(--mezera);
+    }
+    .sluzba { background: var(--clr-bila); border: 2px solid var(--clr-cerna); display: flex; flex-direction: column; }
+    .sluzba img { width: 100%; height: 200px; object-fit: cover; }
+    .sluzba__obsah { padding: 1.25rem; border-top: 4px solid var(--clr-cervena); flex: 1; }
+    .sluzba__nadpis { font-family: var(--font-nadpis); font-size: 1.4rem; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.03em; }
+
+    /* === KONTAKT === */
+    .kontakt { background: var(--clr-cerna); color: var(--clr-bila); padding: 5rem 0; text-align: center; }
+    .kontakt__obsah { max-width: var(--max-sirka); margin: 0 auto; padding: 0 var(--mezera); }
+    .kontakt__nadpis { font-family: var(--font-nadpis); font-size: clamp(2rem, 4vw + 1rem, 4rem); text-transform: uppercase; margin-bottom: 1rem; text-wrap: balance; }
+    .kontakt__radky { list-style: none; margin-top: 2rem; font-size: 1.15rem; line-height: 2; }
+    .kontakt a { color: var(--clr-cervena); text-decoration: none; border-bottom: 2px solid var(--clr-cervena); }
+    .kontakt a:hover, .kontakt a:focus-visible { color: var(--clr-bila); border-color: var(--clr-bila); outline: none; }
+
+    /* === PATIČKA === */
+    .footer { background: var(--clr-cerna); color: var(--clr-bila); padding: 1.5rem 0; border-top: 4px solid var(--clr-cervena); text-align: center; font-size: 0.9rem; }
+    .footer p { opacity: 0.7; }
+
+    /* === MOBIL === */
+    @media (max-width: 768px) {
+      .navbar__toggle { display: block; }
+      .navbar__menu {
+        display: none; position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column; gap: 0;
+        background: var(--clr-cerna);
+        padding: 0.5rem 0; z-index: 100;
+        border-bottom: 4px solid var(--clr-cervena);
+      }
+      .navbar__menu.is-open { display: flex; }
+      .navbar__link { padding: 1rem 1.5rem; }
+      .hero__obsah { padding: 4rem 1rem; }
+      .o-mne__statistiky { gap: 1.5rem; }
+    }
+
+    @media (min-width: 768px) {
+      .dvojice__mrizka { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#hlavni-obsah" class="skip-link">Přeskočit na obsah</a>
+
+  <header class="navbar">
+    <div class="navbar__inner">
+      <a class="navbar__logo" href="#">BOHUSLAV&nbsp;CEMENT</a>
+
+      <button class="navbar__toggle" id="toggle"
+              aria-expanded="false" aria-controls="hlavni-menu" aria-label="Otevřít menu">
+        <span class="navbar__toggle-icon"></span>
+      </button>
+
+      <ul class="navbar__menu" id="hlavni-menu">
+        <li><a class="navbar__link" href="#o-mne">O&nbsp;mně</a></li>
+        <li><a class="navbar__link" href="#sluzby">Služby</a></li>
+        <li><a class="navbar__link" href="#realizace">Realizace</a></li>
+        <li><a class="navbar__link" href="#kontakt">Kontakt</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="hlavni-obsah">
+    <section class="hero" aria-labelledby="hero-titulek">
+      <div class="hero__obrazek">
+        <picture>
+          <source type="image/avif"
+            srcset="assets/images/out/00-hero-brutal-640w.avif 640w,
+                    assets/images/out/00-hero-brutal-1280w.avif 1280w,
+                    assets/images/out/00-hero-brutal-1920w.avif 1920w"
+            sizes="100vw">
+          <source type="image/webp"
+            srcset="assets/images/out/00-hero-brutal-640w.webp 640w,
+                    assets/images/out/00-hero-brutal-1280w.webp 1280w,
+                    assets/images/out/00-hero-brutal-1920w.webp 1920w"
+            sizes="100vw">
+          <img src="assets/images/out/00-hero-brutal-1280w.jpg"
+               srcset="assets/images/out/00-hero-brutal-640w.jpg 640w,
+                       assets/images/out/00-hero-brutal-1280w.jpg 1280w,
+                       assets/images/out/00-hero-brutal-1920w.jpg 1920w"
+               sizes="100vw"
+               alt="Brutalistická betonová fasáda s mřížkou čtvercových oken"
+               width="1920" height="1272"
+               fetchpriority="high" loading="eager">
+        </picture>
+      </div>
+      <div class="hero__overlay"></div>
+
+      <div class="hero__obsah">
+        <h1 class="hero__titulek" id="hero-titulek">Brutální architektura.<br><span>Brutální cena.</span></h1>
+        <p class="hero__podtitulek">Bohuslav Cement — architekt, který staví věci, jež přežijí tebe i tvoje vnoučata. Beton, geometrie, žádný marketing.</p>
+        <div class="hero__tlacitka">
+          <a class="tlacitko tlacitko--hlavni" href="#kontakt">Objednat konzultaci</a>
+          <a class="tlacitko tlacitko--vedlejsi" href="#realizace">Realizace</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="dvojice" id="realizace" aria-labelledby="realizace-titulek">
+      <div class="kontejner">
+        <h2 class="sluzby__nadpis" id="realizace-titulek" style="margin-bottom:2rem">Vybrané realizace</h2>
+      </div>
+      <div class="dvojice__mrizka">
+        <figure>
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/03-parametric-architecture-barbican-480w.avif 480w, assets/images/out/03-parametric-architecture-barbican-960w.avif 960w" sizes="(min-width: 768px) 50vw, 100vw">
+            <source type="image/webp" srcset="assets/images/out/03-parametric-architecture-barbican-480w.webp 480w, assets/images/out/03-parametric-architecture-barbican-960w.webp 960w" sizes="(min-width: 768px) 50vw, 100vw">
+            <img src="assets/images/out/03-parametric-architecture-barbican-960w.jpg"
+                 srcset="assets/images/out/03-parametric-architecture-barbican-480w.jpg 480w, assets/images/out/03-parametric-architecture-barbican-960w.jpg 960w"
+                 sizes="(min-width: 768px) 50vw, 100vw"
+                 alt="Betonové věže komplexu Barbican v Londýně, pohled zezdola"
+                 width="960" height="640" loading="lazy">
+          </picture>
+          <figcaption>Kulturní centrum Barbican · Londýn · 1982</figcaption>
+        </figure>
+        <figure>
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/01-apartmenttherapy-brutalist-480w.avif 480w, assets/images/out/01-apartmenttherapy-brutalist-960w.avif 960w" sizes="(min-width: 768px) 50vw, 100vw">
+            <source type="image/webp" srcset="assets/images/out/01-apartmenttherapy-brutalist-480w.webp 480w, assets/images/out/01-apartmenttherapy-brutalist-960w.webp 960w" sizes="(min-width: 768px) 50vw, 100vw">
+            <img src="assets/images/out/01-apartmenttherapy-brutalist-960w.jpg"
+                 srcset="assets/images/out/01-apartmenttherapy-brutalist-480w.jpg 480w, assets/images/out/01-apartmenttherapy-brutalist-960w.jpg 960w"
+                 sizes="(min-width: 768px) 50vw, 100vw"
+                 alt="Bytový dům s odhalenou betonovou strukturou"
+                 width="960" height="540" loading="lazy">
+          </picture>
+          <figcaption>Bytový dům Strakonice · 1985</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="o-mne" id="o-mne" aria-labelledby="omne-titulek">
+      <div class="o-mne__obsah">
+        <h2 class="o-mne__nadpis" id="omne-titulek">Stavím věci,<br>které <span>nespadnou</span>.</h2>
+        <p>Třicet let dělám brutalismus. Žádné prosklené krabice, žádné dřevěné fasády, co si hrají na les. Beton, ocel, geometrie. Když si u mě objednáš stavbu, dostaneš stavbu — ne PowerPoint.</p>
+        <p>Mí klienti chodili na obhlídku v roce 1995 a říkali to samé jako v roce 2025: „Vypadá to drsně.“ Beru to jako kompliment.</p>
+        <dl class="o-mne__statistiky">
+          <div class="o-mne__statistika"><strong>30</strong><span>let praxe</span></div>
+          <div class="o-mne__statistika"><strong>47</strong><span>realizací</span></div>
+          <div class="o-mne__statistika"><strong>0</strong><span>omluv</span></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="cta-pruh" aria-label="Výzva ke kontaktu">
+      <div class="cta-pruh__obsah">
+        <h2 class="cta-pruh__nadpis">Chceš brutální projekt? Ozvi se.</h2>
+        <div class="cta-pruh__tlacitka">
+          <a class="tlacitko" href="tel:+420555123456">+420&nbsp;555&nbsp;123&nbsp;456</a>
+          <a class="tlacitko" href="mailto:bohuslav@cement-architekt.cz">Napsat&nbsp;e-mail</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="sluzby" id="sluzby" aria-labelledby="sluzby-titulek">
+      <h2 class="sluzby__nadpis" id="sluzby-titulek">Co stavím</h2>
+      <div class="sluzby__mrizka">
+        <article class="sluzba">
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/05-fuel-design-brutalist-italy-480w.avif 480w, assets/images/out/05-fuel-design-brutalist-italy-960w.avif 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <source type="image/webp" srcset="assets/images/out/05-fuel-design-brutalist-italy-480w.webp 480w, assets/images/out/05-fuel-design-brutalist-italy-960w.webp 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <img src="assets/images/out/05-fuel-design-brutalist-italy-480w.jpg"
+                 srcset="assets/images/out/05-fuel-design-brutalist-italy-480w.jpg 480w, assets/images/out/05-fuel-design-brutalist-italy-960w.jpg 960w"
+                 sizes="(min-width: 768px) 25vw, 50vw"
+                 alt="Italský brutalistický bytový komplex"
+                 width="480" height="391" loading="lazy">
+          </picture>
+          <div class="sluzba__obsah">
+            <h3 class="sluzba__nadpis">Bytové domy</h3>
+            <p>Panely, věže, monobloky. Žádné rozkošné rodinné domky se sedlovou střechou.</p>
+          </div>
+        </article>
+
+        <article class="sluzba">
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/02-theshelfist-brutalism-interior-480w.avif 480w, assets/images/out/02-theshelfist-brutalism-interior-960w.avif 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <source type="image/webp" srcset="assets/images/out/02-theshelfist-brutalism-interior-480w.webp 480w, assets/images/out/02-theshelfist-brutalism-interior-960w.webp 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <img src="assets/images/out/02-theshelfist-brutalism-interior-480w.jpg"
+                 srcset="assets/images/out/02-theshelfist-brutalism-interior-480w.jpg 480w, assets/images/out/02-theshelfist-brutalism-interior-960w.jpg 960w"
+                 sizes="(min-width: 768px) 25vw, 50vw"
+                 alt="Brutalistický interiér s odhaleným betonem a tvrdým světlem"
+                 width="480" height="480" loading="lazy">
+          </picture>
+          <div class="sluzba__obsah">
+            <h3 class="sluzba__nadpis">Veřejné stavby</h3>
+            <p>Knihovny, úřady, kulturní centra. Stavby, co přežijí ředitele i jejich nástupce.</p>
+          </div>
+        </article>
+
+        <article class="sluzba">
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/04-architectsdiary-brutalist-480w.avif 480w, assets/images/out/04-architectsdiary-brutalist-960w.avif 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <source type="image/webp" srcset="assets/images/out/04-architectsdiary-brutalist-480w.webp 480w, assets/images/out/04-architectsdiary-brutalist-960w.webp 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <img src="assets/images/out/04-architectsdiary-brutalist-480w.jpg"
+                 srcset="assets/images/out/04-architectsdiary-brutalist-480w.jpg 480w, assets/images/out/04-architectsdiary-brutalist-960w.jpg 960w"
+                 sizes="(min-width: 768px) 25vw, 50vw"
+                 alt="Brutalistická vertikální stavba na pozadí oblohy"
+                 width="480" height="651" loading="lazy">
+          </picture>
+          <div class="sluzba__obsah">
+            <h3 class="sluzba__nadpis">Rekonstrukce</h3>
+            <p>Vracím brutalistickým stavbám důstojnost. Žádné zateplování polystyrenem do barev pastelek.</p>
+          </div>
+        </article>
+
+        <article class="sluzba">
+          <picture>
+            <source type="image/avif" srcset="assets/images/out/07-brutal2-480w.avif 480w, assets/images/out/07-brutal2-960w.avif 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <source type="image/webp" srcset="assets/images/out/07-brutal2-480w.webp 480w, assets/images/out/07-brutal2-960w.webp 960w" sizes="(min-width: 768px) 25vw, 50vw">
+            <img src="assets/images/out/07-brutal2-480w.jpg"
+                 srcset="assets/images/out/07-brutal2-480w.jpg 480w, assets/images/out/07-brutal2-960w.jpg 960w"
+                 sizes="(min-width: 768px) 25vw, 50vw"
+                 alt="Brutalistická betonová stavba s ostrými geometrickými prvky"
+                 width="480" height="270" loading="lazy">
+          </picture>
+          <div class="sluzba__obsah">
+            <h3 class="sluzba__nadpis">Konzultace</h3>
+            <p>Hodina mého času = hodina, co tě zachrání před chybou v projektu za milion.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="kontakt" id="kontakt" aria-labelledby="kontakt-titulek">
+      <div class="kontakt__obsah">
+        <h2 class="kontakt__nadpis" id="kontakt-titulek">Kontakt</h2>
+        <p>Žádné formuláře. Stačí napsat.</p>
+        <ul class="kontakt__radky">
+          <li><strong>Telefon:</strong> <a href="tel:+420555123456">+420&nbsp;555&nbsp;123&nbsp;456</a></li>
+          <li><strong>E-mail:</strong> <a href="mailto:bohuslav@cement-architekt.cz">bohuslav@cement-architekt.cz</a></li>
+          <li><strong>Adresa:</strong> Hlavní 1, 602&nbsp;00 Brno</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Bohuslav Cement · Architekt brutalismu · Brno</p>
+    <p>Studentský projekt · GJŠ Zlín · IT seminář</p>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('toggle');
+    const menu = document.getElementById('hlavni-menu');
+    toggle.addEventListener('click', () => {
+      const open = menu.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Zavřít menu' : 'Otevřít menu');
+    });
+    menu.addEventListener('click', e => {
+      if (e.target.matches('.navbar__link')) {
+        menu.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

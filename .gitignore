@@ -2,6 +2,10 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+__MACOSX/
+
+# Website 1 (uncommitted — review before tracking)
+theFirstWebsiteCodebaseCopy/
 
 # Editors
 .vscode/
